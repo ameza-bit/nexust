@@ -3,11 +3,9 @@
 <p align="center">
   <img src="assets/nexust_logo.png" alt="Nexust Logo" width="200"/>
 </p>
-
 <p align="center">
   <b>El punto central donde convergen todas tus APIs</b>
 </p>
-
 <p align="center">
   <a href="#características">Características</a> •
   <a href="#capturas-de-pantalla">Capturas de Pantalla</a> •
@@ -18,7 +16,6 @@
   <a href="#contribuir">Contribuir</a> •
   <a href="#licencia">Licencia</a>
 </p>
-
 ## Descripción
 
 Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que transforma la manera en que interactúas con APIs. Combina la potencia de clientes profesionales con una interfaz moderna, intuitiva y eficiente, diseñada para desarrolladores, testers y entusiastas de las APIs.
@@ -61,8 +58,12 @@ Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que 
 - **Lenguaje**: Dart 3.7.0
 - **Gestión de Estado**: [Bloc/Cubit](https://bloclibrary.dev/)
 - **HTTP Client**: [Dio](https://pub.dev/packages/dio)
-- **Almacenamiento Local**: [Hive](https://pub.dev/packages/hive)
-- **Sintaxis Highlighting**: [flutter_highlight](https://pub.dev/packages/flutter_highlight)
+- **Almacenamiento Local**: [Drift/Moor](https://pub.dev/packages/drift)
+- **Base de Datos en la Nube**: [Cloud Firestore](https://firebase.google.com/products/firestore)
+- **Autenticación**: [Firebase Authentication](https://firebase.google.com/products/auth)
+- **Sintaxis Highlighting**: [flutter_code_editor](https://pub.dev/packages/flutter_code_editor)
+- **Serialización JSON**: [json_serializable](https://pub.dev/packages/json_serializable)
+- **Navegación**: [go_router](https://pub.dev/packages/go_router)
 
 ## Instalación
 
@@ -161,11 +162,59 @@ lib/
 
 ## Roadmap
 
-- [ ] Versión 1.0.0 - Funcionalidades básicas (Solicitudes, Colecciones, Visualización)
-- [ ] Versión 1.1.0 - Sistema de entornos y variables
-- [ ] Versión 1.2.0 - Pruebas automatizadas
-- [ ] Versión 1.3.0 - Sincronización en la nube
-- [ ] Versión 2.0.0 - Generación de código para clientes API
+### Fase 1: Fundamentos (Q3 2025)
+
+- [ ] **v0.1.0 - MVP**
+  - Interfaz básica con soporte para métodos HTTP principales
+  - Visualización simple de respuestas JSON/XML
+  - Guardado local de solicitudes individuales
+  - Soporte para plataformas móviles (Android/iOS)
+- [ ] **v0.2.0 - Organización**
+  - Sistema de colecciones y carpetas
+  - Historial de solicitudes con búsqueda
+  - Exportación/importación básica
+  - Soporte inicial para escritorio (Windows/macOS)
+- [ ] **v1.0.0 - Lanzamiento Estable**
+  - Gestión completa de solicitudes y respuestas
+  - UI/UX pulida con temas claro/oscuro
+  - Documentación completa para usuarios
+  - Soporte para todas las plataformas (+ Linux y Web)
+
+### Fase 2: Avanzado (Q4 2025)
+
+- [ ] **v1.1.0 - Productividad**
+  - Sistema de entornos y variables
+  - Autocompletado inteligente para URLs y headers
+  - Snippets para body comunes (JSON, forms)
+  - Modo fullscreen para análisis detallado
+- [ ] **v1.2.0 - Testing**
+  - Framework de pruebas automatizadas
+  - Assertions y validaciones de respuestas
+  - Ejecución programada de pruebas
+  - Exportación de resultados e informes
+- [ ] **v1.3.0 - Colaboración**
+  - Sincronización en la nube
+  - Compartir colecciones entre usuarios
+  - Historial de cambios y versiones
+  - Gestión de permisos básica
+
+### Fase 3: Profesional (Q1-Q2 2026)
+
+- [ ] **v2.0.0 - Herramientas pro**
+  - Generación de código para clientes API (Dart, Kotlin, Swift, JS)
+  - Análisis de rendimiento y métricas
+  - Captura y replay de tráfico HTTP
+  - Validación de esquemas OpenAPI/Swagger
+- [ ] **v2.1.0 - Integración**
+  - Integración con sistemas CI/CD
+  - Conectores para servicios de API Gateway
+  - Plugins y extensibilidad
+  - API para integración con otras herramientas
+- [ ] **v2.2.0 - Empresa**
+  - Dashboard de equipo y analíticas
+  - Gestión de acceso granular
+  - SSO y autenticación empresarial
+  - Auditoría y logging avanzado
 
 ## Contribuir
 
