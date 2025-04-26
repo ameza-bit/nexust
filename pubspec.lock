@@ -77,6 +77,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: "direct overridden"
+    description:
+      path: "lib/font_awesome_flutter"
+      relative: true
+    source: path
+    version: "10.8.0"
   go_router:
     dependency: "direct main"
     description:

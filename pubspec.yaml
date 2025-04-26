@@ -13,6 +13,10 @@ dependencies:
     sdk: flutter
   go_router: ^15.1.1
 
+dependency_overrides:
+  font_awesome_flutter:
+    path: "lib/font_awesome_flutter"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
