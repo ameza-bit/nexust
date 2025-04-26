@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nexust/font_awesome_flutter/lib/font_awesome_flutter.dart';
-import 'package:nexust/ui/theme/neutral_theme.dart';
+import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/ui/themes/neutral_theme.dart';
 
 class NavigatorBar extends StatelessWidget {
   const NavigatorBar({super.key, this.controller});

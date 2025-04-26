@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/routes/app_routes.dart';
-import 'package:nexust/ui/theme/main_theme.dart';
+import 'package:nexust/ui/themes/main_theme.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/ui/screens/auth/login_screen.dart';
+import 'package:nexust/ui/screens/home/home_screen.dart';
 import 'package:nexust/ui/screens/home/tabs_screen.dart';
 
 class AppRoutes {
@@ -18,8 +19,8 @@ class AppRoutes {
             builder: (context, state) => const LoginScreen(),
           ),
           GoRoute(
-            name: TabsScreen.routeName,
-            path: TabsScreen.routeName,
+            name: HomeScreen.routeName,
+            path: HomeScreen.routeName,
             builder: (context, state) => const TabsScreen(),
           ),
         ],

@@ -120,7 +120,7 @@ packages:
   font_awesome_flutter:
     dependency: "direct overridden"
     description:
-      path: "lib/font_awesome_flutter"
+      path: "lib/core/font_awesome_flutter"
       relative: true
     source: path
     version: "10.8.0"

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nexust/ui/screens/collections/collections_screen.dart';
+import 'package:nexust/ui/screens/home/home_screen.dart';
 import 'package:nexust/ui/widgets/home/navigation_bar.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -39,8 +41,8 @@ class _TabsScreenState extends State<TabsScreen>
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            Center(child: Text("Tab 1")),
-            Center(child: Text("Tab 2")),
+            HomeScreen(),
+            CollectionsScreen(),
             Center(child: Text("Tab 3")),
             Center(child: Text("Tab 4")),
           ],
