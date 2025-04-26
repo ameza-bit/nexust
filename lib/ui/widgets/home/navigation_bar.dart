@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/ui/theme/neutral_theme.dart';
@@ -15,7 +16,7 @@ class NavigatorBar extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: NeutralTheme.richBlack.withOpacity(0.08),
+            color: NeutralTheme.richBlack.withAlpha(20), // 0.08 ≈ 20/255
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -45,26 +46,26 @@ class NavigatorBar extends StatelessWidget {
           indicatorSize: TabBarIndicatorSize.tab,
           labelPadding: const EdgeInsets.only(top: 8),
           tabs: [
-            const Tab(
-              text: "Inicio",
+            Tab(
+              text: context.tr("navigation.home"),
               icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: 22),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
-            const Tab(
-              text: "Colecciones",
+            Tab(
+              text: context.tr("navigation.collections"),
               icon: FaIcon(FontAwesomeIcons.lightRectangleHistory, size: 22),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
-            const Tab(
+            Tab(
+              text: context.tr("navigation.quick_request"),
               icon: FaIcon(FontAwesomeIcons.lightEnvelopeOpenText, size: 22),
               iconMargin: EdgeInsets.only(bottom: 4),
-              text: "Petición\nRápida",
               height: 65,
             ),
-            const Tab(
-              text: "Más",
+            Tab(
+              text: context.tr("navigation.more"),
               icon: FaIcon(FontAwesomeIcons.lightBars, size: 22),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
