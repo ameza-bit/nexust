@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/views/collections/collection_list_view.dart';
-import 'package:nexust/ui/widgets/collections/rest_endpoint_item.dart';
 
 class CollectionsScreen extends StatefulWidget {
   static const String routeName = "collections";
@@ -20,7 +22,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Obtener usuarios',
           isGroup: false,
-          method: 'GET',
+          method: Method.get,
           path: '/api/users',
           parameters: {'page': 1, 'limit': 20, 'sort': 'name'},
           headers: {
@@ -40,7 +42,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Crear usuario',
           isGroup: false,
-          method: 'POST',
+          method: Method.post,
           path: '/api/users',
           headers: {
             'Authorization': 'Bearer {token}',
@@ -65,7 +67,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
             RestEndpoint(
               name: 'Obtener usuario',
               isGroup: false,
-              method: 'GET',
+              method: Method.get,
               path: '/api/users/{id}',
               parameters: {'id': 1},
               headers: {
@@ -83,7 +85,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
             RestEndpoint(
               name: 'Actualizar usuario',
               isGroup: false,
-              method: 'PUT',
+              method: Method.put,
               path: '/api/users/{id}',
               parameters: {'id': 1},
               headers: {
@@ -104,7 +106,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
             RestEndpoint(
               name: 'Eliminar usuario',
               isGroup: false,
-              method: 'DELETE',
+              method: Method.delete,
               path: '/api/users/{id}',
               parameters: {'id': 1},
               headers: {'Authorization': 'Bearer {token}'},
@@ -124,7 +126,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Listar productos',
           isGroup: false,
-          method: 'GET',
+          method: Method.get,
           path: '/api/products',
           parameters: {'category': 'electronics', 'limit': 10},
           headers: {'Content-Type': 'application/json'},
@@ -140,7 +142,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Crear producto',
           isGroup: false,
-          method: 'POST',
+          method: Method.post,
           path: '/api/products',
           headers: {
             'Authorization': 'Bearer {token}',
@@ -167,7 +169,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Iniciar sesión',
           isGroup: false,
-          method: 'POST',
+          method: Method.post,
           path: '/api/auth/login',
           headers: {'Content-Type': 'application/json'},
           body: {'email': 'usuario@example.com', 'password': '********'},
@@ -180,7 +182,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Renovar token',
           isGroup: false,
-          method: 'POST',
+          method: Method.post,
           path: '/api/auth/refresh',
           headers: {
             'Authorization': 'Bearer {refresh_token}',
@@ -194,7 +196,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         RestEndpoint(
           name: 'Cerrar sesión',
           isGroup: false,
-          method: 'POST',
+          method: Method.post,
           path: '/api/auth/logout',
           headers: {
             'Authorization': 'Bearer {token}',
@@ -211,16 +213,13 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'REST API Explorer',
+          context.tr('navigation.collections'),
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: Icon(Icons.settings), onPressed: () {}),
-        ],
+        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
       ),
       body: SafeArea(
         child: Padding(
@@ -228,13 +227,6 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(left: 16.0, bottom: 16.0, top: 8.0),
-                child: Text(
-                  'Endpoints disponibles',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -242,7 +234,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withAlpha(13),
                         blurRadius: 10,
                         offset: Offset(0, 5),
                       ),
@@ -259,24 +251,10 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.indigo.shade700,
+        foregroundColor: Colors.white,
         tooltip: 'Crear nuevo endpoint',
-        child: Icon(Icons.add),
+        child: Icon(FontAwesomeIcons.lightPlus),
       ),
     );
   }
-}
-
-// Modelo de datos para representar elementos del sistema de archivos
-class FileSystemEntity {
-  final String name;
-  final bool isDirectory;
-  final List<FileSystemEntity> children;
-  bool isExpanded;
-
-  FileSystemEntity({
-    required this.name,
-    required this.isDirectory,
-    this.children = const [],
-    this.isExpanded = false,
-  });
 }

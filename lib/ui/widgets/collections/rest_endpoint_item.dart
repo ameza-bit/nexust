@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 
 class RestEndpointItem extends StatefulWidget {
@@ -62,52 +64,18 @@ class _RestEndpointItemState extends State<RestEndpointItem>
       return widget.endpoint.isExpanded ? Color(0xFF5C6BC0) : Color(0xFF7986CB);
     } else {
       // Asignar colores según método HTTP
-      final method = widget.endpoint.method.toUpperCase();
-      switch (method) {
-        case 'GET':
-          return Color(0xFF4CAF50); // Verde para GET
-        case 'POST':
-          return Color(0xFF2196F3); // Azul para POST
-        case 'PUT':
-          return Color(0xFFFF9800); // Naranja para PUT
-        case 'PATCH':
-          return Color(0xFF9C27B0); // Púrpura para PATCH
-        case 'DELETE':
-          return Color(0xFFF44336); // Rojo para DELETE
-        case 'OPTIONS':
-          return Color(0xFF607D8B); // Azul grisáceo para OPTIONS
-        case 'HEAD':
-          return Color(0xFF795548); // Marrón para HEAD
-        default:
-          return Color(0xFF78909C); // Gris azulado para otros
-      }
+      return widget.endpoint.method.color;
     }
   }
 
   IconData _getMethodIcon() {
     if (widget.endpoint.isGroup) {
-      return widget.endpoint.isExpanded ? Icons.api_rounded : Icons.api_rounded;
+      return widget.endpoint.isExpanded
+          ? FontAwesomeIcons.folderOpen
+          : FontAwesomeIcons.folder;
     } else {
       // Iconos específicos para cada método HTTP
-      final method = widget.endpoint.method.toUpperCase();
-      switch (method) {
-        case 'GET':
-          return Icons.download_rounded;
-        case 'POST':
-          return Icons.add_circle_outline_rounded;
-        case 'PUT':
-          return Icons.edit_rounded;
-        case 'PATCH':
-          return Icons.sync_rounded;
-        case 'DELETE':
-          return Icons.delete_outline_rounded;
-        case 'OPTIONS':
-          return Icons.settings_rounded;
-        case 'HEAD':
-          return Icons.info_outline_rounded;
-        default:
-          return Icons.http_rounded;
-      }
+      return widget.endpoint.method.icon;
     }
   }
 
@@ -239,7 +207,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
           Container(
             width: 2,
             height: 10,
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withAlpha(76), // Equivalente a withOpacity(0.3)
             margin: EdgeInsets.only(left: widget.depth * 20.0 - 10),
           ),
         Material(
@@ -259,12 +227,14 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                 color:
                     widget.endpoint.isGroup
                         ? (widget.endpoint.isExpanded
-                            ? _getMethodColor().withOpacity(0.1)
+                            ? _getMethodColor().withAlpha(25)
                             : Colors.transparent)
                         : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: _getMethodColor().withOpacity(0.3),
+                  color: _getMethodColor().withAlpha(
+                    76,
+                  ), // Equivalente a withOpacity(0.3)
                   width: 1.0,
                 ),
               ),
@@ -274,13 +244,15 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                   Container(
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: _getMethodColor().withOpacity(0.1),
+                      color: _getMethodColor().withAlpha(
+                        25,
+                      ), // Equivalente a withOpacity(0.1)
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Icon(
+                    child: FaIcon(
                       _getMethodIcon(),
                       color: _getMethodColor(),
-                      size: 24.0,
+                      size: 18.0,
                     ),
                   ),
                   SizedBox(width: 12.0),
@@ -313,7 +285,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
                                   child: Text(
-                                    widget.endpoint.method.toUpperCase(),
+                                    widget.endpoint.method.stringName,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 12.0,
@@ -342,9 +314,11 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                   // Botón para ver detalles (solo endpoints)
                   if (!widget.endpoint.isGroup)
                     IconButton(
-                      icon: Icon(
-                        _showDetails ? Icons.visibility_off : Icons.visibility,
-                        size: 20.0,
+                      icon: FaIcon(
+                        _showDetails
+                            ? FontAwesomeIcons.eyeSlash
+                            : FontAwesomeIcons.eye,
+                        size: 16.0,
                         color: Colors.grey.shade600,
                       ),
                       onPressed: () {
@@ -353,14 +327,13 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                         });
                       },
                     ),
-                  // Icono de flecha para grupos
                   if (widget.endpoint.isGroup)
                     RotationTransition(
                       turns: _rotationAnimation,
-                      child: Icon(
-                        Icons.keyboard_arrow_right,
+                      child: FaIcon(
+                        FontAwesomeIcons.chevronRight,
                         color: Colors.grey.shade600,
-                        size: 24.0,
+                        size: 18.0,
                       ),
                     ),
                 ],

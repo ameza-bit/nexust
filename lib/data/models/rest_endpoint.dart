@@ -1,7 +1,9 @@
+import 'package:nexust/data/enums/method.dart';
+
 class RestEndpoint {
   final String name;
   final bool isGroup;
-  final String method; // GET, POST, PUT, DELETE, etc.
+  final Method method; // GET, POST, PUT, DELETE, etc.
   final String path;
   final Map<String, dynamic>? parameters;
   final Map<String, String>? headers;
@@ -13,7 +15,7 @@ class RestEndpoint {
   RestEndpoint({
     required this.name,
     required this.isGroup,
-    this.method = '',
+    this.method = Method.get,
     this.path = '',
     this.parameters,
     this.headers,
