@@ -23,7 +23,6 @@ class _RestEndpointItemState extends State<RestEndpointItem>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _rotationAnimation;
-  bool _showDetails = false;
 
   @override
   void initState() {
@@ -79,270 +78,143 @@ class _RestEndpointItemState extends State<RestEndpointItem>
     }
   }
 
-  Widget _buildDetailsSection() {
-    if (!_showDetails || widget.endpoint.isGroup) return Container();
-
-    return Container(
-      margin: EdgeInsets.only(
-        left: widget.depth * 20.0 + 46.0,
-        right: 10.0,
-        top: 4.0,
-        bottom: 8.0,
-      ),
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200, width: 1.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.endpoint.path.isNotEmpty) ...[
-            Text(
-              'Ruta:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              widget.endpoint.path,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 14.0,
-                color: Colors.grey.shade900,
-              ),
-            ),
-            SizedBox(height: 8.0),
-          ],
-
-          if (widget.endpoint.parameters != null &&
-              widget.endpoint.parameters!.isNotEmpty) ...[
-            Text(
-              'Parámetros:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            _buildJsonPreview(widget.endpoint.parameters),
-            SizedBox(height: 8.0),
-          ],
-
-          if (widget.endpoint.headers != null &&
-              widget.endpoint.headers!.isNotEmpty) ...[
-            Text(
-              'Headers:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            _buildJsonPreview(widget.endpoint.headers),
-            SizedBox(height: 8.0),
-          ],
-
-          if (widget.endpoint.body != null) ...[
-            Text(
-              'Body:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            _buildJsonPreview(widget.endpoint.body),
-            SizedBox(height: 8.0),
-          ],
-
-          if (widget.endpoint.response != null) ...[
-            Text(
-              'Respuesta:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            _buildJsonPreview(widget.endpoint.response),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildJsonPreview(dynamic json) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Text(
-        json.toString(),
-        style: TextStyle(fontFamily: 'monospace', fontSize: 13.0),
-        maxLines: 5,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Línea vertical que muestra la jerarquía
-        if (widget.depth > 0)
-          Container(
-            width: 2,
-            height: 10,
-            color: Colors.grey.withAlpha(76), // Equivalente a withOpacity(0.3)
-            margin: EdgeInsets.only(left: widget.depth * 20.0 - 10),
-          ),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: widget.onTap,
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              margin: EdgeInsets.only(
-                left: widget.depth * 20.0,
-                right: 10.0,
-                top: 4.0,
-                bottom: 4.0,
+        Row(
+          children: [
+            // Línea vertical que muestra la jerarquía
+            if (widget.depth > 0)
+              Container(
+                width: 2,
+                color: Colors.grey.withAlpha(76),
+                margin: EdgeInsets.only(left: widget.depth * 20.0 - 10),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                color:
-                    widget.endpoint.isGroup
-                        ? (widget.endpoint.isExpanded
-                            ? _getMethodColor().withAlpha(25)
-                            : Colors.transparent)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: _getMethodColor().withAlpha(
-                    76,
-                  ), // Equivalente a withOpacity(0.3)
-                  width: 1.0,
-                ),
-              ),
-              child: Row(
-                children: [
-                  // Icono del método HTTP o grupo
-                  Container(
-                    padding: EdgeInsets.all(8),
+            Expanded(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.onTap,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: widget.depth * 15.0,
+                      right: 10.0,
+                      top: 4.0,
+                      bottom: 4.0,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getMethodColor().withAlpha(
-                        25,
-                      ), // Equivalente a withOpacity(0.1)
-                      borderRadius: BorderRadius.circular(8),
+                      color:
+                          widget.endpoint.isGroup
+                              ? (widget.endpoint.isExpanded
+                                  ? _getMethodColor().withAlpha(25)
+                                  : Colors.transparent)
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _getMethodColor().withAlpha(76),
+                        width: 1.0,
+                      ),
                     ),
-                    child: FaIcon(
-                      _getMethodIcon(),
-                      color: _getMethodColor(),
-                      size: 18.0,
-                    ),
-                  ),
-                  SizedBox(width: 12.0),
-                  // Nombre del endpoint o grupo
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(
-                          widget.endpoint.name,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w600,
+                        // Icono del método HTTP o grupo
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: _getMethodColor().withAlpha(25),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          overflow: TextOverflow.ellipsis,
+                          child: FaIcon(
+                            _getMethodIcon(),
+                            color: _getMethodColor(),
+                            size: 18.0,
+                          ),
                         ),
-                        if (!widget.endpoint.isGroup &&
-                            widget.endpoint.path.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 2.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _getMethodColor(),
-                                    borderRadius: BorderRadius.circular(4.0),
-                                  ),
-                                  child: Text(
-                                    widget.endpoint.method.stringName,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                        SizedBox(width: 12.0),
+                        // Nombre del endpoint o grupo
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.endpoint.name,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (!widget.endpoint.isGroup &&
+                                  widget.endpoint.path.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 6.0,
+                                          vertical: 2.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: _getMethodColor(),
+                                          borderRadius: BorderRadius.circular(
+                                            4.0,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          widget.endpoint.method.stringName,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 6.0),
+                                      Expanded(
+                                        child: Text(
+                                          widget.endpoint.path,
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.grey.shade600,
+                                            fontFamily: 'monospace',
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(width: 6.0),
-                                Expanded(
-                                  child: Text(
-                                    widget.endpoint.path,
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.grey.shade600,
-                                      fontFamily: 'monospace',
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                            ],
+                          ),
+                        ),
+                        if (widget.endpoint.isGroup)
+                          RotationTransition(
+                            turns: _rotationAnimation,
+                            child: FaIcon(
+                              widget.endpoint.isExpanded
+                                  ? FontAwesomeIcons.chevronDown
+                                  : FontAwesomeIcons.chevronRight,
+                              color: Colors.grey.shade600,
+                              size: 18.0,
                             ),
                           ),
                       ],
                     ),
                   ),
-                  // Botón para ver detalles (solo endpoints)
-                  if (!widget.endpoint.isGroup)
-                    IconButton(
-                      icon: FaIcon(
-                        _showDetails
-                            ? FontAwesomeIcons.eyeSlash
-                            : FontAwesomeIcons.eye,
-                        size: 16.0,
-                        color: Colors.grey.shade600,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _showDetails = !_showDetails;
-                        });
-                      },
-                    ),
-                  if (widget.endpoint.isGroup)
-                    RotationTransition(
-                      turns: _rotationAnimation,
-                      child: FaIcon(
-                        FontAwesomeIcons.chevronRight,
-                        color: Colors.grey.shade600,
-                        size: 18.0,
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
-        // Sección de detalles
-        _buildDetailsSection(),
         // Contenedor para los elementos hijos con animación
         AnimatedCrossFade(
           firstChild: Container(),

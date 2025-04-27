@@ -20,11 +20,12 @@ class _CollectionListViewState extends State<CollectionListView> {
         return RestEndpointItem(
           endpoint: widget.items[index],
           depth: 0,
-          onTap: () {
-            setState(() {
-              widget.items[index].isExpanded = !widget.items[index].isExpanded;
-            });
-          },
+          onTap:
+              () => setState(
+                () =>
+                    widget.items[index].isExpanded =
+                        !widget.items[index].isExpanded,
+              ),
         );
       },
     );

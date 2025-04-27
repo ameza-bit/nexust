@@ -226,25 +226,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           padding: EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(13),
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: CollectionListView(items: demoData),
-                ),
-              ),
-            ],
+            children: [Expanded(child: CollectionListView(items: demoData))],
           ),
         ),
       ),
