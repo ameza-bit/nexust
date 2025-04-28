@@ -7,8 +7,16 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  easy_localization: ^3.0.7+1
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  go_router: ^15.1.1
+
+dependency_overrides:
+  font_awesome_flutter:
+    path: "lib/core/font_awesome_flutter"
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +25,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/translations/

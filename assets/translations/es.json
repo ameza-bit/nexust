@@ -1,0 +1,44 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "collections": "Colecciones",
+    "quick_request": "Petición Rápida",
+    "settings": "Configuración",
+    "more": "Más"
+  },
+  "more": {
+    "settings": "Configuración",
+    "app_info": "Información de la Aplicación",
+    "about_app": "Acerca de Nexust",
+    "privacy_policy": "Política de Privacidad",
+    "terms_of_service": "Términos de Servicio"
+  },
+  "settings": {
+    "appearance": "Apariencia",
+    "dark_mode": "Modo Oscuro",
+    "primary_color": "Color Principal",
+    "font_size": "Tamaño de Letra",
+    "font_size_small": "Pequeño",
+    "font_size_medium_small": "Medio-Pequeño",
+    "font_size_medium": "Medio",
+    "font_size_medium_large": "Medio-Grande",
+    "font_size_large": "Grande",
+    "language": "Idioma",
+    "app_language": "Idioma de la Aplicación",
+    "security": "Seguridad",
+    "biometric_auth": "Autenticación Biométrica",
+    "biometric_auth_desc": "Utiliza huella digital o reconocimiento facial para acceder a la app",
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    }
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "close": "Cerrar"
+  }
+}

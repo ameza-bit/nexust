@@ -1,1 +1,15 @@
 include: package:flutter_lints/flutter.yaml
+
+dart_code_metrics:
+  extends:
+    - recommended
+  rules:
+    - add-copy-with:
+        class-name-pattern: State$
+        file-name-pattern: ".model.dart"
+    - match-class-name-pattern:
+        entries:
+          - path: ".*state.dart"
+            pattern: "State$"
+            ignore-private: true
+            severity: error
