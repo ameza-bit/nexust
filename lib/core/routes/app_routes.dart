@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nexust/ui/screens/auth/login_screen.dart';
 import 'package:nexust/ui/screens/home/home_screen.dart';
 import 'package:nexust/ui/screens/home/tabs_screen.dart';
+import 'package:nexust/ui/screens/settings/settings_screen.dart';
 
 class AppRoutes {
   static RouterConfig<Object>? getGoRoutes(
@@ -22,6 +23,13 @@ class AppRoutes {
             name: HomeScreen.routeName,
             path: HomeScreen.routeName,
             builder: (context, state) => const TabsScreen(),
+            routes: [
+              GoRoute(
+                name: SettingsScreen.routeName,
+                path: SettingsScreen.routeName,
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
           ),
         ],
       ),
