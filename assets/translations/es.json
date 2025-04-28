@@ -28,11 +28,10 @@
     "security": "Seguridad",
     "biometric_auth": "Autenticación Biométrica",
     "biometric_auth_desc": "Utiliza huella digital o reconocimiento facial para acceder a la app",
-    "about": "Acerca de",
-    "about_app": "Acerca de Nexust",
-    "privacy_policy": "Política de Privacidad",
-    "terms_of_service": "Términos de Servicio",
-    "choose_color": "Elegir Color"
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    }
   },
   "common": {
     "save": "Guardar",

@@ -21,12 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Color _primaryColor = Colors.indigo.shade700;
 
   // Lista de idiomas disponibles
-  final List<String> _languages = [
-    'Español',
-    'English',
-    'Français',
-    'Português',
-  ];
+  final List<String> _languages = ['Español', 'English'];
 
   // Lista de colores para elegir
   final List<Color> _availableColors = [
