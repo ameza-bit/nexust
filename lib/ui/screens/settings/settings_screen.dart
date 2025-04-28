@@ -21,7 +21,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Color _primaryColor = Colors.indigo.shade700;
 
   // Lista de idiomas disponibles
-  final List<String> _languages = ['Español', 'English', 'Français', 'Português'];
+  final List<String> _languages = [
+    'Español',
+    'English',
+    'Français',
+    'Português',
+  ];
 
   // Lista de colores para elegir
   final List<Color> _availableColors = [
@@ -111,9 +116,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Idioma
                 SettingsSection(
                   title: context.tr('settings.language'),
@@ -125,14 +130,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         value: _selectedLanguage,
                         icon: const Icon(Icons.arrow_drop_down),
                         elevation: 16,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 16,
-                        ),
-                        underline: Container(
-                          height: 2,
-                          color: _primaryColor,
-                        ),
+                        style: TextStyle(color: Colors.black87, fontSize: 16),
+                        underline: Container(height: 2, color: _primaryColor),
                         onChanged: (String? value) {
                           if (value != null) {
                             setState(() {
@@ -141,19 +140,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             // Aquí iría la lógica para cambiar el idioma
                           }
                         },
-                        items: _languages.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                        items:
+                            _languages.map<DropdownMenuItem<String>>((
+                              String value,
+                            ) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Seguridad
                 SettingsSection(
                   title: context.tr('settings.security'),
@@ -172,36 +174,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           // Aquí iría la lógica para habilitar/deshabilitar biométricos
                         },
                       ),
-                    ),
-                  ],
-                ),
-                
-                const SizedBox(height: 20),
-                
-                // Acerca de
-                SettingsSection(
-                  title: context.tr('settings.about'),
-                  children: [
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightInfoCircle,
-                      title: context.tr('settings.about_app'),
-                      onTap: () {
-                        // Navegar a pantalla de información
-                      },
-                    ),
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightBook,
-                      title: context.tr('settings.privacy_policy'),
-                      onTap: () {
-                        // Navegar a política de privacidad
-                      },
-                    ),
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightFile,
-                      title: context.tr('settings.terms_of_service'),
-                      onTap: () {
-                        // Navegar a términos de servicio
-                      },
                     ),
                   ],
                 ),
@@ -224,16 +196,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _showColorPicker(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => ColorPickerDialog(
-        colors: _availableColors,
-        selectedColor: _primaryColor,
-        onColorSelected: (color) {
-          setState(() {
-            _primaryColor = color;
-          });
-          // Aquí iría la lógica para cambiar el color principal
-        },
-      ),
+      builder:
+          (context) => ColorPickerDialog(
+            colors: _availableColors,
+            selectedColor: _primaryColor,
+            onColorSelected: (color) {
+              setState(() {
+                _primaryColor = color;
+              });
+              // Aquí iría la lógica para cambiar el color principal
+            },
+          ),
     );
   }
 }

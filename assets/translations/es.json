@@ -6,6 +6,13 @@
     "settings": "Configuración",
     "more": "Más"
   },
+  "more": {
+    "settings": "Configuración",
+    "app_info": "Información de la Aplicación",
+    "about_app": "Acerca de Nexust",
+    "privacy_policy": "Política de Privacidad",
+    "terms_of_service": "Términos de Servicio"
+  },
   "settings": {
     "appearance": "Apariencia",
     "dark_mode": "Modo Oscuro",
@@ -32,6 +39,7 @@
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "edit": "Editar",
-    "create": "Crear"
+    "create": "Crear",
+    "close": "Cerrar"
   }
 }

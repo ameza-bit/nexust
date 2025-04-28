@@ -2,22 +2,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class ColorPickerDialog extends StatelessWidget {
-  final List<Color> colors;
-  final Color selectedColor;
-  final Function(Color) onColorSelected;
-
   const ColorPickerDialog({
-    Key? key,
+    super.key,
     required this.colors,
     required this.selectedColor,
     required this.onColorSelected,
-  }) : super(key: key);
+  });
+
+  final List<Color> colors;
+  final Color selectedColor;
+  final Function(Color) onColorSelected;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(context.tr('settings.choose_color')),
-      content: Container(
+      content: SizedBox(
         width: double.maxFinite,
         child: GridView.builder(
           shrinkWrap: true,
