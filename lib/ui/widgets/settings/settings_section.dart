@@ -12,6 +12,9 @@ class SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,17 +25,20 @@ class SettingsSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade700,
+              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? theme.cardColor : Colors.white,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(13),
+                color:
+                    isDark
+                        ? Colors.black.withAlpha(25)
+                        : Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -55,7 +61,10 @@ class SettingsSection extends StatelessWidget {
                                 thickness: 1,
                                 indent: 70,
                                 endIndent: 15,
-                                color: Colors.grey.shade200,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade200,
                               ),
                           ],
                         ),

@@ -211,6 +211,8 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -218,8 +220,8 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -244,7 +246,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           // TODO: Implement logic for creating a new endpoint
           Toast.show("Add logic for 'Creating a new endpoint'");
         },
-        backgroundColor: Colors.indigo.shade700,
+        backgroundColor: theme.primaryColor,
         foregroundColor: Colors.white,
         tooltip: 'Crear nuevo endpoint',
         child: Icon(FontAwesomeIcons.lightPlus),

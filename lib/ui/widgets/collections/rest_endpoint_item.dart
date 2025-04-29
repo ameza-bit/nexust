@@ -80,6 +80,9 @@ class _RestEndpointItemState extends State<RestEndpointItem>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -90,7 +93,9 @@ class _RestEndpointItemState extends State<RestEndpointItem>
             if (widget.depth > 0)
               Container(
                 width: 2,
-                color: Colors.grey.withAlpha(76),
+                color: (isDark ? Colors.grey.shade700 : Colors.grey).withAlpha(
+                  76,
+                ),
                 margin: EdgeInsets.only(left: widget.depth * 20.0 - 10),
               ),
             Expanded(
@@ -114,12 +119,14 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                       color:
                           widget.endpoint.isGroup
                               ? (widget.endpoint.isExpanded
-                                  ? _getMethodColor().withAlpha(25)
+                                  ? _getMethodColor().withAlpha(
+                                    isDark ? 50 : 25,
+                                  )
                                   : Colors.transparent)
                               : Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _getMethodColor().withAlpha(76),
+                        color: _getMethodColor().withAlpha(isDark ? 100 : 76),
                         width: 1.0,
                       ),
                     ),
@@ -129,7 +136,9 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                         Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: _getMethodColor().withAlpha(25),
+                            color: _getMethodColor().withAlpha(
+                              isDark ? 50 : 25,
+                            ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: FaIcon(
@@ -149,6 +158,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w600,
+                                  color: isDark ? Colors.white : Colors.black87,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -184,7 +194,10 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                                           widget.endpoint.path,
                                           style: TextStyle(
                                             fontSize: 12.0,
-                                            color: Colors.grey.shade600,
+                                            color:
+                                                isDark
+                                                    ? Colors.grey.shade400
+                                                    : Colors.grey.shade600,
                                             fontFamily: 'monospace',
                                           ),
                                           overflow: TextOverflow.ellipsis,
@@ -203,7 +216,10 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                               widget.endpoint.isExpanded
                                   ? FontAwesomeIcons.chevronDown
                                   : FontAwesomeIcons.chevronRight,
-                              color: Colors.grey.shade600,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                               size: 18.0,
                             ),
                           ),

@@ -20,6 +20,10 @@ class SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = iconColor ?? theme.primaryColor;
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -30,14 +34,10 @@ class SettingsItem extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: (iconColor ?? Colors.indigo.shade700).withAlpha((0.1 * 255).round()),
+                color: primaryColor.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                icon,
-                color: iconColor ?? Colors.indigo.shade700,
-                size: 20,
-              ),
+              child: Icon(icon, color: primaryColor, size: 20),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -46,9 +46,10 @@ class SettingsItem extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   if (subtitle != null)
@@ -58,7 +59,10 @@ class SettingsItem extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color:
+                              isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -67,7 +71,10 @@ class SettingsItem extends StatelessWidget {
             ),
             if (trailing != null) trailing!,
             if (onTap != null && trailing == null)
-              Icon(Icons.chevron_right, color: Colors.grey.shade400),
+              Icon(
+                Icons.chevron_right,
+                color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+              ),
           ],
         ),
       ),

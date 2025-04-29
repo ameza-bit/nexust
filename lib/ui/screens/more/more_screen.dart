@@ -12,6 +12,8 @@ class MoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -19,8 +21,8 @@ class MoreScreen extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        foregroundColor: theme.appBarTheme.foregroundColor,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -37,6 +39,7 @@ class MoreScreen extends StatelessWidget {
                     SettingsItem(
                       icon: FontAwesomeIcons.lightGear,
                       title: context.tr('more.settings'),
+                      iconColor: theme.primaryColor,
                       onTap: () {
                         context.pushNamed(SettingsScreen.routeName);
                       },
@@ -54,6 +57,7 @@ class MoreScreen extends StatelessWidget {
                     SettingsItem(
                       icon: FontAwesomeIcons.lightCircleInfo,
                       title: context.tr('more.about_app'),
+                      iconColor: theme.primaryColor,
                       onTap: () {
                         _showAboutDialog(context);
                       },
@@ -63,6 +67,7 @@ class MoreScreen extends StatelessWidget {
                     SettingsItem(
                       icon: FontAwesomeIcons.lightShield,
                       title: context.tr('more.privacy_policy'),
+                      iconColor: theme.primaryColor,
                       onTap: () {
                         _showPrivacyPolicyDialog(context);
                       },
@@ -72,6 +77,7 @@ class MoreScreen extends StatelessWidget {
                     SettingsItem(
                       icon: FontAwesomeIcons.lightFileContract,
                       title: context.tr('more.terms_of_service'),
+                      iconColor: theme.primaryColor,
                       onTap: () {
                         _showTermsOfServiceDialog(context);
                       },
@@ -87,11 +93,15 @@ class MoreScreen extends StatelessWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
             title: Text(context.tr('more.about_app')),
+            backgroundColor: isDark ? theme.cardColor : Colors.white,
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,14 +113,20 @@ class MoreScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   '© 2025 Axolotl Software',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(context.tr('common.close')),
+                child: Text(
+                  context.tr('common.close'),
+                  style: TextStyle(color: theme.primaryColor),
+                ),
               ),
             ],
           ),
@@ -119,11 +135,15 @@ class MoreScreen extends StatelessWidget {
 }
 
 void _showPrivacyPolicyDialog(BuildContext context) {
+  final theme = Theme.of(context);
+  final isDark = theme.brightness == Brightness.dark;
+
   showDialog(
     context: context,
     builder:
         (context) => AlertDialog(
           title: Text(context.tr('more.privacy_policy')),
+          backgroundColor: isDark ? theme.cardColor : Colors.white,
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +156,10 @@ void _showPrivacyPolicyDialog(BuildContext context) {
                 const SizedBox(height: 16),
                 Text(
                   'Última actualización: 26 de abril de 2025',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -165,7 +188,10 @@ void _showPrivacyPolicyDialog(BuildContext context) {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(context.tr('common.close')),
+              child: Text(
+                context.tr('common.close'),
+                style: TextStyle(color: theme.primaryColor),
+              ),
             ),
           ],
         ),
@@ -173,11 +199,15 @@ void _showPrivacyPolicyDialog(BuildContext context) {
 }
 
 void _showTermsOfServiceDialog(BuildContext context) {
+  final theme = Theme.of(context);
+  final isDark = theme.brightness == Brightness.dark;
+
   showDialog(
     context: context,
     builder:
         (context) => AlertDialog(
           title: Text(context.tr('more.terms_of_service')),
+          backgroundColor: isDark ? theme.cardColor : Colors.white,
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +220,10 @@ void _showTermsOfServiceDialog(BuildContext context) {
                 const SizedBox(height: 16),
                 Text(
                   'Última actualización: 26 de abril de 2025',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -219,7 +252,10 @@ void _showTermsOfServiceDialog(BuildContext context) {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(context.tr('common.close')),
+              child: Text(
+                context.tr('common.close'),
+                style: TextStyle(color: theme.primaryColor),
+              ),
             ),
           ],
         ),
