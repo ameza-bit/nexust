@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
@@ -6,7 +8,22 @@ import 'package:nexust/ui/widgets/request/params_editor.dart';
 import 'package:nexust/ui/widgets/request/body_editor.dart';
 
 class RequestTabs extends StatefulWidget {
-  const RequestTabs({super.key});
+  final Map<String, dynamic>? initialParams;
+  final Map<String, String>? initialHeaders;
+  final dynamic initialBody;
+  final Function(Map<String, String>) onParamsChanged;
+  final Function(Map<String, String>) onHeadersChanged;
+  final Function(dynamic) onBodyChanged;
+
+  const RequestTabs({
+    super.key,
+    this.initialParams,
+    this.initialHeaders,
+    this.initialBody,
+    required this.onParamsChanged,
+    required this.onHeadersChanged,
+    required this.onBodyChanged,
+  });
 
   @override
   State<RequestTabs> createState() => _RequestTabsState();
@@ -16,18 +33,63 @@ class _RequestTabsState extends State<RequestTabs>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final Map<String, String> _paramsData = {};
-  final Map<String, String> _headersData = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-  String _bodyData =
-      '{\n  "name": "Nuevo Producto",\n  "price": 499.99,\n  "category": "electronics"\n}';
+  late Map<String, String> _paramsData;
+  late Map<String, String> _headersData;
+  late String _bodyData;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    // Inicializar con valores proporcionados o valores predeterminados
+    _paramsData =
+        widget.initialParams != null
+            ? _convertToStringMap(widget.initialParams!)
+            : {};
+
+    _headersData =
+        widget.initialHeaders ??
+        {'Content-Type': 'application/json', 'Accept': 'application/json'};
+
+    _bodyData =
+        widget.initialBody is String
+            ? widget.initialBody
+            : widget.initialBody != null
+            ? jsonEncode(widget.initialBody)
+            : '{\n  "name": "Nuevo Producto",\n  "price": 499.99,\n  "category": "electronics"\n}';
+  }
+
+  Map<String, String> _convertToStringMap(Map<String, dynamic> map) {
+    Map<String, String> result = {};
+    map.forEach((key, value) {
+      result[key] = value.toString();
+    });
+    return result;
+  }
+
+  @override
+  void didUpdateWidget(RequestTabs oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Actualizar datos si cambian externamente
+    if (widget.initialParams != oldWidget.initialParams &&
+        widget.initialParams != null) {
+      _paramsData = _convertToStringMap(widget.initialParams!);
+    }
+
+    if (widget.initialHeaders != oldWidget.initialHeaders &&
+        widget.initialHeaders != null) {
+      _headersData = widget.initialHeaders!;
+    }
+
+    if (widget.initialBody != oldWidget.initialBody &&
+        widget.initialBody != null) {
+      _bodyData =
+          widget.initialBody is String
+              ? widget.initialBody
+              : jsonEncode(widget.initialBody);
+    }
   }
 
   @override
@@ -112,9 +174,9 @@ class _RequestTabsState extends State<RequestTabs>
                   initialParams: _paramsData,
                   onParamsChanged: (params) {
                     setState(() {
-                      _paramsData.clear();
-                      _paramsData.addAll(params);
+                      _paramsData = params;
                     });
+                    widget.onParamsChanged(params);
                   },
                 ),
 
@@ -123,9 +185,9 @@ class _RequestTabsState extends State<RequestTabs>
                   initialHeaders: _headersData,
                   onHeadersChanged: (headers) {
                     setState(() {
-                      _headersData.clear();
-                      _headersData.addAll(headers);
+                      _headersData = headers;
                     });
+                    widget.onHeadersChanged(headers);
                   },
                 ),
 
@@ -136,6 +198,7 @@ class _RequestTabsState extends State<RequestTabs>
                     setState(() {
                       _bodyData = body;
                     });
+                    widget.onBodyChanged(body);
                   },
                 ),
               ],

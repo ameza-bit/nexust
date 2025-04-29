@@ -1,9 +1,13 @@
+// lib/ui/screens/request/request_screen.dart (modificado)
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/method.dart';
+import 'package:nexust/presentation/blocs/request/request_cubit.dart';
+import 'package:nexust/presentation/blocs/request/request_state.dart';
 import 'package:nexust/ui/widgets/request/http_method_selector.dart';
 import 'package:nexust/ui/widgets/request/request_url_field.dart';
 import 'package:nexust/ui/widgets/request/request_tabs.dart';
@@ -20,13 +24,7 @@ class RequestScreen extends StatefulWidget {
 class _RequestScreenState extends State<RequestScreen> {
   final TextEditingController _urlController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  Method _selectedMethod = Method.get;
-  bool _isLoading = false;
-  bool _hasResponse = false;
   bool _isCollapsed = false;
-  Map<String, dynamic>? _responseData;
-  String _responseStatus = "200";
-  String _responseTime = "154 ms";
 
   @override
   void initState() {
@@ -50,169 +48,169 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
-  void _sendRequest() async {
-    if (_urlController.text.isEmpty) {
-      Toast.show("Por favor ingresa una URL");
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simulación de una petición
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() {
-      _isLoading = false;
-      _hasResponse = true;
-      _responseData = {
-        "id": 1,
-        "name": "Producto de ejemplo",
-        "price": 299.99,
-        "category": "electronics",
-        "stock": 25,
-        "description":
-            "Este es un producto de ejemplo para mostrar la respuesta de la API",
-        "features": [
-          "Característica 1",
-          "Característica 2",
-          "Característica 3",
-        ],
-        "rating": {"average": 4.5, "count": 120},
-        "created_at": "2025-04-26T14:20:00Z",
-        "updated_at": "2025-04-29T09:15:00Z",
-      };
-    });
-
-    Toast.show("Petición enviada con éxito");
-  }
-
-  void _onMethodChanged(Method method) {
-    setState(() {
-      _selectedMethod = method;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            // SliverAppBar con título dinámico
-            SliverAppBar(
-              pinned: true,
-              floating: true,
-              expandedHeight: 150.0,
-              backgroundColor: theme.appBarTheme.backgroundColor,
-              foregroundColor: theme.appBarTheme.foregroundColor,
-              title:
-                  _isCollapsed
-                      ? Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                              vertical: 4.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _selectedMethod.color,
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                            child: Text(
-                              _selectedMethod.stringName,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
+    return BlocBuilder<RequestCubit, RequestState>(
+      builder: (context, state) {
+        // Actualizar el controller de URL si cambia en el estado
+        if (_urlController.text != state.request.url) {
+          _urlController.text = state.request.url;
+        }
+
+        // Verificar si tenemos una respuesta para mostrar
+        final bool hasResponse =
+            state.status == RequestStatus.success && state.response != null;
+        final bool isLoading = state.status == RequestStatus.loading;
+
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            body: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                // SliverAppBar con título dinámico
+                SliverAppBar(
+                  pinned: true,
+                  floating: true,
+                  expandedHeight: 150.0,
+                  backgroundColor: theme.appBarTheme.backgroundColor,
+                  foregroundColor: theme.appBarTheme.foregroundColor,
+                  title:
+                      _isCollapsed
+                          ? Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: state.request.method.color,
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                                child: Text(
+                                  state.request.method.stringName,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.0),
+                              Expanded(
+                                child: Text(
+                                  _urlController.text,
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          )
+                          : Text(
+                            "Nueva Petición",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                  actions: [
+                    IconButton(
+                      icon: Icon(FontAwesomeIcons.lightFloppyDisk),
+                      onPressed: () {
+                        // TODO: Implementar guardado de la petición
+                        Toast.show("Add logic for 'Guardar petición'");
+                      },
+                      tooltip: "Guardar petición",
+                    ),
+                    IconButton(
+                      icon: Icon(FontAwesomeIcons.lightShareNodes),
+                      onPressed: () {
+                        // TODO: Implementar compartir petición
+                        Toast.show("Add logic for 'Compartir petición'");
+                      },
+                      tooltip: "Compartir petición",
+                    ),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    background:
+                        _isCollapsed
+                            ? null
+                            : Container(
+                              padding: EdgeInsets.fromLTRB(
+                                16.0,
+                                90.0,
+                                16.0,
+                                0.0,
+                              ),
+                              alignment: Alignment.bottomCenter,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _buildRequestInputArea(context, state),
+                                  SizedBox(height: 12),
+                                  _buildSendButton(context, state),
+                                ],
                               ),
                             ),
-                          ),
-                          SizedBox(width: 8.0),
-                          Expanded(
-                            child: Text(
-                              _urlController.text,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      )
-                      : Text(
-                        "Nueva Petición",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-              actions: [
-                IconButton(
-                  icon: Icon(FontAwesomeIcons.lightFloppyDisk),
-                  onPressed: () {
-                    // TODO: Implementar guardado de la petición
-                    Toast.show("Add logic for 'Guardar petición'");
-                  },
-                  tooltip: "Guardar petición",
+                  ),
                 ),
-                IconButton(
-                  icon: Icon(FontAwesomeIcons.lightShareNodes),
-                  onPressed: () {
-                    // TODO: Implementar compartir petición
-                    Toast.show("Add logic for 'Compartir petición'");
-                  },
-                  tooltip: "Compartir petición",
+
+                // Contenido principal (tabs o respuesta)
+                SliverFillRemaining(
+                  child:
+                      hasResponse
+                          ? _buildResponseSection(context, state)
+                          : RequestTabs(
+                            onParamsChanged: (params) {
+                              context.read<RequestCubit>().updateQueryParams(
+                                Map<String, dynamic>.from(params),
+                              );
+                            },
+                            onHeadersChanged: (headers) {
+                              context.read<RequestCubit>().updateHeaders(
+                                headers,
+                              );
+                            },
+                            onBodyChanged: (body) {
+                              context.read<RequestCubit>().updateBody(body);
+                            },
+                            initialParams: state.request.queryParams,
+                            initialHeaders: state.request.headers,
+                            initialBody: state.request.body,
+                          ),
                 ),
               ],
-              flexibleSpace: FlexibleSpaceBar(
-                background:
-                    _isCollapsed
-                        ? null
-                        : Container(
-                          padding: EdgeInsets.fromLTRB(16.0, 90.0, 16.0, 0.0),
-                          alignment: Alignment.bottomCenter,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _buildRequestInputArea(),
-                              SizedBox(height: 12),
-                              _buildSendButton(),
-                            ],
-                          ),
-                        ),
-              ),
             ),
-
-            // Contenido principal (tabs o respuesta)
-            SliverFillRemaining(
-              child: _hasResponse ? _buildResponseSection() : RequestTabs(),
-            ),
-          ],
-        ),
-        floatingActionButton: null,
-      ),
+            floatingActionButton: null,
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildRequestInputArea() {
+  Widget _buildRequestInputArea(BuildContext context, RequestState state) {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 40),
       child: Row(
         children: [
           HttpMethodSelector(
-            selectedMethod: _selectedMethod,
-            onMethodChanged: _onMethodChanged,
+            selectedMethod: state.request.method,
+            onMethodChanged: (method) {
+              context.read<RequestCubit>().updateMethod(method);
+            },
           ),
           const SizedBox(width: 12),
           Expanded(
             child: RequestUrlField(
               controller: _urlController,
-              onSubmitted: (_) => _sendRequest(),
+              onSubmitted: (_) => _sendRequest(context),
+              onChanged: (value) {
+                context.read<RequestCubit>().updateUrl(value);
+              },
             ),
           ),
         ],
@@ -220,15 +218,17 @@ class _RequestScreenState extends State<RequestScreen> {
     );
   }
 
-  Widget _buildSendButton() {
+  Widget _buildSendButton(BuildContext context, RequestState state) {
+    final isLoading = state.status == RequestStatus.loading;
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 44),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: _isLoading ? null : _sendRequest,
+          onPressed: isLoading ? null : () => _sendRequest(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _selectedMethod.color,
+            backgroundColor: state.request.method.color,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 8),
             shape: RoundedRectangleBorder(
@@ -236,7 +236,7 @@ class _RequestScreenState extends State<RequestScreen> {
             ),
           ),
           child:
-              _isLoading
+              isLoading
                   ? SizedBox(
                     height: 20,
                     width: 20,
@@ -257,9 +257,19 @@ class _RequestScreenState extends State<RequestScreen> {
     );
   }
 
-  Widget _buildResponseSection() {
+  void _sendRequest(BuildContext context) {
+    if (_urlController.text.isEmpty) {
+      Toast.show("Por favor ingresa una URL");
+      return;
+    }
+
+    context.read<RequestCubit>().sendRequest();
+  }
+
+  Widget _buildResponseSection(BuildContext context, RequestState state) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final response = state.response!;
 
     return Column(
       children: [
@@ -280,11 +290,11 @@ class _RequestScreenState extends State<RequestScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(_responseStatus),
+                  color: _getStatusColor(response.statusCode.toString()),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  _responseStatus,
+                  response.statusCode.toString(),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -294,7 +304,7 @@ class _RequestScreenState extends State<RequestScreen> {
               ),
               const SizedBox(width: 12),
               Text(
-                _responseTime,
+                "${response.responseTime} ms",
                 style: TextStyle(
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                   fontSize: context.scaleText(14),
@@ -304,9 +314,9 @@ class _RequestScreenState extends State<RequestScreen> {
               TextButton.icon(
                 onPressed: () {
                   // Volver a la sección de configuración
-                  setState(() {
-                    _hasResponse = false;
-                  });
+                  context.read<RequestCubit>().emit(
+                    state.copyWith(status: RequestStatus.initial),
+                  );
                 },
                 icon: Icon(
                   FontAwesomeIcons.lightPenToSquare,
@@ -325,7 +335,7 @@ class _RequestScreenState extends State<RequestScreen> {
         ),
 
         // Visor de respuesta
-        Expanded(child: ResponseViewer(responseData: _responseData)),
+        Expanded(child: ResponseViewer(responseData: response.data)),
       ],
     );
   }

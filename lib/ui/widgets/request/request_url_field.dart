@@ -5,11 +5,13 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 class RequestUrlField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String)? onSubmitted;
+  final Function(String)? onChanged;
 
   const RequestUrlField({
     super.key,
     required this.controller,
     this.onSubmitted,
+    this.onChanged,
   });
 
   @override
@@ -38,6 +40,10 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
     setState(() {
       _showClearButton = widget.controller.text.isNotEmpty;
     });
+
+    if (widget.onChanged != null) {
+      widget.onChanged!(widget.controller.text);
+    }
   }
 
   void _clearText() {
