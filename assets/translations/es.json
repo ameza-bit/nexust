@@ -17,6 +17,8 @@
     "appearance": "Apariencia",
     "dark_mode": "Modo Oscuro",
     "primary_color": "Color Principal",
+    "...": "...",
+    "choose_color": "Elegir color",
     "font_size": "Tamaño de Letra",
     "font_size_small": "Pequeño",
     "font_size_medium_small": "Medio-Pequeño",
