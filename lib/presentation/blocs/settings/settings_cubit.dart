@@ -6,8 +6,11 @@ import 'settings_state.dart';
 class SettingsCubit extends Cubit<SettingsState> {
   final SettingsRepository _settingsRepository;
 
-  SettingsCubit(this._settingsRepository) : super(SettingsState.initial()) {
-    loadSettings();
+  SettingsCubit(this._settingsRepository, {bool autoLoad = true})
+    : super(SettingsState.initial()) {
+    if (autoLoad) {
+      loadSettings();
+    }
   }
 
   Future<void> loadSettings() async {
