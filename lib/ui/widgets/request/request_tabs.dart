@@ -45,6 +45,7 @@ class _RequestTabsState extends State<RequestTabs>
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           // TabBar para las diferentes secciones
           Container(

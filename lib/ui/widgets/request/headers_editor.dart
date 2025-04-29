@@ -117,6 +117,7 @@ class _HeadersEditorState extends State<HeadersEditor> {
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Título y descripción
             Text(
@@ -209,168 +210,147 @@ class _HeadersEditorState extends State<HeadersEditor> {
             ),
             const SizedBox(height: 8),
 
-            // Lista de headers
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.4,
-              ),
-              child: ListView.builder(
-                itemCount: _headers.length,
-                itemBuilder: (context, index) {
-                  final header = _headers[index];
+            ..._headers.map((header) {
+              final index = _headers.indexOf(header);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    // Checkbox para habilitar/deshabilitar
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Checkbox(
+                        value: header.enabled,
+                        onChanged: (value) {
+                          _updateHeader(index, enabled: value);
+                        },
+                        activeColor: theme.primaryColor,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ),
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        // Checkbox para habilitar/deshabilitar
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: Checkbox(
-                            value: header.enabled,
-                            onChanged: (value) {
-                              _updateHeader(index, enabled: value);
-                            },
-                            activeColor: theme.primaryColor,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                          ),
-                        ),
-
-                        // Campo para la clave
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 8),
-                            decoration: BoxDecoration(
-                              color:
-                                  isDark ? Colors.black12 : Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color:
-                                    isDark
-                                        ? Colors.grey.shade800
-                                        : Colors.grey.shade300,
-                              ),
-                            ),
-                            child: TextField(
-                              controller: TextEditingController(
-                                text: header.key,
-                              ),
-                              onChanged: (value) {
-                                _updateHeader(index, key: value);
-                              },
-                              style: TextStyle(
-                                fontSize: context.scaleText(14),
-                                color:
-                                    header.enabled
-                                        ? (isDark
-                                            ? Colors.white
-                                            : Colors.black87)
-                                        : (isDark
-                                            ? Colors.grey.shade600
-                                            : Colors.grey.shade400),
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Nombre del header',
-                                hintStyle: TextStyle(
-                                  color:
-                                      isDark
-                                          ? Colors.grey.shade600
-                                          : Colors.grey.shade400,
-                                  fontSize: context.scaleText(14),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                              enabled: header.enabled,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(width: 8),
-
-                        // Campo para el valor
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color:
-                                  isDark ? Colors.black12 : Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color:
-                                    isDark
-                                        ? Colors.grey.shade800
-                                        : Colors.grey.shade300,
-                              ),
-                            ),
-                            child: TextField(
-                              controller: TextEditingController(
-                                text: header.value,
-                              ),
-                              onChanged: (value) {
-                                _updateHeader(index, value: value);
-                              },
-                              style: TextStyle(
-                                fontSize: context.scaleText(14),
-                                color:
-                                    header.enabled
-                                        ? (isDark
-                                            ? Colors.white
-                                            : Colors.black87)
-                                        : (isDark
-                                            ? Colors.grey.shade600
-                                            : Colors.grey.shade400),
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Valor del header',
-                                hintStyle: TextStyle(
-                                  color:
-                                      isDark
-                                          ? Colors.grey.shade600
-                                          : Colors.grey.shade400,
-                                  fontSize: context.scaleText(14),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                              enabled: header.enabled,
-                            ),
-                          ),
-                        ),
-
-                        // Botón para eliminar
-                        IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.lightTrash,
-                            size: context.scaleIcon(16),
+                    // Campo para la clave
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.black12 : Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
                             color:
                                 isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
+                                    ? Colors.grey.shade800
+                                    : Colors.grey.shade300,
                           ),
-                          onPressed: () => _removeHeader(index),
-                          splashRadius: 20,
-                          constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
-                          ),
-                          padding: EdgeInsets.zero,
                         ),
-                      ],
+                        child: TextField(
+                          controller: TextEditingController(text: header.key),
+                          onChanged: (value) {
+                            _updateHeader(index, key: value);
+                          },
+                          style: TextStyle(
+                            fontSize: context.scaleText(14),
+                            color:
+                                header.enabled
+                                    ? (isDark ? Colors.white : Colors.black87)
+                                    : (isDark
+                                        ? Colors.grey.shade600
+                                        : Colors.grey.shade400),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Nombre del header',
+                            hintStyle: TextStyle(
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade600
+                                      : Colors.grey.shade400,
+                              fontSize: context.scaleText(14),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          enabled: header.enabled,
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
+
+                    const SizedBox(width: 8),
+
+                    // Campo para el valor
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.black12 : Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? Colors.grey.shade800
+                                    : Colors.grey.shade300,
+                          ),
+                        ),
+                        child: TextField(
+                          controller: TextEditingController(text: header.value),
+                          onChanged: (value) {
+                            _updateHeader(index, value: value);
+                          },
+                          style: TextStyle(
+                            fontSize: context.scaleText(14),
+                            color:
+                                header.enabled
+                                    ? (isDark ? Colors.white : Colors.black87)
+                                    : (isDark
+                                        ? Colors.grey.shade600
+                                        : Colors.grey.shade400),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Valor del header',
+                            hintStyle: TextStyle(
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade600
+                                      : Colors.grey.shade400,
+                              fontSize: context.scaleText(14),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          enabled: header.enabled,
+                        ),
+                      ),
+                    ),
+
+                    // Botón para eliminar
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.lightTrash,
+                        size: context.scaleIcon(16),
+                        color:
+                            isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade600,
+                      ),
+                      onPressed: () => _removeHeader(index),
+                      splashRadius: 20,
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              );
+            }),
 
             // Botón para agregar header
             TextButton.icon(
