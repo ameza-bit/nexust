@@ -1,3 +1,4 @@
+// lib/ui/widgets/common/scaled_text.dart
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 
@@ -10,7 +11,6 @@ class ScaledText extends StatelessWidget {
   final Locale? locale;
   final bool? softWrap;
   final TextOverflow? overflow;
-  final double? textScaleFactor; // Factor manual opcional
   final int? maxLines;
   final String? semanticsLabel;
   final TextWidthBasis? textWidthBasis;
@@ -29,7 +29,6 @@ class ScaledText extends StatelessWidget {
     this.locale,
     this.softWrap,
     this.overflow,
-    this.textScaleFactor,
     this.maxLines,
     this.semanticsLabel,
     this.textWidthBasis,
@@ -60,7 +59,7 @@ class ScaledText extends StatelessWidget {
       locale: locale,
       softWrap: softWrap,
       overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      textScaler: TextScaler.linear(1.0),
       maxLines: maxLines,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,

@@ -102,8 +102,8 @@ class SettingsScreen extends StatelessWidget {
                             width: 150,
                             child: Slider(
                               value: fontSize,
-                              min: 0.6,
-                              max: 1.4,
+                              min: 0.8,
+                              max: 1.2,
                               divisions: 4,
                               label: _getFontSizeLabel(context, fontSize),
                               activeColor: primaryColor,
@@ -199,10 +199,10 @@ class SettingsScreen extends StatelessWidget {
   }
 
   String _getFontSizeLabel(BuildContext context, double fontSize) {
-    if (fontSize <= 0.6) return context.tr('settings.font_size_small');
-    if (fontSize <= 0.8) return context.tr('settings.font_size_medium_small');
-    if (fontSize <= 1.2) return context.tr('settings.font_size_medium');
-    if (fontSize <= 1.4) return context.tr('settings.font_size_medium_large');
+    if (fontSize <= 0.8) return context.tr('settings.font_size_small');
+    if (fontSize <= 0.9) return context.tr('settings.font_size_medium_small');
+    if (fontSize <= 1.1) return context.tr('settings.font_size_medium');
+    if (fontSize <= 1.2) return context.tr('settings.font_size_medium_large');
     return context.tr('settings.font_size_large');
   }
 
