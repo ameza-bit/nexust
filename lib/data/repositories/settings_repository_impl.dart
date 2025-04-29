@@ -29,7 +29,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
     await prefs.setBool(_isDarkModeKey, settings.isDarkMode);
     await prefs.setDouble(_fontSizeKey, settings.fontSize);
-    await prefs.setInt(_primaryColorKey, settings.primaryColor.value);
+    await prefs.setInt(_primaryColorKey, settings.primaryColor.toARGB32());
     await prefs.setString(_languageKey, settings.language);
     await prefs.setBool(_biometricEnabledKey, settings.biometricEnabled);
   }

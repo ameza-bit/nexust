@@ -20,7 +20,7 @@ void main() {
 
       expect(settings.isDarkMode, false);
       expect(settings.fontSize, 1.0);
-      expect(settings.primaryColor.value, 0xFF3949AB); // Indigo 700
+      expect(settings.primaryColor.toARGB32(), 0xFF3949AB); // Indigo 700
       expect(settings.language, 'es');
       expect(settings.biometricEnabled, false);
     },
@@ -42,7 +42,7 @@ void main() {
 
     expect(loadedSettings.isDarkMode, true);
     expect(loadedSettings.fontSize, 1.2);
-    expect(loadedSettings.primaryColor.value, Colors.red.value);
+    expect(loadedSettings.primaryColor.toARGB32(), Colors.red.toARGB32());
     expect(loadedSettings.language, 'en');
     expect(loadedSettings.biometricEnabled, true);
   });
