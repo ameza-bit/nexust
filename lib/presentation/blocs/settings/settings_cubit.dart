@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/domain/entities/settings_entity.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
 import 'settings_state.dart';
 
@@ -48,7 +49,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     await _updateSettings(newSettings);
   }
 
-  Future<void> _updateSettings(newSettings) async {
+  Future<void> _updateSettings(SettingsEntity newSettings) async {
     emit(state.copyWith(settings: newSettings));
     try {
       await _settingsRepository.saveSettings(newSettings);

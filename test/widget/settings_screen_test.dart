@@ -3,11 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/ui/screens/settings/settings_screen.dart';
-import 'package:nexust/ui/widgets/settings/settings_item.dart';
 import 'package:nexust/domain/entities/settings_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../mocks/mock_settings_repository.mocks.dart';
-import '../helpers/test_helper.dart';
+import '../helpers/test_wrapper.dart';
 
 void main() {
   late MockSettingsRepository mockRepository;
@@ -29,7 +28,9 @@ void main() {
         biometricEnabled: false,
       ),
     );
-    when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+    when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+      return;
+    });
 
     settingsCubit = SettingsCubit(mockRepository, autoLoad: false);
   });
@@ -167,8 +168,8 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    
-    // En lugar de buscar el switch específico, simplemente verificamos que 
+
+    // En lugar de buscar el switch específico, simplemente verificamos que
     // el cubit esté registrando el cambio de biometricEnabled
     settingsCubit.toggleBiometricAuth(true);
     await tester.pumpAndSettle();

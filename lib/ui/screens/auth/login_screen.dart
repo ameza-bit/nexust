@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/utils/toast.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String routeName = "login";
@@ -16,6 +17,8 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Navigate to the next screen
+                // TODO: Implement navigation logic
+                Toast.show("Add logic for 'Navigating to the next screen'");
               },
               child: const Text("Go to Next Screen"),
             ),

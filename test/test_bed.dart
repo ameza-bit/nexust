@@ -5,5 +5,6 @@ void main() {
   testWidgets('Running all tests', (WidgetTester tester) async {
     // Este archivo es un punto de entrada para ejecutar todos los tests
     // No contiene pruebas específicas
+    return;
   });
 }

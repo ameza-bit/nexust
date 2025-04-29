@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/views/collections/collection_list_view.dart';
@@ -219,7 +220,15 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // TODO: Implement search functionality
+              Toast.show("Add logic for 'Search'");
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -231,7 +240,10 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // TODO: Implement logic for creating a new endpoint
+          Toast.show("Add logic for 'Creating a new endpoint'");
+        },
         backgroundColor: Colors.indigo.shade700,
         foregroundColor: Colors.white,
         tooltip: 'Crear nuevo endpoint',

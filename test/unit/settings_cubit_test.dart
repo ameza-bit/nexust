@@ -28,7 +28,9 @@ void main() {
   blocTest<SettingsCubit, SettingsState>(
     'toggleDarkMode changes isDarkMode setting',
     build: () {
-      when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+      when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+        return;
+      });
       return SettingsCubit(mockRepository, autoLoad: false);
     },
     act: (cubit) => cubit.toggleDarkMode(true),
@@ -46,15 +48,18 @@ void main() {
   blocTest<SettingsCubit, SettingsState>(
     'setLanguage changes language setting',
     build: () {
-      when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+      when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+        return;
+      });
       return SettingsCubit(mockRepository, autoLoad: false);
     },
     act: (cubit) => cubit.updateLanguage('en'),
-    expect: () => [
-      predicate<SettingsState>(
-        (state) => state.settings.language == 'en' && !state.isLoading,
-      ),
-    ],
+    expect:
+        () => [
+          predicate<SettingsState>(
+            (state) => state.settings.language == 'en' && !state.isLoading,
+          ),
+        ],
     verify: (_) {
       verify(mockRepository.saveSettings(any)).called(1);
     },
@@ -63,15 +68,19 @@ void main() {
   blocTest<SettingsCubit, SettingsState>(
     'setPrimaryColor changes primary color setting',
     build: () {
-      when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+      when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+        return;
+      });
       return SettingsCubit(mockRepository, autoLoad: false);
     },
     act: (cubit) => cubit.updatePrimaryColor(Colors.blue),
-    expect: () => [
-      predicate<SettingsState>(
-        (state) => state.settings.primaryColor == Colors.blue && !state.isLoading,
-      ),
-    ],
+    expect:
+        () => [
+          predicate<SettingsState>(
+            (state) =>
+                state.settings.primaryColor == Colors.blue && !state.isLoading,
+          ),
+        ],
     verify: (_) {
       verify(mockRepository.saveSettings(any)).called(1);
     },
@@ -80,15 +89,18 @@ void main() {
   blocTest<SettingsCubit, SettingsState>(
     'setFontSize changes font size setting',
     build: () {
-      when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+      when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+        return;
+      });
       return SettingsCubit(mockRepository, autoLoad: false);
     },
     act: (cubit) => cubit.updateFontSize(1.5),
-    expect: () => [
-      predicate<SettingsState>(
-        (state) => state.settings.fontSize == 1.5 && !state.isLoading,
-      ),
-    ],
+    expect:
+        () => [
+          predicate<SettingsState>(
+            (state) => state.settings.fontSize == 1.5 && !state.isLoading,
+          ),
+        ],
     verify: (_) {
       verify(mockRepository.saveSettings(any)).called(1);
     },
@@ -97,15 +109,19 @@ void main() {
   blocTest<SettingsCubit, SettingsState>(
     'toggleBiometricAuth changes biometric enabled setting',
     build: () {
-      when(mockRepository.saveSettings(any)).thenAnswer((_) async {});
+      when(mockRepository.saveSettings(any)).thenAnswer((_) async {
+        return;
+      });
       return SettingsCubit(mockRepository, autoLoad: false);
     },
     act: (cubit) => cubit.toggleBiometricAuth(true),
-    expect: () => [
-      predicate<SettingsState>(
-        (state) => state.settings.biometricEnabled == true && !state.isLoading,
-      ),
-    ],
+    expect:
+        () => [
+          predicate<SettingsState>(
+            (state) =>
+                state.settings.biometricEnabled == true && !state.isLoading,
+          ),
+        ],
     verify: (_) {
       verify(mockRepository.saveSettings(any)).called(1);
     },

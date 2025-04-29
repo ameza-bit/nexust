@@ -5,7 +5,7 @@ import 'package:nexust/domain/repositories/settings_repository.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/ui/screens/settings/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../helpers/test_helper.dart';
+import '../helpers/test_wrapper.dart';
 
 void main() {
   setUpAll(() async {

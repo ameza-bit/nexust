@@ -1,5 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:easy_localization/src/asset_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +24,8 @@ class TestWrapper extends StatelessWidget {
       supportedLocales: const [Locale('es'), Locale('en')],
       locale: const Locale('es'),
       home: BlocProvider<SettingsCubit>.value(
-        value: settingsCubit ?? SettingsCubit(settingsRepository, autoLoad: false),
+        value:
+            settingsCubit ?? SettingsCubit(settingsRepository, autoLoad: false),
         child: child,
       ),
     );
@@ -36,10 +35,10 @@ class TestWrapper extends StatelessWidget {
 /// Inicializa EasyLocalization para tests, sobrecargando la dependencia de SharedPreferences
 Future<void> setupLocalization() async {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   // Mock para simular SharedPreferences en tests
   SharedPreferences.setMockInitialValues({});
-  
+
   // No inicializar EasyLocalization completamente para evitar problemas con SharedPreferences
   // Solo configurar el binding de Flutter
 }

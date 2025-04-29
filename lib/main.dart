@@ -33,6 +33,7 @@ Future<void> main() async {
   );
 }
 
+// ignore: prefer-match-file-name
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 

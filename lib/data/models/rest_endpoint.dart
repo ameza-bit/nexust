@@ -7,8 +7,8 @@ class RestEndpoint {
   final String path;
   final Map<String, dynamic>? parameters;
   final Map<String, String>? headers;
-  final dynamic body;
-  final dynamic response;
+  final Map<String, dynamic>? body;
+  final Map<String, dynamic>? response;
   final List<RestEndpoint> children;
   bool isExpanded;
 
