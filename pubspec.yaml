@@ -1,6 +1,6 @@
 name: nexust
 description: "Nexust es una herramienta poderosa diseñada para desarrolladores, testers y entusiastas de las APIs que buscan una alternativa moderna, rápida y multiplataforma para probar y documentar sus servicios REST."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,9 +10,11 @@ dependencies:
   easy_localization: ^3.0.7+1
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.0
   flutter_localizations:
     sdk: flutter
   go_router: ^15.1.1
+  shared_preferences: ^2.5.3
 
 dependency_overrides:
   font_awesome_flutter:
@@ -22,6 +24,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  mockito: ^5.4.6
+  build_runner: ^2.4.15
+  bloc_test: ^10.0.0
 
 flutter:
   uses-material-design: true

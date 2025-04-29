@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/views/collections/collection_list_view.dart';
@@ -210,6 +211,8 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -217,9 +220,17 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // TODO: Implement search functionality
+              Toast.show("Add logic for 'Search'");
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -231,8 +242,11 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.indigo.shade700,
+        onPressed: () {
+          // TODO: Implement logic for creating a new endpoint
+          Toast.show("Add logic for 'Creating a new endpoint'");
+        },
+        backgroundColor: theme.primaryColor,
         foregroundColor: Colors.white,
         tooltip: 'Crear nuevo endpoint',
         child: Icon(FontAwesomeIcons.lightPlus),

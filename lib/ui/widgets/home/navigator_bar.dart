@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
-import 'package:nexust/ui/themes/neutral_theme.dart';
 
 class NavigatorBar extends StatelessWidget {
   const NavigatorBar({super.key, this.controller});
@@ -9,14 +9,21 @@ class NavigatorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final iconSize = context.scaleIcon(22.0);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: NeutralTheme.offWhite,
+        color: isDark ? Colors.black : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
           BoxShadow(
-            color: NeutralTheme.richBlack.withAlpha(20), // 0.08 ≈ 20/255
+            color:
+                isDark
+                    ? Colors.black.withAlpha(40)
+                    : Colors.black.withAlpha(20),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -26,19 +33,20 @@ class NavigatorBar extends StatelessWidget {
         top: false,
         child: TabBar(
           controller: controller,
-          labelColor: NeutralTheme.oilBlack,
-          unselectedLabelColor: NeutralTheme.grey06,
-          labelStyle: const TextStyle(
+          labelColor: isDark ? Colors.white : Colors.black,
+          unselectedLabelColor:
+              isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+          labelStyle: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 12,
+            fontSize: context.scaleText(12.0),
           ),
-          unselectedLabelStyle: const TextStyle(
+          unselectedLabelStyle: TextStyle(
             fontWeight: FontWeight.w500,
-            fontSize: 12,
+            fontSize: context.scaleText(12.0),
           ),
           indicator: BoxDecoration(
             border: Border(
-              top: BorderSide(color: NeutralTheme.oilBlack, width: 3),
+              top: BorderSide(color: theme.primaryColor, width: 3),
             ),
           ),
           indicatorColor: Colors.transparent,
@@ -48,25 +56,31 @@ class NavigatorBar extends StatelessWidget {
           tabs: [
             Tab(
               text: context.tr("navigation.home"),
-              icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: 22),
+              icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: iconSize),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.collections"),
-              icon: FaIcon(FontAwesomeIcons.lightRectangleHistory, size: 22),
+              icon: FaIcon(
+                FontAwesomeIcons.lightRectangleHistory,
+                size: iconSize,
+              ),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.quick_request"),
-              icon: FaIcon(FontAwesomeIcons.lightEnvelopeOpenText, size: 22),
+              icon: FaIcon(
+                FontAwesomeIcons.lightEnvelopeOpenText,
+                size: iconSize,
+              ),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.more"),
-              icon: FaIcon(FontAwesomeIcons.lightBars, size: 22),
+              icon: FaIcon(FontAwesomeIcons.lightBars, size: iconSize),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),

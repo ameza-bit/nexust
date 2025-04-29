@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 
 class SettingsSection extends StatelessWidget {
   final String title;
@@ -12,6 +13,10 @@ class SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final titleSize = context.scaleText(16.0);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -20,19 +25,22 @@ class SettingsSection extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: titleSize,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade700,
+              color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? theme.cardColor : Colors.white,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color:
+                    isDark
+                        ? Colors.black.withAlpha(25)
+                        : Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -55,7 +63,10 @@ class SettingsSection extends StatelessWidget {
                                 thickness: 1,
                                 indent: 70,
                                 endIndent: 15,
-                                color: Colors.grey.shade200,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade200,
                               ),
                           ],
                         ),

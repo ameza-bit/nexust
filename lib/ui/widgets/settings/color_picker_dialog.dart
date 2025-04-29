@@ -47,7 +47,7 @@ class ColorPickerDialog extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.4),
+                      color: color.withAlpha(102),
                       blurRadius: isSelected ? 8 : 0,
                       spreadRadius: isSelected ? 2 : 0,
                     ),
