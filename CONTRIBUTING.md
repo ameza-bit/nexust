@@ -4,21 +4,21 @@
 
 ## Índice
 
-- [Código de Conducta](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#c%C3%B3digo-de-conducta)
-- [Proceso de Contribución](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#proceso-de-contribuci%C3%B3n)
-- [Configuración del Entorno de Desarrollo](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#configuraci%C3%B3n-del-entorno-de-desarrollo)
-- [Estilo y Estándares de Código](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#estilo-y-est%C3%A1ndares-de-c%C3%B3digo)
-- [Pruebas](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#pruebas)
-- [Documentación](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#documentaci%C3%B3n)
-- [Reportar Bugs](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#reportar-bugs)
-- [Solicitudes de Funcionalidades](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#solicitudes-de-funcionalidades)
-- [Proceso de Pull Request](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#proceso-de-pull-request)
-- [Estructura del Proyecto](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#estructura-del-proyecto)
-- [Comunidad](https://claude.ai/chat/0f600217-8f92-45a7-919d-2ee487109c6d#comunidad)
+- [Código de Conducta](#código-de-conducta)
+- [Proceso de Contribución](#proceso-de-contribución)
+- [Configuración del Entorno de Desarrollo](#configuración-del-entorno-de-desarrollo)
+- [Estilo y Estándares de Código](#estilo-y-estándares-de-código)
+- [Pruebas](#pruebas)
+- [Documentación](#documentación)
+- [Reportar Bugs](#reportar-bugs)
+- [Solicitudes de Funcionalidades](#solicitudes-de-funcionalidades)
+- [Proceso de Pull Request](#proceso-de-pull-request)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Comunidad](#comunidad)
 
 ## Código de Conducta
 
-Este proyecto y todos los participantes están regidos por nuestro [Código de Conducta](https://claude.ai/chat/CODE_OF_CONDUCT.md). Al participar, se espera que cumplas con este código. Por favor, reporta comportamientos inaceptables a [email@ejemplo.com].
+Este proyecto y todos los participantes están regidos por nuestro [Código de Conducta](CODE_OF_CONDUCT.md). Al participar, se espera que cumplas con este código. Por favor, reporta comportamientos inaceptables a <contacto@axolotl-software.com>.
 
 ## Proceso de Contribución
 
