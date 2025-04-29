@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 
 class SettingsSection extends StatelessWidget {
   final String title;
@@ -14,6 +15,7 @@ class SettingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final titleSize = context.scaleText(16.0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,7 +25,7 @@ class SettingsSection extends StatelessWidget {
           child: Text(
             title,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: titleSize,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
             ),

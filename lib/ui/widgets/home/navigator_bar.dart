@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 
 class NavigatorBar extends StatelessWidget {
@@ -10,6 +11,7 @@ class NavigatorBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final iconSize = context.scaleIcon(22.0);
 
     return Container(
       width: double.infinity,
@@ -34,13 +36,13 @@ class NavigatorBar extends StatelessWidget {
           labelColor: isDark ? Colors.white : Colors.black,
           unselectedLabelColor:
               isDark ? Colors.grey.shade500 : Colors.grey.shade600,
-          labelStyle: const TextStyle(
+          labelStyle: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 12,
+            fontSize: context.scaleText(12.0),
           ),
-          unselectedLabelStyle: const TextStyle(
+          unselectedLabelStyle: TextStyle(
             fontWeight: FontWeight.w500,
-            fontSize: 12,
+            fontSize: context.scaleText(12.0),
           ),
           indicator: BoxDecoration(
             border: Border(
@@ -54,25 +56,31 @@ class NavigatorBar extends StatelessWidget {
           tabs: [
             Tab(
               text: context.tr("navigation.home"),
-              icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: 22),
+              icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: iconSize),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.collections"),
-              icon: FaIcon(FontAwesomeIcons.lightRectangleHistory, size: 22),
+              icon: FaIcon(
+                FontAwesomeIcons.lightRectangleHistory,
+                size: iconSize,
+              ),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.quick_request"),
-              icon: FaIcon(FontAwesomeIcons.lightEnvelopeOpenText, size: 22),
+              icon: FaIcon(
+                FontAwesomeIcons.lightEnvelopeOpenText,
+                size: iconSize,
+              ),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),
             Tab(
               text: context.tr("navigation.more"),
-              icon: FaIcon(FontAwesomeIcons.lightBars, size: 22),
+              icon: FaIcon(FontAwesomeIcons.lightBars, size: iconSize),
               iconMargin: EdgeInsets.only(bottom: 4),
               height: 65,
             ),

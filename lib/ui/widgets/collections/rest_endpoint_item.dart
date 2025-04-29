@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
@@ -82,6 +83,8 @@ class _RestEndpointItemState extends State<RestEndpointItem>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final fontSize = context.scaleText(16.0);
+    final iconSize = context.scaleIcon(18.0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +147,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                           child: FaIcon(
                             _getMethodIcon(),
                             color: _getMethodColor(),
-                            size: 18.0,
+                            size: iconSize,
                           ),
                         ),
                         SizedBox(width: 12.0),
@@ -156,7 +159,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                               Text(
                                 widget.endpoint.name,
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: fontSize,
                                   fontWeight: FontWeight.w600,
                                   color: isDark ? Colors.white : Colors.black87,
                                 ),

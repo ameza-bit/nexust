@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 
 class SettingsItem extends StatelessWidget {
   final IconData icon;
@@ -24,6 +25,10 @@ class SettingsItem extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = iconColor ?? theme.primaryColor;
 
+    final titleSize = context.scaleText(16.0);
+    final subtitleSize = context.scaleText(14.0);
+    final iconSize = context.scaleIcon(20.0);
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -37,7 +42,7 @@ class SettingsItem extends StatelessWidget {
                 color: primaryColor.withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: primaryColor, size: 20),
+              child: Icon(icon, color: primaryColor, size: iconSize),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -47,7 +52,7 @@ class SettingsItem extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: titleSize,
                       fontWeight: FontWeight.w500,
                       color: isDark ? Colors.white : Colors.black87,
                     ),
@@ -58,7 +63,7 @@ class SettingsItem extends StatelessWidget {
                       child: Text(
                         subtitle!,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: subtitleSize,
                           color:
                               isDark
                                   ? Colors.grey.shade400
@@ -74,6 +79,7 @@ class SettingsItem extends StatelessWidget {
               Icon(
                 Icons.chevron_right,
                 color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                size: iconSize,
               ),
           ],
         ),
