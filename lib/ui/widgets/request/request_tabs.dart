@@ -40,104 +40,108 @@ class _RequestTabsState extends State<RequestTabs>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
-    return Column(
-      children: [
-        // TabBar para las diferentes secciones
-        Container(
-          decoration: BoxDecoration(
-            color: isDark ? theme.cardColor : Colors.white,
-            border: Border(
-              bottom: BorderSide(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                width: 1,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Column(
+        children: [
+          // TabBar para las diferentes secciones
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? theme.cardColor : Colors.white,
+              border: Border(
+                bottom: BorderSide(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                  width: 1,
+                ),
               ),
             ),
-          ),
-          child: TabBar(
-            controller: _tabController,
-            labelColor: theme.primaryColor,
-            unselectedLabelColor:
-                isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-            indicatorColor: theme.primaryColor,
-            indicatorWeight: 3,
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: context.scaleText(14),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: theme.primaryColor,
+              unselectedLabelColor:
+                  isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+              indicatorColor: theme.primaryColor,
+              indicatorWeight: 3,
+              labelStyle: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: context.scaleText(14),
+              ),
+              unselectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: context.scaleText(14),
+              ),
+              tabs: [
+                Tab(
+                  text: "Params",
+                  icon: Icon(
+                    FontAwesomeIcons.lightListOl,
+                    size: context.scaleIcon(16),
+                  ),
+                  iconMargin: const EdgeInsets.only(bottom: 4),
+                ),
+                Tab(
+                  text: "Headers",
+                  icon: Icon(
+                    FontAwesomeIcons.lightHeading,
+                    size: context.scaleIcon(16),
+                  ),
+                  iconMargin: const EdgeInsets.only(bottom: 4),
+                ),
+                Tab(
+                  text: "Body",
+                  icon: Icon(
+                    FontAwesomeIcons.lightBracketsCurly,
+                    size: context.scaleIcon(16),
+                  ),
+                  iconMargin: const EdgeInsets.only(bottom: 4),
+                ),
+              ],
             ),
-            unselectedLabelStyle: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: context.scaleText(14),
+          ),
+
+          // Contenido de los tabs
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Tab de Params
+                ParamsEditor(
+                  initialParams: _paramsData,
+                  onParamsChanged: (params) {
+                    setState(() {
+                      _paramsData.clear();
+                      _paramsData.addAll(params);
+                    });
+                  },
+                ),
+
+                // Tab de Headers
+                HeadersEditor(
+                  initialHeaders: _headersData,
+                  onHeadersChanged: (headers) {
+                    setState(() {
+                      _headersData.clear();
+                      _headersData.addAll(headers);
+                    });
+                  },
+                ),
+
+                // Tab de Body
+                BodyEditor(
+                  initialBody: _bodyData,
+                  onBodyChanged: (body) {
+                    setState(() {
+                      _bodyData = body;
+                    });
+                  },
+                ),
+              ],
             ),
-            tabs: [
-              Tab(
-                text: "Params",
-                icon: Icon(
-                  FontAwesomeIcons.lightListOl,
-                  size: context.scaleIcon(16),
-                ),
-                iconMargin: const EdgeInsets.only(bottom: 4),
-              ),
-              Tab(
-                text: "Headers",
-                icon: Icon(
-                  FontAwesomeIcons.lightHeading,
-                  size: context.scaleIcon(16),
-                ),
-                iconMargin: const EdgeInsets.only(bottom: 4),
-              ),
-              Tab(
-                text: "Body",
-                icon: Icon(
-                  FontAwesomeIcons.lightBracketsCurly,
-                  size: context.scaleIcon(16),
-                ),
-                iconMargin: const EdgeInsets.only(bottom: 4),
-              ),
-            ],
           ),
-        ),
-
-        // Contenido de los tabs
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              // Tab de Params
-              ParamsEditor(
-                initialParams: _paramsData,
-                onParamsChanged: (params) {
-                  setState(() {
-                    _paramsData.clear();
-                    _paramsData.addAll(params);
-                  });
-                },
-              ),
-
-              // Tab de Headers
-              HeadersEditor(
-                initialHeaders: _headersData,
-                onHeadersChanged: (headers) {
-                  setState(() {
-                    _headersData.clear();
-                    _headersData.addAll(headers);
-                  });
-                },
-              ),
-
-              // Tab de Body
-              BodyEditor(
-                initialBody: _bodyData,
-                onBodyChanged: (body) {
-                  setState(() {
-                    _bodyData = body;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

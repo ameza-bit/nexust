@@ -79,240 +79,266 @@ class _ParamsEditorState extends State<ParamsEditor> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Título y descripción
-          Text(
-            "Parámetros de consulta",
-            style: TextStyle(
-              fontSize: context.scaleText(16),
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Agrega parámetros para incluir en la URL de la petición",
-            style: TextStyle(
-              fontSize: context.scaleText(14),
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Encabezados de la tabla
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                const SizedBox(width: 24), // Espacio para el checkbox
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    "CLAVE",
-                    style: TextStyle(
-                      fontSize: context.scaleText(12),
-                      fontWeight: FontWeight.w600,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    "VALOR",
-                    style: TextStyle(
-                      fontSize: context.scaleText(12),
-                      fontWeight: FontWeight.w600,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 40), // Espacio para el botón de eliminar
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Lista de parámetros
-          Expanded(
-            child: ListView.builder(
-              itemCount: _params.length,
-              itemBuilder: (context, index) {
-                final param = _params[index];
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    children: [
-                      // Checkbox para habilitar/deshabilitar
-                      SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: Checkbox(
-                          value: param.enabled,
-                          onChanged: (value) {
-                            _updateParam(index, enabled: value);
-                          },
-                          activeColor: theme.primaryColor,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                        ),
-                      ),
-
-                      // Campo para la clave
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 8),
-                          decoration: BoxDecoration(
-                            color:
-                                isDark ? Colors.black12 : Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade800
-                                      : Colors.grey.shade300,
-                            ),
-                          ),
-                          child: TextField(
-                            controller: TextEditingController(text: param.key),
-                            onChanged: (value) {
-                              _updateParam(index, key: value);
-                            },
-                            style: TextStyle(
-                              fontSize: context.scaleText(14),
-                              color:
-                                  param.enabled
-                                      ? (isDark ? Colors.white : Colors.black87)
-                                      : (isDark
-                                          ? Colors.grey.shade600
-                                          : Colors.grey.shade400),
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'clave',
-                              hintStyle: TextStyle(
-                                color:
-                                    isDark
-                                        ? Colors.grey.shade600
-                                        : Colors.grey.shade400,
-                                fontSize: context.scaleText(14),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                            enabled: param.enabled,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(width: 8),
-
-                      // Campo para el valor
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                isDark ? Colors.black12 : Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade800
-                                      : Colors.grey.shade300,
-                            ),
-                          ),
-                          child: TextField(
-                            controller: TextEditingController(
-                              text: param.value,
-                            ),
-                            onChanged: (value) {
-                              _updateParam(index, value: value);
-                            },
-                            style: TextStyle(
-                              fontSize: context.scaleText(14),
-                              color:
-                                  param.enabled
-                                      ? (isDark ? Colors.white : Colors.black87)
-                                      : (isDark
-                                          ? Colors.grey.shade600
-                                          : Colors.grey.shade400),
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'valor',
-                              hintStyle: TextStyle(
-                                color:
-                                    isDark
-                                        ? Colors.grey.shade600
-                                        : Colors.grey.shade400,
-                                fontSize: context.scaleText(14),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                            enabled: param.enabled,
-                          ),
-                        ),
-                      ),
-
-                      // Botón para eliminar
-                      IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.lightTrash,
-                          size: context.scaleIcon(16),
-                          color:
-                              isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
-                        ),
-                        onPressed: () => _removeParam(index),
-                        splashRadius: 20,
-                        constraints: const BoxConstraints(
-                          minWidth: 32,
-                          minHeight: 32,
-                        ),
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // Botón para agregar parámetro
-          TextButton.icon(
-            onPressed: _addParam,
-            icon: Icon(
-              FontAwesomeIcons.lightPlus,
-              size: context.scaleIcon(16),
-              color: theme.primaryColor,
-            ),
-            label: Text(
-              "Agregar parámetro",
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Título y descripción
+            Text(
+              "Parámetros de consulta",
               style: TextStyle(
-                color: theme.primaryColor,
-                fontSize: context.scaleText(14),
+                fontSize: context.scaleText(16),
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            const SizedBox(height: 4),
+            Text(
+              "Agrega parámetros para incluir en la URL de la petición",
+              style: TextStyle(
+                fontSize: context.scaleText(14),
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // Encabezados de la tabla
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  const SizedBox(width: 24), // Espacio para el checkbox
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      "CLAVE",
+                      style: TextStyle(
+                        fontSize: context.scaleText(12),
+                        fontWeight: FontWeight.w600,
+                        color:
+                            isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 3,
+                    child: Text(
+                      "VALOR",
+                      style: TextStyle(
+                        fontSize: context.scaleText(12),
+                        fontWeight: FontWeight.w600,
+                        color:
+                            isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 40,
+                  ), // Espacio para el botón de eliminar
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Lista de parámetros
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
+              child: ListView.builder(
+                itemCount: _params.length,
+                itemBuilder: (context, index) {
+                  final param = _params[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        // Checkbox para habilitar/deshabilitar
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Checkbox(
+                            value: param.enabled,
+                            onChanged: (value) {
+                              _updateParam(index, enabled: value);
+                            },
+                            activeColor: theme.primaryColor,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+
+                        // Campo para la clave
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(
+                              color:
+                                  isDark ? Colors.black12 : Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade300,
+                              ),
+                            ),
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: param.key,
+                              ),
+                              onChanged: (value) {
+                                _updateParam(index, key: value);
+                              },
+                              style: TextStyle(
+                                fontSize: context.scaleText(14),
+                                color:
+                                    param.enabled
+                                        ? (isDark
+                                            ? Colors.white
+                                            : Colors.black87)
+                                        : (isDark
+                                            ? Colors.grey.shade600
+                                            : Colors.grey.shade400),
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'clave',
+                                hintStyle: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade600
+                                          : Colors.grey.shade400,
+                                  fontSize: context.scaleText(14),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              enabled: param.enabled,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 8),
+
+                        // Campo para el valor
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  isDark ? Colors.black12 : Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade300,
+                              ),
+                            ),
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: param.value,
+                              ),
+                              onChanged: (value) {
+                                _updateParam(index, value: value);
+                              },
+                              style: TextStyle(
+                                fontSize: context.scaleText(14),
+                                color:
+                                    param.enabled
+                                        ? (isDark
+                                            ? Colors.white
+                                            : Colors.black87)
+                                        : (isDark
+                                            ? Colors.grey.shade600
+                                            : Colors.grey.shade400),
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'valor',
+                                hintStyle: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade600
+                                          : Colors.grey.shade400,
+                                  fontSize: context.scaleText(14),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              enabled: param.enabled,
+                            ),
+                          ),
+                        ),
+
+                        // Botón para eliminar
+                        IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.lightTrash,
+                            size: context.scaleIcon(16),
+                            color:
+                                isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
+                          ),
+                          onPressed: () => _removeParam(index),
+                          splashRadius: 20,
+                          constraints: const BoxConstraints(
+                            minWidth: 32,
+                            minHeight: 32,
+                          ),
+                          padding: EdgeInsets.zero,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Botón para agregar parámetro
+            TextButton.icon(
+              onPressed: _addParam,
+              icon: Icon(
+                FontAwesomeIcons.lightPlus,
+                size: context.scaleIcon(16),
+                color: theme.primaryColor,
+              ),
+              label: Text(
+                "Agregar parámetro",
+                style: TextStyle(
+                  color: theme.primaryColor,
+                  fontSize: context.scaleText(14),
+                ),
+              ),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

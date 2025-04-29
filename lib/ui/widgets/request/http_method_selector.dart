@@ -38,6 +38,38 @@ class _HttpMethodSelectorState extends State<HttpMethodSelector> {
     setState(() {
       _isExpanded = !_isExpanded;
     });
+
+    if (_isExpanded) {
+      OverlayState? overlayState = Overlay.of(context);
+      LayerLink layerLink = LayerLink();
+
+      OverlayEntry overlayEntry = OverlayEntry(
+        builder: (context) {
+          return _MethodsOverlay(
+            methods: Method.values,
+            selectedMethod: _selectedMethod,
+            onMethodSelected: (method) {
+              _selectMethod(method);
+              // overlayEntry.remove();
+            },
+            layerLink: layerLink,
+          );
+        },
+      );
+
+      // Añadir el overlay y cerrarlo al tocar fuera
+      overlayState.insert(overlayEntry);
+
+      // Autocierre después de un tiempo si no se selecciona nada
+      Future.delayed(const Duration(seconds: 5), () {
+        if (overlayEntry.mounted) {
+          overlayEntry.remove();
+          setState(() {
+            _isExpanded = false;
+          });
+        }
+      });
+    }
   }
 
   void _selectMethod(Method method) {

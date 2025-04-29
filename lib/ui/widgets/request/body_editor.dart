@@ -94,94 +94,104 @@ class _BodyEditorState extends State<BodyEditor> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Título y descripción
-          Text(
-            "Cuerpo de la petición",
-            style: TextStyle(
-              fontSize: context.scaleText(16),
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Título y descripción
+            Text(
+              "Cuerpo de la petición",
+              style: TextStyle(
+                fontSize: context.scaleText(16),
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Define el contenido del cuerpo que se enviará con la petición",
-            style: TextStyle(
-              fontSize: context.scaleText(14),
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+            const SizedBox(height: 4),
+            Text(
+              "Define el contenido del cuerpo que se enviará con la petición",
+              style: TextStyle(
+                fontSize: context.scaleText(14),
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          // Selector de tipo de cuerpo
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(_bodyTypes.length, (index) {
-                final isSelected = index == _selectedBodyTypeIndex;
-
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text(
-                      _bodyTypes[index],
-                      style: TextStyle(
-                        fontSize: context.scaleText(12),
-                        color:
-                            isSelected
-                                ? Colors.white
-                                : (isDark ? Colors.white : Colors.black87),
-                      ),
-                    ),
-                    selected: isSelected,
-                    selectedColor: theme.primaryColor,
-                    backgroundColor:
-                        isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                    onSelected: (selected) {
-                      if (selected) _selectBodyType(index);
-                    },
-                  ),
-                );
-              }),
-            ),
-          ),
-
-          // Barra de herramientas para el editor
-          if (_bodyTypes[_selectedBodyTypeIndex] == 'JSON')
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
+            // Selector de tipo de cuerpo
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.lightCodeBranch,
-                      size: context.scaleIcon(16),
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                children: List.generate(_bodyTypes.length, (index) {
+                  final isSelected = index == _selectedBodyTypeIndex;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text(
+                        _bodyTypes[index],
+                        style: TextStyle(
+                          fontSize: context.scaleText(12),
+                          color:
+                              isSelected
+                                  ? Colors.white
+                                  : (isDark ? Colors.white : Colors.black87),
+                        ),
+                      ),
+                      selected: isSelected,
+                      selectedColor: theme.primaryColor,
+                      backgroundColor:
+                          isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                      onSelected: (selected) {
+                        if (selected) _selectBodyType(index);
+                      },
                     ),
-                    onPressed: _formatBody,
-                    tooltip: "Formatear JSON",
-                    splashRadius: 20,
-                  ),
-                  Text(
-                    "Formatear",
-                    style: TextStyle(
-                      fontSize: context.scaleText(12),
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
 
-          // Editor de cuerpo
-          Expanded(
-            child: Container(
+            // Barra de herramientas para el editor
+            if (_bodyTypes[_selectedBodyTypeIndex] == 'JSON')
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.lightCodeBranch,
+                        size: context.scaleIcon(16),
+                        color:
+                            isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                      ),
+                      onPressed: _formatBody,
+                      tooltip: "Formatear JSON",
+                      splashRadius: 20,
+                    ),
+                    Text(
+                      "Formatear",
+                      style: TextStyle(
+                        fontSize: context.scaleText(12),
+                        color:
+                            isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Editor de cuerpo
+            Container(
+              height: MediaQuery.of(context).size.height * 0.4,
               margin: const EdgeInsets.only(top: 8),
               decoration: BoxDecoration(
                 color: isDark ? Colors.black12 : Colors.grey.shade50,
@@ -209,8 +219,8 @@ class _BodyEditorState extends State<BodyEditor> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
