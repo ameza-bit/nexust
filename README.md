@@ -16,6 +16,7 @@
   <a href="#contribuir">Contribuir</a> •
   <a href="#licencia">Licencia</a>
 </p>
+
 ## Descripción
 
 Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que transforma la manera en que interactúas con APIs. Combina la potencia de clientes profesionales con una interfaz moderna, intuitiva y eficiente, diseñada para desarrolladores, testers y entusiastas de las APIs.
@@ -50,8 +51,6 @@ Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que 
   <img src="screenshots/response_viewer.png" width="250" alt="Visualizador de Respuestas"/>
 </p>
 
-> Nota: Reemplazar con capturas de pantalla reales cuando estén disponibles.
-
 ## Tecnologías
 
 - **Framework**: Flutter 3.29.0
@@ -77,7 +76,7 @@ Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que 
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tu-usuario/nexust.git
+git clone https://github.com/ameza-bit/nexust.git
 
 # Navegar al directorio
 cd nexust
@@ -234,7 +233,7 @@ Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICEN
 
 ## Contacto
 
-Armando Vigueras - [Axolotl Software](https://axolotl-software.com) - [Contacto](contacto@axolotl-software.com)
+Armando Vigueras - [Axolotl Software](https://axolotl-software.com) - [Contacto](mailto:contacto@axolotl-software.com)
 
 Link del Proyecto: [https://github.com/ameza-bit/nexust](https://github.com/ameza-bit/nexust)
 

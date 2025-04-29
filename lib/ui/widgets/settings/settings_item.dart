@@ -30,7 +30,7 @@ class SettingsItem extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: (iconColor ?? Colors.indigo.shade700).withOpacity(0.1),
+                color: (iconColor ?? Colors.indigo.shade700).withAlpha((0.1 * 255).round()),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
