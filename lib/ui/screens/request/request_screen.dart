@@ -5,12 +5,16 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/enums/request_status.dart';
+import 'package:nexust/data/models/environment.dart';
+import 'package:nexust/data/models/request_history_item.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
 import 'package:nexust/ui/widgets/request/http_method_selector.dart';
 import 'package:nexust/ui/widgets/request/request_url_field.dart';
 import 'package:nexust/ui/widgets/request/request_tabs.dart';
-import 'package:nexust/ui/widgets/request/response_viewer.dart';
+import 'package:nexust/ui/widgets/request/environment_selector.dart';
+import 'package:nexust/ui/widgets/request/request_history.dart';
+import 'package:nexust/ui/widgets/request/response_viewer_improved.dart';
 
 class RequestScreen extends StatefulWidget {
   static const String routeName = "request";
@@ -25,6 +29,68 @@ class _RequestScreenState extends State<RequestScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isCollapsed = false;
   bool _isUpdatingUrlFromState = false;
+  bool _showHistory = false;
+
+  // Lista de historial (en una app real, esto vendría de un repositorio)
+  final List<RequestHistoryItem> _historyItems = [
+    RequestHistoryItem(
+      url: 'https://api.example.com/users',
+      method: Method.get,
+      timestamp: DateTime.now().subtract(Duration(minutes: 5)),
+      statusCode: 200,
+      isSuccess: true,
+    ),
+    RequestHistoryItem(
+      url: 'https://api.example.com/products',
+      method: Method.post,
+      timestamp: DateTime.now().subtract(Duration(hours: 1)),
+      statusCode: 201,
+      isSuccess: true,
+    ),
+    RequestHistoryItem(
+      url: 'https://api.example.com/orders/123',
+      method: Method.put,
+      timestamp: DateTime.now().subtract(Duration(hours: 3)),
+      statusCode: 400,
+      isSuccess: false,
+    ),
+    RequestHistoryItem(
+      url: 'https://api.example.com/auth/login',
+      method: Method.post,
+      timestamp: DateTime.now().subtract(Duration(days: 1)),
+      statusCode: 401,
+      isSuccess: false,
+    ),
+  ];
+
+  // Lista de entornos de ejemplo (en una app real vendría de un repositorio)
+  final List<Environment> _environments = [
+    Environment(
+      name: "Desarrollo",
+      color: Colors.green,
+      variables: {
+        "BASE_URL": "https://dev-api.example.com",
+        "API_KEY": "dev_api_key_123",
+      },
+    ),
+    Environment(
+      name: "Pruebas",
+      color: Colors.blue,
+      variables: {
+        "BASE_URL": "https://staging-api.example.com",
+        "API_KEY": "staging_api_key_456",
+      },
+    ),
+    Environment(
+      name: "Producción",
+      color: Colors.red,
+      variables: {
+        "BASE_URL": "https://api.example.com",
+        "API_KEY": "prod_api_key_789",
+      },
+    ),
+  ];
+  Environment? _selectedEnvironment;
 
   @override
   void initState() {
@@ -48,13 +114,38 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
+  // Aplica las variables del entorno seleccionado a la URL
+  String _processUrl(String url) {
+    if (_selectedEnvironment == null) return url;
+
+    String processedUrl = url;
+    _selectedEnvironment!.variables.forEach((key, value) {
+      processedUrl = processedUrl.replaceAll("{{$key}}", value);
+    });
+
+    return processedUrl;
+  }
+
+  void _applyEnvironmentUrl() {
+    if (_selectedEnvironment == null) return;
+    final baseUrl = _selectedEnvironment!.variables["BASE_URL"];
+    if (baseUrl == null) return;
+
+    if (_urlController.text.isEmpty) {
+      _urlController.text = baseUrl;
+      context.read<RequestCubit>().updateUrlWithParams(baseUrl);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return BlocConsumer<RequestCubit, RequestState>(
       listenWhen:
-          (previous, current) => previous.request.url != current.request.url,
+          (previous, current) =>
+              previous.request.url != current.request.url ||
+              previous.status != current.status,
       listener: (context, state) {
         // Solo actualizar el controller si la URL cambió en el estado y no fue
         // por una actualización desde este widget
@@ -62,6 +153,12 @@ class _RequestScreenState extends State<RequestScreen> {
             !_isUpdatingUrlFromState) {
           _urlController.text = state.request.url;
         }
+
+        // Guardar en historial cuando se completa una petición exitosa
+        // if (previous.status != current.status &&
+        //     current.status == RequestStatus.success) {
+        //   _saveRequestToHistory(current);
+        // }
       },
       builder: (context, state) {
         // Verificar si tenemos una respuesta para mostrar
@@ -117,23 +214,58 @@ class _RequestScreenState extends State<RequestScreen> {
                             ],
                           )
                           : Text(
-                            "Nueva Petición",
+                            _showHistory
+                                ? "Historial de Peticiones"
+                                : "Nueva Petición",
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                   actions: [
+                    // Selector de entorno (visible cuando no está colapsado)
+                    if (!_isCollapsed)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: EnvironmentSelector(
+                          environments: _environments,
+                          selectedEnvironment: _selectedEnvironment,
+                          onEnvironmentSelected: (env) {
+                            setState(() {
+                              _selectedEnvironment = env;
+                            });
+                            _applyEnvironmentUrl();
+                          },
+                        ),
+                      ),
+
+                    // Botón de historial
+                    IconButton(
+                      icon: Icon(
+                        _showHistory
+                            ? FontAwesomeIcons.lightFileLines
+                            : FontAwesomeIcons.lightClockRotateLeft,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _showHistory = !_showHistory;
+                        });
+                      },
+                      tooltip:
+                          _showHistory ? "Nueva petición" : "Ver historial",
+                    ),
+
+                    // Botón de guardar
                     IconButton(
                       icon: Icon(FontAwesomeIcons.lightFloppyDisk),
                       onPressed: () {
-                        // TODO: Implementar guardado de la petición
-                        Toast.show("Add logic for 'Guardar petición'");
+                        _showSaveRequestDialog(context, state);
                       },
                       tooltip: "Guardar petición",
                     ),
+
+                    // Botón de compartir
                     IconButton(
                       icon: Icon(FontAwesomeIcons.lightShareNodes),
                       onPressed: () {
-                        // TODO: Implementar compartir petición
-                        Toast.show("Add logic for 'Compartir petición'");
+                        _showShareOptions(context, state);
                       },
                       tooltip: "Compartir petición",
                     ),
@@ -162,11 +294,33 @@ class _RequestScreenState extends State<RequestScreen> {
                   ),
                 ),
 
-                // Contenido principal (tabs o respuesta)
+                // Contenido principal (historial, tabs o respuesta)
                 SliverFillRemaining(
                   child:
-                      hasResponse
-                          ? _buildResponseSection(context, state)
+                      _showHistory
+                          ? RequestHistory(
+                            historyItems: _historyItems,
+                            onItemSelected: (item) {
+                              setState(() {
+                                _showHistory = false;
+                                // Cargar la petición seleccionada
+                                _urlController.text = item.url;
+                                context.read<RequestCubit>().updateMethod(
+                                  item.method,
+                                );
+                                context
+                                    .read<RequestCubit>()
+                                    .updateUrlWithParams(item.url);
+                              });
+                            },
+                          )
+                          : hasResponse
+                          ? ResponseViewerImproved(
+                            responseData: state.response!.data,
+                            responseHeaders: state.response!.headers,
+                            statusCode: state.response!.statusCode,
+                            responseTime: state.response!.responseTime,
+                          )
                           : RequestTabs(
                             onParamsChanged: (params) {
                               context.read<RequestCubit>().updateQueryParams(
@@ -190,7 +344,19 @@ class _RequestScreenState extends State<RequestScreen> {
                 ),
               ],
             ),
-            floatingActionButton: null,
+            floatingActionButton:
+                _showHistory
+                    ? FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          _showHistory = false;
+                        });
+                      },
+                      backgroundColor: theme.primaryColor,
+                      tooltip: "Nueva petición",
+                      child: Icon(FontAwesomeIcons.lightPlus),
+                    )
+                    : null,
           ),
         );
       },
@@ -270,94 +436,294 @@ class _RequestScreenState extends State<RequestScreen> {
       return;
     }
 
+    // Procesar variables de entorno antes de enviar
+    final processedUrl = _processUrl(_urlController.text);
+    if (processedUrl != _urlController.text) {
+      _isUpdatingUrlFromState = true;
+      _urlController.text = processedUrl;
+      context.read<RequestCubit>().updateUrlWithParams(processedUrl);
+      _isUpdatingUrlFromState = false;
+    }
+
     context.read<RequestCubit>().sendRequest();
   }
 
-  Widget _buildResponseSection(BuildContext context, RequestState state) {
+  void _showSaveRequestDialog(BuildContext context, RequestState state) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final response = state.response!;
+    final TextEditingController nameController = TextEditingController();
 
-    return Column(
-      children: [
-        // Información de respuesta (status, tiempo)
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: BoxDecoration(
-            color: isDark ? Colors.black12 : Colors.grey.shade100,
-            border: Border(
-              bottom: BorderSide(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-                width: 1,
-              ),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(response.statusCode.toString()),
-                  borderRadius: BorderRadius.circular(4),
+    showDialog(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text("Guardar Petición"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: "Nombre de la petición",
+                    hintText: "Ej: Obtener usuarios",
+                    border: OutlineInputBorder(),
+                  ),
+                  autofocus: true,
                 ),
-                child: Text(
-                  response.statusCode.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: context.scaleText(14),
+                SizedBox(height: 16),
+                Text(
+                  "Se guardará la siguiente petición:",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color:
+                        theme.brightness == Brightness.dark
+                            ? Colors.black12
+                            : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color:
+                          theme.brightness == Brightness.dark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade300,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: state.request.method.color,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          state.request.method.stringName,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _urlController.text,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                "${response.responseTime} ms",
-                style: TextStyle(
-                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
-                  fontSize: context.scaleText(14),
-                ),
-              ),
-              const Spacer(),
-              TextButton.icon(
+              ],
+            ),
+            actions: [
+              TextButton(
                 onPressed: () {
-                  // Volver a la sección de configuración
-                  context.read<RequestCubit>().resetState();
+                  Navigator.pop(dialogContext);
                 },
-                icon: Icon(
-                  FontAwesomeIcons.lightPenToSquare,
-                  size: context.scaleIcon(16),
+                child: Text("Cancelar"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (nameController.text.isEmpty) {
+                    Toast.show("Por favor ingresa un nombre para la petición");
+                    return;
+                  }
+
+                  // Aquí se guardaría la petición (en una implementación real)
+                  Toast.show("Petición guardada: ${nameController.text}");
+                  Navigator.pop(dialogContext);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primaryColor,
+                  foregroundColor: Colors.white,
                 ),
-                label: Text(
-                  "Editar",
-                  style: TextStyle(fontSize: context.scaleText(14)),
-                ),
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.primaryColor,
-                ),
+                child: Text("Guardar"),
               ),
             ],
           ),
-        ),
-
-        // Visor de respuesta
-        Expanded(child: ResponseViewer(responseData: response.data)),
-      ],
     );
   }
 
-  Color _getStatusColor(String status) {
-    final statusCode = int.tryParse(status.split(' ')[0]) ?? 0;
+  void _showShareOptions(BuildContext context, RequestState state) {
+    final theme = Theme.of(context);
 
-    if (statusCode >= 200 && statusCode < 300) {
-      return Colors.green.shade700;
-    } else if (statusCode >= 300 && statusCode < 400) {
-      return Colors.blue.shade700;
-    } else if (statusCode >= 400 && statusCode < 500) {
-      return Colors.amber.shade700;
-    } else if (statusCode >= 500) {
-      return Colors.red.shade700;
-    }
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (modalContext) => Container(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Compartir Petición",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildShareOption(
+                      icon: FontAwesomeIcons.lightFileCode,
+                      label: "Código",
+                      color: Colors.blue,
+                      onTap: () {
+                        Navigator.pop(modalContext);
+                        Toast.show("Exportar como código (por implementar)");
+                      },
+                    ),
+                    _buildShareOption(
+                      icon: FontAwesomeIcons.lightFileExport,
+                      label: "Exportar",
+                      color: Colors.green,
+                      onTap: () {
+                        Navigator.pop(modalContext);
+                        Toast.show("Exportar petición (por implementar)");
+                      },
+                    ),
+                    _buildShareOption(
+                      icon: FontAwesomeIcons.lightLink,
+                      label: "Enlace",
+                      color: Colors.orange,
+                      onTap: () {
+                        Navigator.pop(modalContext);
+                        Toast.show("Generar enlace (por implementar)");
+                      },
+                    ),
+                    _buildShareOption(
+                      icon: FontAwesomeIcons.lightShareNodes,
+                      label: "Compartir",
+                      color: theme.primaryColor,
+                      onTap: () {
+                        Navigator.pop(modalContext);
+                        Toast.show("Compartir (por implementar)");
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Divider(),
+                ListTile(
+                  leading: Icon(FontAwesomeIcons.lightFileLines),
+                  title: Text("Copiar como cURL"),
+                  onTap: () {
+                    Navigator.pop(modalContext);
+                    Toast.show("Petición copiada como cURL (por implementar)");
+                  },
+                ),
+                ListTile(
+                  leading: Icon(FontAwesomeIcons.lightCodeBranch),
+                  title: Text("Generar código"),
+                  subtitle: Text("JavaScript, Python, PHP, etc."),
+                  onTap: () {
+                    Navigator.pop(modalContext);
+                    _showCodeGenerationDialog(context, state);
+                  },
+                ),
+              ],
+            ),
+          ),
+    );
+  }
 
-    return Colors.grey.shade700;
+  Widget _buildShareOption({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 70,
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: color.withAlpha((0.1 * 255).round()),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 22),
+            ),
+            SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showCodeGenerationDialog(BuildContext context, RequestState state) {
+    final languages = [
+      "JavaScript (Fetch)",
+      "Python (Requests)",
+      "cURL",
+      "PHP",
+      "Java",
+      "C#",
+      "Swift",
+      "Go",
+      "Ruby",
+    ];
+
+    showDialog(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            title: Text("Generar Código"),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Selecciona el lenguaje:"),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: languages.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(languages[index]),
+                          onTap: () {
+                            Navigator.pop(dialogContext);
+                            Toast.show(
+                              "Código generado en ${languages[index]} (por implementar)",
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                },
+                child: Text("Cancelar"),
+              ),
+            ],
+          ),
+    );
   }
 }
