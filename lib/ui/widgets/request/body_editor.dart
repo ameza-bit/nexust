@@ -19,7 +19,6 @@ class BodyEditor extends StatefulWidget {
 class _BodyEditorState extends State<BodyEditor> {
   late TextEditingController _bodyController;
   late int _selectedBodyTypeIndex;
-  bool _isFormatted = true;
 
   final List<String> _bodyTypes = ['JSON', 'Form', 'Text', 'XML', 'Binary'];
 
@@ -80,7 +79,7 @@ class _BodyEditorState extends State<BodyEditor> {
         final prettyJson = _bodyController.text;
         _bodyController.text = prettyJson;
         setState(() {
-          _isFormatted = true;
+          return;
         });
       }
     } catch (e) {

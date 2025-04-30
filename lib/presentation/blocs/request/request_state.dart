@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:nexust/data/enums/method.dart';
+import 'package:nexust/data/enums/request_status.dart';
 import 'package:nexust/domain/entities/request_entity.dart';
 import 'package:nexust/domain/entities/response_entity.dart';
-
-enum RequestStatus { initial, loading, success, error }
 
 class RequestState extends Equatable {
   final RequestEntity request;

@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/method.dart';
+import 'package:nexust/data/enums/request_status.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
 import 'package:nexust/ui/widgets/request/http_method_selector.dart';
@@ -51,7 +51,6 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return BlocConsumer<RequestCubit, RequestState>(
       listenWhen:
@@ -68,7 +67,6 @@ class _RequestScreenState extends State<RequestScreen> {
         // Verificar si tenemos una respuesta para mostrar
         final bool hasResponse =
             state.status == RequestStatus.success && state.response != null;
-        final bool isLoading = state.status == RequestStatus.loading;
 
         return GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/data/enums/method.dart';
-import 'package:nexust/domain/entities/request_entity.dart';
+import 'package:nexust/data/enums/request_status.dart';
 import 'package:nexust/domain/repositories/request_repository.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
 
@@ -22,7 +22,6 @@ class RequestCubit extends Cubit<RequestState> {
 
     try {
       final Uri uri = Uri.parse(fullUrl);
-      final String baseUrl = uri.origin + uri.path;
       final Map<String, dynamic> extractedParams = uri.queryParameters.map(
         (key, value) => MapEntry(key, value),
       );
@@ -86,7 +85,7 @@ class RequestCubit extends Cubit<RequestState> {
     emit(state.copyWith(request: state.request.copyWith(headers: headers)));
   }
 
-  void updateBody(dynamic body) {
+  void updateBody(Object? body) {
     emit(state.copyWith(request: state.request.copyWith(body: body)));
   }
 

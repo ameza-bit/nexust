@@ -24,7 +24,7 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
   bool _showClearButton = false;
   // Usamos esta bandera para evitar ciclos infinitos cuando el controller
   // se actualiza desde el exterior
-  bool _isInternalChange = false;
+  final bool _isInternalChange = false;
 
   @override
   void initState() {

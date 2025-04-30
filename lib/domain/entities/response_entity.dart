@@ -1,7 +1,7 @@
 class ResponseEntity {
   final int statusCode;
   final String statusMessage;
-  final dynamic data;
+  final Map<String, dynamic> data;
   final Map<String, dynamic>? headers;
   final int responseTime;
 

@@ -5,7 +5,7 @@ class RequestEntity {
   final Method method;
   final Map<String, dynamic> queryParams;
   final Map<String, String> headers;
-  final dynamic body;
+  final Object? body;
   final int timeout;
 
   RequestEntity({
@@ -22,7 +22,7 @@ class RequestEntity {
     Method? method,
     Map<String, dynamic>? queryParams,
     Map<String, String>? headers,
-    dynamic body,
+    Object? body,
     int? timeout,
   }) {
     return RequestEntity(

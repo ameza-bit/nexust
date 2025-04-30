@@ -59,7 +59,9 @@ class _ParamsEditorState extends State<ParamsEditor> {
       }
 
       // Forzar redibujado
-      setState(() {});
+      setState(() {
+        return;
+      });
     }
   }
 

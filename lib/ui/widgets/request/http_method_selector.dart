@@ -197,7 +197,7 @@ class _MethodsOverlay extends StatelessWidget {
                     decoration: BoxDecoration(
                       color:
                           isSelected
-                              ? method.color.withOpacity(0.1)
+                              ? method.color.withAlpha((0.1 * 255).round())
                               : Colors.transparent,
                       border: Border(
                         bottom: BorderSide(

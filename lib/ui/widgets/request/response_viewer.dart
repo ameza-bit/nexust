@@ -8,16 +8,14 @@ import 'package:nexust/core/utils/toast.dart';
 class ResponseViewer extends StatefulWidget {
   final Map<String, dynamic>? responseData;
 
-  const ResponseViewer({
-    super.key,
-    required this.responseData,
-  });
+  const ResponseViewer({super.key, required this.responseData});
 
   @override
   State<ResponseViewer> createState() => _ResponseViewerState();
 }
 
-class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProviderStateMixin {
+class _ResponseViewerState extends State<ResponseViewer>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late String _prettyJson;
   late String _rawJson;
@@ -81,7 +79,8 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
           child: TabBar(
             controller: _tabController,
             labelColor: theme.primaryColor,
-            unselectedLabelColor: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+            unselectedLabelColor:
+                isDark ? Colors.grey.shade400 : Colors.grey.shade700,
             indicatorColor: theme.primaryColor,
             indicatorWeight: 3,
             labelStyle: TextStyle(
@@ -120,7 +119,7 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
             ],
           ),
         ),
-        
+
         // Contenido de los tabs
         Expanded(
           child: TabBarView(
@@ -128,10 +127,10 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
             children: [
               // Pretty JSON
               _buildPrettyView(),
-              
+
               // Raw JSON
               _buildRawView(),
-              
+
               // Preview
               _buildPreviewView(),
             ],
@@ -161,7 +160,7 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
             ),
           ),
         ),
-        
+
         // Botón de copiar
         Positioned(
           right: 16,
@@ -202,7 +201,7 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
             ),
           ),
         ),
-        
+
         // Botón de copiar
         Positioned(
           right: 16,
@@ -248,11 +247,11 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
     );
   }
 
-  List<Widget> _buildPreviewItems(dynamic data, int depth) {
+  List<Widget> _buildPreviewItems(Object data, int depth) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final List<Widget> widgets = [];
-    
+
     if (data is Map) {
       data.forEach((key, value) {
         widgets.add(
@@ -273,16 +272,14 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
                   Expanded(
                     child: Text(
                       value.toString(),
-                      style: TextStyle(
-                        fontSize: context.scaleText(14),
-                      ),
+                      style: TextStyle(fontSize: context.scaleText(14)),
                     ),
                   ),
               ],
             ),
           ),
         );
-        
+
         if (value is Map || value is List) {
           widgets.addAll(_buildPreviewItems(value, depth + 1));
         }
@@ -290,7 +287,7 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
     } else if (data is List) {
       for (var i = 0; i < data.length; i++) {
         final item = data[i];
-        
+
         widgets.add(
           Padding(
             padding: EdgeInsets.only(left: depth * 16.0, bottom: 8),
@@ -302,29 +299,28 @@ class _ResponseViewerState extends State<ResponseViewer> with SingleTickerProvid
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: context.scaleText(14),
-                    color: isDark ? Colors.amber.shade300 : Colors.amber.shade700,
+                    color:
+                        isDark ? Colors.amber.shade300 : Colors.amber.shade700,
                   ),
                 ),
                 if (item is! Map && item is! List)
                   Expanded(
                     child: Text(
                       item.toString(),
-                      style: TextStyle(
-                        fontSize: context.scaleText(14),
-                      ),
+                      style: TextStyle(fontSize: context.scaleText(14)),
                     ),
                   ),
               ],
             ),
           ),
         );
-        
+
         if (item is Map || item is List) {
           widgets.addAll(_buildPreviewItems(item, depth + 1));
         }
       }
     }
-    
+
     return widgets;
   }
 }
