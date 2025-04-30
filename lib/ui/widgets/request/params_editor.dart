@@ -18,6 +18,7 @@ class ParamsEditor extends StatefulWidget {
 
 class _ParamsEditorState extends State<ParamsEditor> {
   late List<_ParamItem> _params;
+  bool _isUpdating = false;
 
   @override
   void initState() {
@@ -37,6 +38,42 @@ class _ParamsEditorState extends State<ParamsEditor> {
         _params.add(_ParamItem(key: key, value: value, enabled: true));
       });
     }
+  }
+
+  @override
+  void didUpdateWidget(ParamsEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Si los parámetros iniciales cambiaron y no estamos en el medio de una actualización
+    if (!_isUpdating &&
+        !mapEquals(widget.initialParams, oldWidget.initialParams)) {
+      // Recrear la lista de parámetros
+      _params.clear();
+
+      if (widget.initialParams.isEmpty) {
+        _params.add(_ParamItem(key: '', value: '', enabled: true));
+      } else {
+        widget.initialParams.forEach((key, value) {
+          _params.add(_ParamItem(key: key, value: value, enabled: true));
+        });
+      }
+
+      // Forzar redibujado
+      setState(() {});
+    }
+  }
+
+  // Helper para comparar mapas
+  bool mapEquals<T, U>(Map<T, U>? a, Map<T, U>? b) {
+    if (a == null && b == null) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || b[key] != a[key]) return false;
+    }
+
+    return true;
   }
 
   void _addParam() {
@@ -62,6 +99,7 @@ class _ParamsEditorState extends State<ParamsEditor> {
   }
 
   void _updateParams() {
+    _isUpdating = true;
     final Map<String, String> updatedParams = {};
 
     for (var param in _params) {
@@ -71,6 +109,7 @@ class _ParamsEditorState extends State<ParamsEditor> {
     }
 
     widget.onParamsChanged(updatedParams);
+    _isUpdating = false;
   }
 
   @override

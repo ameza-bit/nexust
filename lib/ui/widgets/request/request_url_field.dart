@@ -22,6 +22,9 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
   final FocusNode _focusNode = FocusNode();
   bool _isFocused = false;
   bool _showClearButton = false;
+  // Usamos esta bandera para evitar ciclos infinitos cuando el controller
+  // se actualiza desde el exterior
+  bool _isInternalChange = false;
 
   @override
   void initState() {
@@ -41,7 +44,9 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
       _showClearButton = widget.controller.text.isNotEmpty;
     });
 
-    if (widget.onChanged != null) {
+    // Solo notificar cambios que vienen del usuario, no los que vienen
+    // desde la actualización externa del controller
+    if (!_isInternalChange && widget.onChanged != null) {
       widget.onChanged!(widget.controller.text);
     }
   }
@@ -49,6 +54,9 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
   void _clearText() {
     widget.controller.clear();
     _focusNode.requestFocus();
+    if (widget.onChanged != null) {
+      widget.onChanged!('');
+    }
   }
 
   @override

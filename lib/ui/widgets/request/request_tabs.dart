@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
@@ -11,7 +10,7 @@ class RequestTabs extends StatefulWidget {
   final Map<String, dynamic>? initialParams;
   final Map<String, String>? initialHeaders;
   final dynamic initialBody;
-  final Function(Map<String, String>) onParamsChanged;
+  final Function(Map<String, dynamic>) onParamsChanged;
   final Function(Map<String, String>) onHeadersChanged;
   final Function(dynamic) onBodyChanged;
 
@@ -33,9 +32,10 @@ class _RequestTabsState extends State<RequestTabs>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  late Map<String, String> _paramsData;
+  late Map<String, dynamic> _paramsData;
   late Map<String, String> _headersData;
   late String _bodyData;
+  bool _isUpdatingParams = false;
 
   @override
   void initState() {
@@ -43,10 +43,7 @@ class _RequestTabsState extends State<RequestTabs>
     _tabController = TabController(length: 3, vsync: this);
 
     // Inicializar con valores proporcionados o valores predeterminados
-    _paramsData =
-        widget.initialParams != null
-            ? _convertToStringMap(widget.initialParams!)
-            : {};
+    _paramsData = widget.initialParams ?? {};
 
     _headersData =
         widget.initialHeaders ??
@@ -60,36 +57,48 @@ class _RequestTabsState extends State<RequestTabs>
             : '{\n  "name": "Nuevo Producto",\n  "price": 499.99,\n  "category": "electronics"\n}';
   }
 
-  Map<String, String> _convertToStringMap(Map<String, dynamic> map) {
-    Map<String, String> result = {};
-    map.forEach((key, value) {
-      result[key] = value.toString();
-    });
-    return result;
-  }
-
   @override
   void didUpdateWidget(RequestTabs oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Actualizar datos si cambian externamente
-    if (widget.initialParams != oldWidget.initialParams &&
-        widget.initialParams != null) {
-      _paramsData = _convertToStringMap(widget.initialParams!);
+    // Actualizar datos si cambian externamente y no estamos en el proceso de actualización
+    if (!_isUpdatingParams &&
+        widget.initialParams != null &&
+        !mapEquals(widget.initialParams, _paramsData)) {
+      setState(() {
+        _paramsData = Map<String, dynamic>.from(widget.initialParams!);
+      });
     }
 
-    if (widget.initialHeaders != oldWidget.initialHeaders &&
-        widget.initialHeaders != null) {
-      _headersData = widget.initialHeaders!;
+    if (widget.initialHeaders != null &&
+        !mapEquals(widget.initialHeaders, _headersData)) {
+      setState(() {
+        _headersData = Map<String, String>.from(widget.initialHeaders!);
+      });
     }
 
     if (widget.initialBody != oldWidget.initialBody &&
         widget.initialBody != null) {
-      _bodyData =
-          widget.initialBody is String
-              ? widget.initialBody
-              : jsonEncode(widget.initialBody);
+      setState(() {
+        _bodyData =
+            widget.initialBody is String
+                ? widget.initialBody
+                : jsonEncode(widget.initialBody);
+      });
     }
+  }
+
+  // Helper para comparar mapas
+  bool mapEquals<T, U>(Map<T, U>? a, Map<T, U>? b) {
+    if (a == null && b == null) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+
+    for (final key in a.keys) {
+      if (!b.containsKey(key) || b[key] != a[key]) return false;
+    }
+
+    return true;
   }
 
   @override
@@ -102,7 +111,6 @@ class _RequestTabsState extends State<RequestTabs>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -171,12 +179,15 @@ class _RequestTabsState extends State<RequestTabs>
               children: [
                 // Tab de Params
                 ParamsEditor(
-                  initialParams: _paramsData,
+                  initialParams: _convertToStringMap(_paramsData),
                   onParamsChanged: (params) {
+                    _isUpdatingParams = true;
+                    final dynamicParams = _convertStringMapToDynamicMap(params);
                     setState(() {
-                      _paramsData = params;
+                      _paramsData = dynamicParams;
                     });
-                    widget.onParamsChanged(params);
+                    widget.onParamsChanged(dynamicParams);
+                    _isUpdatingParams = false;
                   },
                 ),
 
@@ -207,5 +218,34 @@ class _RequestTabsState extends State<RequestTabs>
         ],
       ),
     );
+  }
+
+  // Convertir de Map<String, dynamic> a Map<String, String>
+  Map<String, String> _convertToStringMap(Map<String, dynamic> map) {
+    Map<String, String> result = {};
+    map.forEach((key, value) {
+      result[key] = value.toString();
+    });
+    return result;
+  }
+
+  // Convertir de Map<String, String> a Map<String, dynamic>
+  Map<String, dynamic> _convertStringMapToDynamicMap(Map<String, String> map) {
+    Map<String, dynamic> result = {};
+    map.forEach((key, value) {
+      // Intentar convertir a tipos primitivos si es posible
+      if (value == 'true') {
+        result[key] = true;
+      } else if (value == 'false') {
+        result[key] = false;
+      } else if (int.tryParse(value) != null) {
+        result[key] = int.parse(value);
+      } else if (double.tryParse(value) != null) {
+        result[key] = double.parse(value);
+      } else {
+        result[key] = value;
+      }
+    });
+    return result;
   }
 }

@@ -15,7 +15,7 @@ class HttpService {
     required Method method,
     Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
-    dynamic body,
+    Object? body,
     int timeout = 30000,
   }) async {
     _dio.options.headers = headers;

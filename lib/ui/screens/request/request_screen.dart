@@ -1,4 +1,3 @@
-// lib/ui/screens/request/request_screen.dart (modificado)
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +24,7 @@ class _RequestScreenState extends State<RequestScreen> {
   final TextEditingController _urlController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isCollapsed = false;
+  bool _isUpdatingUrlFromState = false;
 
   @override
   void initState() {
@@ -53,13 +53,18 @@ class _RequestScreenState extends State<RequestScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return BlocBuilder<RequestCubit, RequestState>(
-      builder: (context, state) {
-        // Actualizar el controller de URL si cambia en el estado
-        if (_urlController.text != state.request.url) {
+    return BlocConsumer<RequestCubit, RequestState>(
+      listenWhen:
+          (previous, current) => previous.request.url != current.request.url,
+      listener: (context, state) {
+        // Solo actualizar el controller si la URL cambió en el estado y no fue
+        // por una actualización desde este widget
+        if (_urlController.text != state.request.url &&
+            !_isUpdatingUrlFromState) {
           _urlController.text = state.request.url;
         }
-
+      },
+      builder: (context, state) {
         // Verificar si tenemos una respuesta para mostrar
         final bool hasResponse =
             state.status == RequestStatus.success && state.response != null;
@@ -178,7 +183,9 @@ class _RequestScreenState extends State<RequestScreen> {
                             onBodyChanged: (body) {
                               context.read<RequestCubit>().updateBody(body);
                             },
-                            initialParams: state.request.queryParams,
+                            initialParams: state.request.queryParams.map(
+                              (key, value) => MapEntry(key, value.toString()),
+                            ),
                             initialHeaders: state.request.headers,
                             initialBody: state.request.body,
                           ),
@@ -209,7 +216,9 @@ class _RequestScreenState extends State<RequestScreen> {
               controller: _urlController,
               onSubmitted: (_) => _sendRequest(context),
               onChanged: (value) {
-                context.read<RequestCubit>().updateUrl(value);
+                _isUpdatingUrlFromState = true;
+                context.read<RequestCubit>().updateUrlWithParams(value);
+                _isUpdatingUrlFromState = false;
               },
             ),
           ),
