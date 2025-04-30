@@ -2,11 +2,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/collections/collections_state.dart';
-import 'package:nexust/ui/screens/request/request_detail_screen.dart';
+import 'package:nexust/ui/screens/request/request_screen.dart';
 import 'package:nexust/ui/views/collections/collection_list_view.dart';
 import 'package:nexust/ui/widgets/collections/create_collection_dialog.dart';
 import 'package:nexust/ui/widgets/collections/create_endpoint_dialog.dart';
@@ -190,11 +191,11 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
     if (endpoint.isGroup) {
       context.read<CollectionsCubit>().toggleExpanded(endpoint.id);
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RequestDetailScreen(endpoint: endpoint),
-        ),
+      // Navegar a la pantalla de detalle de endpoint usando GoRouter
+      context.pushNamed(
+        RequestScreen.routeName,
+        pathParameters: {'requestUuid': endpoint.id},
+        extra: {'endpoint': endpoint},
       );
     }
   }

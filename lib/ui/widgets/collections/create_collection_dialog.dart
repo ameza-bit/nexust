@@ -17,20 +17,31 @@ class CreateCollectionDialog extends StatefulWidget {
 
 class _CreateCollectionDialogState extends State<CreateCollectionDialog> {
   late TextEditingController _nameController;
+  bool _isValid = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName);
+    // Verificar validez inicial
+    _updateValidity();
+
+    // Agregar listener para actualizar validez cuando cambia el texto
+    _nameController.addListener(_updateValidity);
+  }
+
+  void _updateValidity() {
+    setState(() {
+      _isValid = _nameController.text.trim().isNotEmpty;
+    });
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_updateValidity);
     _nameController.dispose();
     super.dispose();
   }
-
-  bool get _isValid => _nameController.text.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +71,8 @@ class _CreateCollectionDialogState extends State<CreateCollectionDialog> {
           onPressed:
               _isValid
                   ? () {
-                    Navigator.pop(context);
                     widget.onSave(_nameController.text.trim());
+                    Navigator.pop(context);
                   }
                   : null,
           style: ElevatedButton.styleFrom(

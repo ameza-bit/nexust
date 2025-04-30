@@ -1,5 +1,7 @@
+// lib/ui/screens/request/request_screen.dart (modificado)
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
@@ -7,8 +9,11 @@ import 'package:nexust/data/enums/method.dart';
 import 'package:nexust/data/enums/request_status.dart';
 import 'package:nexust/data/models/environment.dart';
 import 'package:nexust/data/models/request_history_item.dart';
+import 'package:nexust/data/models/rest_endpoint.dart';
+import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:nexust/ui/widgets/request/http_method_selector.dart';
 import 'package:nexust/ui/widgets/request/request_url_field.dart';
 import 'package:nexust/ui/widgets/request/request_tabs.dart';
@@ -18,7 +23,10 @@ import 'package:nexust/ui/widgets/request/response_viewer_improved.dart';
 
 class RequestScreen extends StatefulWidget {
   static const String routeName = "request";
-  const RequestScreen({super.key});
+  final String? endpointId;
+  final RestEndpoint? endpoint;
+
+  const RequestScreen({super.key, this.endpointId, this.endpoint});
 
   @override
   State<RequestScreen> createState() => _RequestScreenState();
@@ -30,6 +38,9 @@ class _RequestScreenState extends State<RequestScreen> {
   bool _isCollapsed = false;
   bool _isUpdatingUrlFromState = false;
   bool _showHistory = false;
+  RestEndpoint? _endpoint;
+  bool _isDirty = false;
+  bool _isSaving = false;
 
   // Lista de historial (en una app real, esto vendría de un repositorio)
   final List<RequestHistoryItem> _historyItems = [
@@ -40,27 +51,7 @@ class _RequestScreenState extends State<RequestScreen> {
       statusCode: 200,
       isSuccess: true,
     ),
-    RequestHistoryItem(
-      url: 'https://api.example.com/products',
-      method: Method.post,
-      timestamp: DateTime.now().subtract(Duration(hours: 1)),
-      statusCode: 201,
-      isSuccess: true,
-    ),
-    RequestHistoryItem(
-      url: 'https://api.example.com/orders/123',
-      method: Method.put,
-      timestamp: DateTime.now().subtract(Duration(hours: 3)),
-      statusCode: 400,
-      isSuccess: false,
-    ),
-    RequestHistoryItem(
-      url: 'https://api.example.com/auth/login',
-      method: Method.post,
-      timestamp: DateTime.now().subtract(Duration(days: 1)),
-      statusCode: 401,
-      isSuccess: false,
-    ),
+    // ... resto del historial
   ];
 
   // Lista de entornos de ejemplo (en una app real vendría de un repositorio)
@@ -73,29 +64,53 @@ class _RequestScreenState extends State<RequestScreen> {
         "API_KEY": "dev_api_key_123",
       },
     ),
-    Environment(
-      name: "Pruebas",
-      color: Colors.blue,
-      variables: {
-        "BASE_URL": "https://staging-api.example.com",
-        "API_KEY": "staging_api_key_456",
-      },
-    ),
-    Environment(
-      name: "Producción",
-      color: Colors.red,
-      variables: {
-        "BASE_URL": "https://api.example.com",
-        "API_KEY": "prod_api_key_789",
-      },
-    ),
+    // ... resto de environments
   ];
+
   Environment? _selectedEnvironment;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _endpoint = widget.endpoint;
+
+    // Si recibimos un endpoint, inicializar la vista con sus datos
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeWithEndpoint();
+    });
+  }
+
+  void _initializeWithEndpoint() {
+    if (_endpoint != null) {
+      final requestCubit = context.read<RequestCubit>();
+      requestCubit.resetState();
+
+      // Configurar URL y método
+      _urlController.text = _endpoint!.path;
+      requestCubit.updateMethod(_endpoint!.method);
+      requestCubit.updateUrlWithParams(_endpoint!.path);
+
+      // Configurar parámetros si existen
+      if (_endpoint!.parameters != null) {
+        requestCubit.updateQueryParams(_endpoint!.parameters!);
+      }
+
+      // Configurar headers si existen
+      if (_endpoint!.headers != null) {
+        requestCubit.updateHeaders(_endpoint!.headers!);
+      }
+
+      // Configurar body si existe
+      if (_endpoint!.body != null) {
+        requestCubit.updateBody(_endpoint!.body);
+      }
+    } else if (widget.endpointId != null && widget.endpointId!.isNotEmpty) {
+      // En una implementación real, buscaríamos el endpoint por ID
+      // Por ejemplo: _loadEndpointById(widget.endpointId!);
+      // TODO: Implementar carga de endpoint por ID
+      Toast.show("Cargar endpoint por ID no implementado");
+    }
   }
 
   @override
@@ -114,7 +129,7 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
-  // Aplica las variables del entorno seleccionado a la URL
+  // Aplicar variables del entorno seleccionado a la URL
   String _processUrl(String url) {
     if (_selectedEnvironment == null) return url;
 
@@ -137,6 +152,50 @@ class _RequestScreenState extends State<RequestScreen> {
     }
   }
 
+  // Guardar los cambios en el endpoint
+  void _saveEndpoint() {
+    if (_endpoint == null) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    final state = context.read<RequestCubit>().state;
+    final collectionsBloc = context.read<CollectionsCubit>();
+
+    // Crear una versión actualizada del endpoint
+    final updatedEndpoint = _endpoint!.copyWith(
+      method: state.request.method,
+      path: state.request.url,
+      parameters: state.request.queryParams,
+      headers: state.request.headers,
+      body: state.request.body,
+      response: state.response?.data,
+    );
+
+    // Guardar el endpoint actualizado
+    collectionsBloc.updateCollection(updatedEndpoint);
+
+    // Actualizar el endpoint local
+    setState(() {
+      _endpoint = updatedEndpoint;
+      _isDirty = false;
+      _isSaving = false;
+    });
+
+    // Mostrar confirmación
+    Toast.show(context.tr('collections.endpoint_saved'));
+  }
+
+  // Marca el endpoint como modificado
+  void _markAsDirty() {
+    if (_endpoint != null && !_isDirty) {
+      setState(() {
+        _isDirty = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -145,7 +204,11 @@ class _RequestScreenState extends State<RequestScreen> {
       listenWhen:
           (previous, current) =>
               previous.request.url != current.request.url ||
-              previous.status != current.status,
+              previous.status != current.status ||
+              previous.request.method != current.request.method ||
+              previous.request.queryParams != current.request.queryParams ||
+              previous.request.headers != current.request.headers ||
+              previous.request.body != current.request.body,
       listener: (context, state) {
         // Solo actualizar el controller si la URL cambió en el estado y no fue
         // por una actualización desde este widget
@@ -154,11 +217,16 @@ class _RequestScreenState extends State<RequestScreen> {
           _urlController.text = state.request.url;
         }
 
-        // Guardar en historial cuando se completa una petición exitosa
-        // if (previous.status != current.status &&
-        //     current.status == RequestStatus.success) {
-        //   _saveRequestToHistory(current);
-        // }
+        // Si hay un endpoint cargado y hay cambios, marcar como dirty
+        if (_endpoint != null) {
+          if (state.request.method != _endpoint!.method ||
+              state.request.url != _endpoint!.path ||
+              state.request.queryParams != _endpoint!.parameters ||
+              state.request.headers != _endpoint!.headers ||
+              state.request.body != _endpoint!.body) {
+            _markAsDirty();
+          }
+        }
       },
       builder: (context, state) {
         // Verificar si tenemos una respuesta para mostrar
@@ -178,6 +246,10 @@ class _RequestScreenState extends State<RequestScreen> {
                   expandedHeight: 150.0,
                   backgroundColor: theme.appBarTheme.backgroundColor,
                   foregroundColor: theme.appBarTheme.foregroundColor,
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () => context.pop(),
+                  ),
                   title:
                       _isCollapsed
                           ? Row(
@@ -214,12 +286,35 @@ class _RequestScreenState extends State<RequestScreen> {
                             ],
                           )
                           : Text(
-                            _showHistory
-                                ? "Historial de Peticiones"
-                                : "Nueva Petición",
+                            _endpoint != null
+                                ? _endpoint!.name
+                                : _showHistory
+                                ? context.tr('request.history_title')
+                                : context.tr('request.new_request'),
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                   actions: [
+                    // Botón para guardar endpoint si existe
+                    if (_endpoint != null && _isDirty && !_isCollapsed)
+                      IconButton(
+                        icon:
+                            _isSaving
+                                ? SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      theme.appBarTheme.foregroundColor ??
+                                          Colors.white,
+                                    ),
+                                  ),
+                                )
+                                : Icon(FontAwesomeIcons.lightFloppyDisk),
+                        onPressed: _isSaving ? null : _saveEndpoint,
+                        tooltip: context.tr('collections.save_endpoint'),
+                      ),
+
                     // Selector de entorno (visible cuando no está colapsado)
                     if (!_isCollapsed)
                       Padding(
@@ -249,7 +344,9 @@ class _RequestScreenState extends State<RequestScreen> {
                         });
                       },
                       tooltip:
-                          _showHistory ? "Nueva petición" : "Ver historial",
+                          _showHistory
+                              ? context.tr('request.new')
+                              : context.tr('request.view_history'),
                     ),
 
                     // Botón de guardar
@@ -258,7 +355,7 @@ class _RequestScreenState extends State<RequestScreen> {
                       onPressed: () {
                         _showSaveRequestDialog(context, state);
                       },
-                      tooltip: "Guardar petición",
+                      tooltip: context.tr('request.save'),
                     ),
 
                     // Botón de compartir
@@ -267,7 +364,7 @@ class _RequestScreenState extends State<RequestScreen> {
                       onPressed: () {
                         _showShareOptions(context, state);
                       },
-                      tooltip: "Compartir petición",
+                      tooltip: context.tr('request.share'),
                     ),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
@@ -353,7 +450,7 @@ class _RequestScreenState extends State<RequestScreen> {
                         });
                       },
                       backgroundColor: theme.primaryColor,
-                      tooltip: "Nueva petición",
+                      tooltip: context.tr('request.new'),
                       child: Icon(FontAwesomeIcons.lightPlus),
                     )
                     : null,
@@ -419,7 +516,7 @@ class _RequestScreenState extends State<RequestScreen> {
                     ),
                   )
                   : Text(
-                    "Enviar",
+                    context.tr('request.send'),
                     style: TextStyle(
                       fontSize: context.scaleText(16),
                       fontWeight: FontWeight.w600,
@@ -432,7 +529,7 @@ class _RequestScreenState extends State<RequestScreen> {
 
   void _sendRequest(BuildContext context) {
     if (_urlController.text.isEmpty) {
-      Toast.show("Por favor ingresa una URL");
+      Toast.show(context.tr('request.url_empty'));
       return;
     }
 
@@ -456,22 +553,22 @@ class _RequestScreenState extends State<RequestScreen> {
       context: context,
       builder:
           (dialogContext) => AlertDialog(
-            title: Text("Guardar Petición"),
+            title: Text(context.tr('request.save_dialog_title')),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(
-                    labelText: "Nombre de la petición",
-                    hintText: "Ej: Obtener usuarios",
+                    labelText: context.tr('request.request_name'),
+                    hintText: context.tr('request.request_name_hint'),
                     border: OutlineInputBorder(),
                   ),
                   autofocus: true,
                 ),
                 SizedBox(height: 16),
                 Text(
-                  "Se guardará la siguiente petición:",
+                  context.tr('request.save_dialog_description'),
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 8),
@@ -528,24 +625,37 @@ class _RequestScreenState extends State<RequestScreen> {
                 onPressed: () {
                   Navigator.pop(dialogContext);
                 },
-                child: Text("Cancelar"),
+                child: Text(context.tr('common.cancel')),
               ),
               ElevatedButton(
                 onPressed: () {
                   if (nameController.text.isEmpty) {
-                    Toast.show("Por favor ingresa un nombre para la petición");
+                    Toast.show(context.tr('request.name_required'));
                     return;
                   }
 
-                  // Aquí se guardaría la petición (en una implementación real)
-                  Toast.show("Petición guardada: ${nameController.text}");
+                  // Crear un nuevo endpoint o colección
+                  final endpoint = RestEndpoint(
+                    name: nameController.text.trim(),
+                    isGroup: false,
+                    method: state.request.method,
+                    path: state.request.url,
+                    parameters: state.request.queryParams,
+                    headers: state.request.headers,
+                    body: state.request.body,
+                  );
+
+                  // Guardar el endpoint
+                  context.read<CollectionsCubit>().addCollection(endpoint);
+
                   Navigator.pop(dialogContext);
+                  Toast.show(context.tr('request.saved_successfully'));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.primaryColor,
                   foregroundColor: Colors.white,
                 ),
-                child: Text("Guardar"),
+                child: Text(context.tr('common.save')),
               ),
             ],
           ),
@@ -564,7 +674,7 @@ class _RequestScreenState extends State<RequestScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Compartir Petición",
+                  context.tr('request.share_title'),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
@@ -573,38 +683,38 @@ class _RequestScreenState extends State<RequestScreen> {
                   children: [
                     _buildShareOption(
                       icon: FontAwesomeIcons.lightFileCode,
-                      label: "Código",
+                      label: context.tr('request.share_as_code'),
                       color: Colors.blue,
                       onTap: () {
                         Navigator.pop(modalContext);
-                        Toast.show("Exportar como código (por implementar)");
+                        Toast.show(context.tr('request.share_not_implemented'));
                       },
                     ),
                     _buildShareOption(
                       icon: FontAwesomeIcons.lightFileExport,
-                      label: "Exportar",
+                      label: context.tr('request.export'),
                       color: Colors.green,
                       onTap: () {
                         Navigator.pop(modalContext);
-                        Toast.show("Exportar petición (por implementar)");
+                        Toast.show(context.tr('request.share_not_implemented'));
                       },
                     ),
                     _buildShareOption(
                       icon: FontAwesomeIcons.lightLink,
-                      label: "Enlace",
+                      label: context.tr('request.share_as_link'),
                       color: Colors.orange,
                       onTap: () {
                         Navigator.pop(modalContext);
-                        Toast.show("Generar enlace (por implementar)");
+                        Toast.show(context.tr('request.share_not_implemented'));
                       },
                     ),
                     _buildShareOption(
                       icon: FontAwesomeIcons.lightShareNodes,
-                      label: "Compartir",
+                      label: context.tr('common.share'),
                       color: theme.primaryColor,
                       onTap: () {
                         Navigator.pop(modalContext);
-                        Toast.show("Compartir (por implementar)");
+                        Toast.show(context.tr('request.share_not_implemented'));
                       },
                     ),
                   ],
@@ -613,16 +723,16 @@ class _RequestScreenState extends State<RequestScreen> {
                 Divider(),
                 ListTile(
                   leading: Icon(FontAwesomeIcons.lightFileLines),
-                  title: Text("Copiar como cURL"),
+                  title: Text(context.tr('request.copy_as_curl')),
                   onTap: () {
                     Navigator.pop(modalContext);
-                    Toast.show("Petición copiada como cURL (por implementar)");
+                    Toast.show(context.tr('request.share_not_implemented'));
                   },
                 ),
                 ListTile(
                   leading: Icon(FontAwesomeIcons.lightCodeBranch),
-                  title: Text("Generar código"),
-                  subtitle: Text("JavaScript, Python, PHP, etc."),
+                  title: Text(context.tr('request.generate_code')),
+                  subtitle: Text(context.tr('request.generate_code_desc')),
                   onTap: () {
                     Navigator.pop(modalContext);
                     _showCodeGenerationDialog(context, state);
@@ -687,13 +797,13 @@ class _RequestScreenState extends State<RequestScreen> {
       context: context,
       builder:
           (dialogContext) => AlertDialog(
-            title: Text("Generar Código"),
+            title: Text(context.tr('request.generate_code')),
             content: SizedBox(
               width: double.maxFinite,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Selecciona el lenguaje:"),
+                  Text(context.tr('request.select_language')),
                   SizedBox(height: 16),
                   Expanded(
                     child: ListView.builder(
@@ -705,7 +815,10 @@ class _RequestScreenState extends State<RequestScreen> {
                           onTap: () {
                             Navigator.pop(dialogContext);
                             Toast.show(
-                              "Código generado en ${languages[index]} (por implementar)",
+                              context.tr(
+                                'request.code_generated_language',
+                                namedArgs: {'language': languages[index]},
+                              ),
                             );
                           },
                         );
@@ -720,7 +833,7 @@ class _RequestScreenState extends State<RequestScreen> {
                 onPressed: () {
                   Navigator.pop(dialogContext);
                 },
-                child: Text("Cancelar"),
+                child: Text(context.tr('common.cancel')),
               ),
             ],
           ),

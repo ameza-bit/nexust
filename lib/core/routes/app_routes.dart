@@ -1,8 +1,11 @@
+// lib/core/routes/app_routes.dart (modificado)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/screens/auth/login_screen.dart';
 import 'package:nexust/ui/screens/home/home_screen.dart';
 import 'package:nexust/ui/screens/home/tabs_screen.dart';
+import 'package:nexust/ui/screens/request/request_screen.dart';
 import 'package:nexust/ui/screens/settings/settings_screen.dart';
 
 class AppRoutes {
@@ -28,6 +31,21 @@ class AppRoutes {
                 name: SettingsScreen.routeName,
                 path: SettingsScreen.routeName,
                 builder: (context, state) => const SettingsScreen(),
+              ),
+              GoRoute(
+                name: RequestScreen.routeName,
+                path: "request/:requestUuid",
+                builder: (context, state) {
+                  final requestId = state.pathParameters['requestUuid'] ?? '';
+                  final endpoint = _getArgument<RestEndpoint>(
+                    state,
+                    'endpoint',
+                  );
+                  return RequestScreen(
+                    endpointId: requestId,
+                    endpoint: endpoint,
+                  );
+                },
               ),
             ],
           ),

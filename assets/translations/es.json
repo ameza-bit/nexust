@@ -6,6 +6,32 @@
     "settings": "Configuración",
     "more": "Más"
   },
+  "request": {
+    "history_title": "Historial de Peticiones",
+    "new_request": "Nueva Petición",
+    "new": "Nueva petición",
+    "view_history": "Ver historial",
+    "save": "Guardar petición",
+    "share": "Compartir petición",
+    "send": "Enviar",
+    "url_empty": "Por favor ingresa una URL",
+    "save_dialog_title": "Guardar Petición",
+    "request_name": "Nombre de la petición",
+    "request_name_hint": "Ej: Obtener usuarios",
+    "save_dialog_description": "Se guardará la siguiente petición:",
+    "name_required": "Por favor ingresa un nombre para la petición",
+    "saved_successfully": "Petición guardada correctamente",
+    "share_title": "Compartir Petición",
+    "share_as_code": "Código",
+    "export": "Exportar",
+    "share_as_link": "Enlace",
+    "share_not_implemented": "Funcionalidad no implementada",
+    "copy_as_curl": "Copiar como cURL",
+    "generate_code": "Generar código",
+    "generate_code_desc": "JavaScript, Python, PHP, etc.",
+    "select_language": "Selecciona el lenguaje:",
+    "code_generated_language": "Código generado en {language}"
+  },
   "collections": {
     "search": "Buscar colecciones...",
     "new_collection": "Nueva Colección",
@@ -29,7 +55,9 @@
     "endpoint_name_hint": "Ej: Obtener usuarios",
     "endpoint_url": "URL del endpoint",
     "http_method": "Método HTTP",
-    "new_item": "Nuevo elemento"
+    "new_item": "Nuevo elemento",
+    "save_endpoint": "Guardar cambios",
+    "endpoint_saved": "Endpoint guardado correctamente"
   },
   "more": {
     "settings": "Configuración",
