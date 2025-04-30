@@ -3,8 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/routes/app_routes.dart';
+import 'package:nexust/data/repositories/request_repository_impl.dart';
 import 'package:nexust/data/repositories/settings_repository_impl.dart';
+import 'package:nexust/data/services/http_service.dart';
+import 'package:nexust/domain/repositories/request_repository.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
+import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
 import 'package:nexust/ui/themes/main_theme.dart';
@@ -15,12 +19,19 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   final SettingsRepository settingsRepository = SettingsRepositoryImpl();
+  final HttpService httpService = HttpService();
+  final RequestRepository requestRepository = RequestRepositoryImpl(
+    httpService,
+  );
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider<SettingsCubit>(
           create: (context) => SettingsCubit(settingsRepository),
+        ),
+        BlocProvider<RequestCubit>(
+          create: (context) => RequestCubit(requestRepository),
         ),
       ],
       child: EasyLocalization(
