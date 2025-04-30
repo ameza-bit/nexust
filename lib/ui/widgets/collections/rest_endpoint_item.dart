@@ -10,11 +10,13 @@ class RestEndpointItem extends StatefulWidget {
     required this.endpoint,
     required this.depth,
     required this.onTap,
+    required this.onLongPress,
   });
 
   final RestEndpoint endpoint;
   final int depth;
-  final VoidCallback onTap;
+  final Function(RestEndpoint) onTap;
+  final Function(RestEndpoint, BuildContext) onLongPress;
 
   @override
   State<RestEndpointItem> createState() => _RestEndpointItemState();
@@ -105,7 +107,9 @@ class _RestEndpointItemState extends State<RestEndpointItem>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: widget.onTap,
+                  onTap: () => widget.onTap(widget.endpoint),
+                  onLongPress:
+                      () => widget.onLongPress(widget.endpoint, context),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     margin: EdgeInsets.only(
@@ -234,7 +238,8 @@ class _RestEndpointItemState extends State<RestEndpointItem>
             ),
           ],
         ),
-        // Contenedor para los elementos hijos con animación
+
+        // Hijos de grupos con animación
         AnimatedCrossFade(
           firstChild: Container(),
           secondChild: Column(
@@ -244,11 +249,13 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                       return RestEndpointItem(
                         endpoint: child,
                         depth: widget.depth + 1,
-                        onTap: () {
-                          setState(() {
-                            child.isExpanded = !child.isExpanded;
-                          });
-                        },
+                        onTap:
+                            (childEndpoint) => widget.onTap(
+                              childEndpoint,
+                            ), // Pasar el endpoint hijo
+                        onLongPress:
+                            (childEndpoint, ctx) =>
+                                widget.onLongPress(childEndpoint, ctx),
                       );
                     }).toList()
                     : [],

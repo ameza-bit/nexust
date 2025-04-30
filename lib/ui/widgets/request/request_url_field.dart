@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 
@@ -106,12 +107,14 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
               focusNode: _focusNode,
               onSubmitted: widget.onSubmitted,
               style: TextStyle(fontSize: context.scaleText(14)),
+              textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 hintText: 'https://api.example.com/endpoint',
                 hintStyle: TextStyle(
                   color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                   fontSize: context.scaleText(14),
                 ),
+                isDense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -119,6 +122,12 @@ class _RequestUrlFieldState extends State<RequestUrlField> {
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
               ),
+              keyboardType: TextInputType.url,
+              autocorrect: false,
+              enableSuggestions: false,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r"\s")),
+              ],
             ),
           ),
 

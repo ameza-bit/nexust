@@ -3,11 +3,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/routes/app_routes.dart';
+import 'package:nexust/data/repositories/collections_repository_impl.dart';
 import 'package:nexust/data/repositories/request_repository_impl.dart';
 import 'package:nexust/data/repositories/settings_repository_impl.dart';
 import 'package:nexust/data/services/http_service.dart';
 import 'package:nexust/domain/repositories/request_repository.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
+import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
@@ -29,6 +31,9 @@ Future<void> main() async {
       providers: [
         BlocProvider<SettingsCubit>(
           create: (context) => SettingsCubit(settingsRepository),
+        ),
+        BlocProvider<CollectionsCubit>(
+          create: (context) => CollectionsCubit(CollectionsRepositoryImpl()),
         ),
         BlocProvider<RequestCubit>(
           create: (context) => RequestCubit(requestRepository),
