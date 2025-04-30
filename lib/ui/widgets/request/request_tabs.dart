@@ -9,10 +9,10 @@ import 'package:nexust/ui/widgets/request/body_editor.dart';
 class RequestTabs extends StatefulWidget {
   final Map<String, dynamic>? initialParams;
   final Map<String, String>? initialHeaders;
-  final dynamic initialBody;
+  final Object? initialBody;
   final Function(Map<String, dynamic>) onParamsChanged;
   final Function(Map<String, String>) onHeadersChanged;
-  final Function(dynamic) onBodyChanged;
+  final Function(Object?) onBodyChanged;
 
   const RequestTabs({
     super.key,
@@ -51,7 +51,7 @@ class _RequestTabsState extends State<RequestTabs>
 
     _bodyData =
         widget.initialBody is String
-            ? widget.initialBody
+            ? widget.initialBody as String
             : widget.initialBody != null
             ? jsonEncode(widget.initialBody)
             : '{\n  "name": "Nuevo Producto",\n  "price": 499.99,\n  "category": "electronics"\n}';
@@ -82,7 +82,7 @@ class _RequestTabsState extends State<RequestTabs>
       setState(() {
         _bodyData =
             widget.initialBody is String
-                ? widget.initialBody
+                ? widget.initialBody as String
                 : jsonEncode(widget.initialBody);
       });
     }

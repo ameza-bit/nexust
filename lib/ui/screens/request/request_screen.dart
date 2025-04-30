@@ -321,9 +321,7 @@ class _RequestScreenState extends State<RequestScreen> {
               TextButton.icon(
                 onPressed: () {
                   // Volver a la sección de configuración
-                  context.read<RequestCubit>().emit(
-                    state.copyWith(status: RequestStatus.initial),
-                  );
+                  context.read<RequestCubit>().resetState();
                 },
                 icon: Icon(
                   FontAwesomeIcons.lightPenToSquare,
