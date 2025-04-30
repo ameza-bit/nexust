@@ -1,4 +1,3 @@
-// lib/ui/views/collections/collection_list_view.dart (modificado)
 import 'package:flutter/material.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/widgets/collections/rest_endpoint_item.dart';
@@ -23,8 +22,8 @@ class CollectionListView extends StatelessWidget {
         return RestEndpointItem(
           endpoint: items[index],
           depth: 0,
-          onTap: () => onItemTap(items[index]),
-          onLongPress: () => onItemLongPress(items[index], context),
+          onTap: onItemTap,
+          onLongPress: onItemLongPress,
         );
       },
     );

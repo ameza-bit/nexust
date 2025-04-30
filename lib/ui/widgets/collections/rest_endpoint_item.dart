@@ -15,8 +15,8 @@ class RestEndpointItem extends StatefulWidget {
 
   final RestEndpoint endpoint;
   final int depth;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
+  final Function(RestEndpoint) onTap;
+  final Function(RestEndpoint, BuildContext) onLongPress;
 
   @override
   State<RestEndpointItem> createState() => _RestEndpointItemState();
@@ -107,8 +107,9 @@ class _RestEndpointItemState extends State<RestEndpointItem>
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: widget.onTap,
-                  onLongPress: widget.onLongPress,
+                  onTap: () => widget.onTap(widget.endpoint),
+                  onLongPress:
+                      () => widget.onLongPress(widget.endpoint, context),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     margin: EdgeInsets.only(
@@ -248,8 +249,13 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                       return RestEndpointItem(
                         endpoint: child,
                         depth: widget.depth + 1,
-                        onTap: () => widget.onTap(),
-                        onLongPress: () => widget.onLongPress(),
+                        onTap:
+                            (childEndpoint) => widget.onTap(
+                              childEndpoint,
+                            ), // Pasar el endpoint hijo
+                        onLongPress:
+                            (childEndpoint, ctx) =>
+                                widget.onLongPress(childEndpoint, ctx),
                       );
                     }).toList()
                     : [],

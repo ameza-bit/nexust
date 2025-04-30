@@ -359,10 +359,19 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
                 path: path,
               );
               // Usamos el parentId seleccionado en el diálogo
-              context.read<CollectionsCubit>().addCollection(
-                newEndpoint,
-                parentId: selectedParentId,
-              );
+              context
+                  .read<CollectionsCubit>()
+                  .addCollection(newEndpoint, parentId: selectedParentId)
+                  .then((_) {
+                    // Navegar a la pantalla de detalle de endpoint
+                    if (context.mounted) {
+                      context.pushNamed(
+                        RequestScreen.routeName,
+                        pathParameters: {'requestUuid': newEndpoint.id},
+                        extra: {'endpoint': newEndpoint},
+                      );
+                    }
+                  });
             },
           ),
     );
