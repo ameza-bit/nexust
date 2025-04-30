@@ -6,6 +6,32 @@
     "settings": "Settings",
     "more": "More"
   },
+  "request": {
+    "history_title": "Request History",
+    "new_request": "New Request",
+    "new": "New request",
+    "view_history": "View history",
+    "save": "Save request",
+    "share": "Share request",
+    "send": "Send",
+    "url_empty": "Please enter a URL",
+    "save_dialog_title": "Save Request",
+    "request_name": "Request name",
+    "request_name_hint": "Ex: Get users",
+    "save_dialog_description": "The following request will be saved:",
+    "name_required": "Please enter a name for the request",
+    "saved_successfully": "Request saved successfully",
+    "share_title": "Share Request",
+    "share_as_code": "Code",
+    "export": "Export",
+    "share_as_link": "Link",
+    "share_not_implemented": "Functionality not implemented",
+    "copy_as_curl": "Copy as cURL",
+    "generate_code": "Generate code",
+    "generate_code_desc": "JavaScript, Python, PHP, etc.",
+    "select_language": "Select language:",
+    "code_generated_language": "Code generated in {language}"
+  },
   "collections": {
     "search": "Search collections...",
     "new_collection": "New Collection",
@@ -29,11 +55,17 @@
     "endpoint_name_hint": "Ex: Get users",
     "endpoint_url": "Endpoint URL",
     "http_method": "HTTP Method",
-    "new_item": "New item"
+    "new_item": "New item",
+    "save_endpoint": "Save changes",
+    "endpoint_saved": "Endpoint saved successfully"
   },
   "more": {
+    "account": "Account",
+    "environments": "Environments",
+    "historial": "History",
+    "projects": "Projects",
     "settings": "Settings",
-    "app_info": "App Information",
+    "app_info": "Application Information",
     "about_app": "About Nexust",
     "privacy_policy": "Privacy Policy",
     "terms_of_service": "Terms of Service"

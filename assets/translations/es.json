@@ -60,6 +60,10 @@
     "endpoint_saved": "Endpoint guardado correctamente"
   },
   "more": {
+    "account": "Cuenta",
+    "environments": "Entornos",
+    "historial": "Historial",
+    "projects": "Proyectos",
     "settings": "Configuración",
     "app_info": "Información de la Aplicación",
     "about_app": "Acerca de Nexust",
