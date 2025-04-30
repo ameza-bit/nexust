@@ -7,10 +7,10 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/collections/collections_state.dart';
-import 'package:nexust/ui/screens/request/request_screen.dart';
-import 'package:nexust/ui/views/collections/collection_list_view.dart';
-import 'package:nexust/ui/widgets/collections/create_collection_dialog.dart';
-import 'package:nexust/ui/widgets/collections/create_endpoint_dialog.dart';
+import 'package:nexust/presentation/screens/request/request_screen.dart';
+import 'package:nexust/presentation/views/collections/collection_list_view.dart';
+import 'package:nexust/presentation/widgets/collections/create_collection_dialog.dart';
+import 'package:nexust/presentation/widgets/collections/create_endpoint_dialog.dart';
 
 class CollectionsScreen extends StatefulWidget {
   static const String routeName = "collections";

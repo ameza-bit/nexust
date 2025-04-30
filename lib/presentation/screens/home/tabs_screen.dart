@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:nexust/ui/screens/collections/collections_screen.dart';
-import 'package:nexust/ui/screens/home/home_screen.dart';
-import 'package:nexust/ui/screens/more/more_screen.dart';
-import 'package:nexust/ui/screens/request/request_screen.dart';
-import 'package:nexust/ui/widgets/home/navigator_bar.dart';
+import 'package:nexust/presentation/screens/collections/collections_screen.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/more/more_screen.dart';
+import 'package:nexust/presentation/screens/request/request_screen.dart';
+import 'package:nexust/presentation/widgets/home/navigator_bar.dart';
 
 class TabsScreen extends StatefulWidget {
   static const String routeName = "tabs";

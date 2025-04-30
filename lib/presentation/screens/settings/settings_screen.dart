@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
-import 'package:nexust/ui/widgets/settings/settings_section.dart';
-import 'package:nexust/ui/widgets/settings/settings_item.dart';
-import 'package:nexust/ui/widgets/settings/color_picker_dialog.dart';
+import 'package:nexust/presentation/widgets/settings/settings_section.dart';
+import 'package:nexust/presentation/widgets/settings/settings_item.dart';
+import 'package:nexust/presentation/widgets/settings/color_picker_dialog.dart';
 
 class SettingsScreen extends StatelessWidget {
   static const String routeName = "settings";

@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
-import 'package:nexust/ui/widgets/request/headers_editor.dart';
-import 'package:nexust/ui/widgets/request/params_editor.dart';
-import 'package:nexust/ui/widgets/request/body_editor.dart';
+import 'package:nexust/presentation/widgets/request/headers_editor.dart';
+import 'package:nexust/presentation/widgets/request/params_editor.dart';
+import 'package:nexust/presentation/widgets/request/body_editor.dart';
 
 class RequestTabs extends StatefulWidget {
   final Map<String, dynamic>? initialParams;

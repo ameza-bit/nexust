@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nexust/ui/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 
 // SplashScreen con animación de escala y fundido antes de redirigir
 class SplashScreen extends StatefulWidget {

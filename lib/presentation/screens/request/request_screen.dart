@@ -14,12 +14,12 @@ import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:nexust/ui/widgets/request/http_method_selector.dart';
-import 'package:nexust/ui/widgets/request/request_url_field.dart';
-import 'package:nexust/ui/widgets/request/request_tabs.dart';
-import 'package:nexust/ui/widgets/request/environment_selector.dart';
-import 'package:nexust/ui/widgets/request/request_history.dart';
-import 'package:nexust/ui/widgets/request/response_viewer_improved.dart';
+import 'package:nexust/presentation/widgets/request/http_method_selector.dart';
+import 'package:nexust/presentation/widgets/request/request_url_field.dart';
+import 'package:nexust/presentation/widgets/request/request_tabs.dart';
+import 'package:nexust/presentation/widgets/request/environment_selector.dart';
+import 'package:nexust/presentation/widgets/request/request_history.dart';
+import 'package:nexust/presentation/widgets/request/response_viewer_improved.dart';
 
 class RequestScreen extends StatefulWidget {
   static const String routeName = "request";

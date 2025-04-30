@@ -13,7 +13,7 @@ import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
-import 'package:nexust/ui/themes/main_theme.dart';
+import 'package:nexust/presentation/themes/main_theme.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {

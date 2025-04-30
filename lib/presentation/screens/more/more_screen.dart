@@ -2,13 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
-import 'package:nexust/ui/screens/auth/login_screen.dart';
-import 'package:nexust/ui/screens/collections/proyects_list_screen.dart';
-import 'package:nexust/ui/screens/request/request_history_list_screen.dart';
-import 'package:nexust/ui/screens/settings/enviroments_screen.dart';
-import 'package:nexust/ui/screens/settings/settings_screen.dart';
-import 'package:nexust/ui/widgets/settings/settings_item.dart';
-import 'package:nexust/ui/widgets/settings/settings_section.dart';
+import 'package:nexust/presentation/screens/auth/login_screen.dart';
+import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
+import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
+import 'package:nexust/presentation/screens/settings/enviroments_screen.dart';
+import 'package:nexust/presentation/screens/settings/settings_screen.dart';
+import 'package:nexust/presentation/widgets/settings/settings_item.dart';
+import 'package:nexust/presentation/widgets/settings/settings_section.dart';
 
 class MoreScreen extends StatelessWidget {
   static const String routeName = "more";
