@@ -10,11 +10,13 @@ class RestEndpointItem extends StatefulWidget {
     required this.endpoint,
     required this.depth,
     required this.onTap,
+    required this.onLongPress,
   });
 
   final RestEndpoint endpoint;
   final int depth;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
 
   @override
   State<RestEndpointItem> createState() => _RestEndpointItemState();
@@ -106,6 +108,7 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: widget.onTap,
+                  onLongPress: widget.onLongPress,
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
                     margin: EdgeInsets.only(
@@ -234,7 +237,8 @@ class _RestEndpointItemState extends State<RestEndpointItem>
             ),
           ],
         ),
-        // Contenedor para los elementos hijos con animación
+
+        // Hijos de grupos con animación
         AnimatedCrossFade(
           firstChild: Container(),
           secondChild: Column(
@@ -244,11 +248,8 @@ class _RestEndpointItemState extends State<RestEndpointItem>
                       return RestEndpointItem(
                         endpoint: child,
                         depth: widget.depth + 1,
-                        onTap: () {
-                          setState(() {
-                            child.isExpanded = !child.isExpanded;
-                          });
-                        },
+                        onTap: () => widget.onTap(),
+                        onLongPress: () => widget.onLongPress(),
                       );
                     }).toList()
                     : [],
