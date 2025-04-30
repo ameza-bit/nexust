@@ -246,10 +246,14 @@ class _RequestScreenState extends State<RequestScreen> {
                   expandedHeight: 150.0,
                   backgroundColor: theme.appBarTheme.backgroundColor,
                   foregroundColor: theme.appBarTheme.foregroundColor,
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () => context.pop(),
-                  ),
+                  automaticallyImplyLeading: false,
+                  leading:
+                      widget.endpointId == null
+                          ? null
+                          : IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            onPressed: () => context.pop(),
+                          ),
                   title:
                       _isCollapsed
                           ? Row(

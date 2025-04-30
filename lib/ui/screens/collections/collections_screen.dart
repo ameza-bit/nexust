@@ -58,6 +58,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search),

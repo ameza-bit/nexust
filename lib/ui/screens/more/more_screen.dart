@@ -27,6 +27,7 @@ class MoreScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: theme.appBarTheme.backgroundColor,
         foregroundColor: theme.appBarTheme.foregroundColor,
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
