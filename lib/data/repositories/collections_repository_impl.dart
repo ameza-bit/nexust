@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/domain/repositories/collections_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,13 +12,24 @@ class CollectionsRepositoryImpl implements CollectionsRepository {
   Future<List<RestEndpoint>> getCollections() async {
     final prefs = await SharedPreferences.getInstance();
     final collectionsJson = prefs.getString(_collectionsKey);
-    
+
     if (collectionsJson == null) {
       return [];
     }
-    
-    final List<Map<String, dynamic>> decoded = jsonDecode(collectionsJson);
-    return decoded.map((item) => RestEndpoint.fromJson(item)).toList();
+
+    try {
+      final List<Object?> decoded = List<Object?>.from(
+        jsonDecode(collectionsJson) as List,
+      );
+
+      return decoded
+          .whereType<Map<String, dynamic>>()
+          .map((item) => RestEndpoint.fromJson(item))
+          .toList();
+    } catch (e) {
+      Toast.show('Error al cargar colecciones: $e');
+      return [];
+    }
   }
 
   @override
@@ -38,7 +50,7 @@ class CollectionsRepositoryImpl implements CollectionsRepository {
   Future<void> updateCollection(RestEndpoint collection) async {
     final collections = await getCollections();
     final index = collections.indexWhere((c) => c.id == collection.id);
-    
+
     if (index != -1) {
       collections[index] = collection;
       await saveCollections(collections);
@@ -57,27 +69,27 @@ class CollectionsRepositoryImpl implements CollectionsRepository {
     if (query.isEmpty) {
       return getCollections();
     }
-    
+
     final collections = await getCollections();
     final results = <RestEndpoint>[];
-    
+
     for (var collection in collections) {
       if (_matches(collection, query.toLowerCase())) {
         results.add(collection);
       }
     }
-    
+
     return results;
   }
 
   // Función recursiva para buscar en colecciones y sus hijos
   bool _matches(RestEndpoint endpoint, String query) {
     // Verificar si el nombre o la ruta contienen la consulta
-    if (endpoint.name.toLowerCase().contains(query) || 
+    if (endpoint.name.toLowerCase().contains(query) ||
         endpoint.path.toLowerCase().contains(query)) {
       return true;
     }
-    
+
     // Si es un grupo, buscar en los hijos
     if (endpoint.isGroup && endpoint.children.isNotEmpty) {
       for (var child in endpoint.children) {
@@ -86,7 +98,7 @@ class CollectionsRepositoryImpl implements CollectionsRepository {
         }
       }
     }
-    
+
     return false;
   }
 }
