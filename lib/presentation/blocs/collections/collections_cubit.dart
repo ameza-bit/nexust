@@ -245,4 +245,71 @@ class CollectionsCubit extends Cubit<CollectionsState> {
       return item;
     }).toList();
   }
+
+  Future<void> moveCollection(String id, String? newParentId) async {
+    emit(state.copyWith(isLoading: true, error: null));
+    try {
+      // Primero, encontramos el endpoint a mover
+      RestEndpoint? endpointToMove;
+      List<RestEndpoint> updatedCollections = List<RestEndpoint>.of(
+        state.collections,
+      );
+
+      // Función recursiva para encontrar y remover el endpoint
+      List<RestEndpoint> findAndRemove(List<RestEndpoint> items) {
+        // Verificar si el endpoint está en el nivel actual
+        int index = items.indexWhere((item) => item.id == id);
+        if (index != -1) {
+          endpointToMove = items[index];
+          return items.where((item) => item.id != id).toList();
+        }
+
+        // Buscar en los hijos
+        return items.map((item) {
+          if (item.isGroup) {
+            return item.copyWith(children: findAndRemove(item.children));
+          }
+          return item;
+        }).toList();
+      }
+
+      // Remover el endpoint de su ubicación actual
+      updatedCollections = findAndRemove(updatedCollections);
+
+      // Si no encontramos el endpoint, terminar
+      if (endpointToMove == null) {
+        emit(state.copyWith(error: "Endpoint no encontrado", isLoading: false));
+        return;
+      }
+
+      // Si el nuevo parentId es null, añadirlo a la raíz
+      if (newParentId == null) {
+        updatedCollections.add(endpointToMove!);
+      } else {
+        // Función recursiva para añadir el endpoint a la carpeta de destino
+        List<RestEndpoint> addToParent(List<RestEndpoint> items) {
+          return items.map((item) {
+            if (item.id == newParentId && item.isGroup) {
+              // Encontramos la carpeta de destino, añadir el endpoint
+              return item.copyWith(
+                children: [...item.children, endpointToMove!],
+              );
+            } else if (item.isGroup) {
+              // Buscar en los hijos
+              return item.copyWith(children: addToParent(item.children));
+            }
+            return item;
+          }).toList();
+        }
+
+        updatedCollections = addToParent(updatedCollections);
+      }
+
+      // Guardar las colecciones actualizadas
+      await _collectionsRepository.saveCollections(updatedCollections);
+      await loadCollections();
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
+  }
 }

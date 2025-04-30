@@ -1,12 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/data/enums/method.dart';
+import 'package:nexust/data/models/rest_endpoint.dart';
 
 class CreateEndpointDialog extends StatefulWidget {
-  final Function(String, Method, String) onSave;
+  final Function(String, Method, String, String?) onSave;
   final String? initialName;
   final Method? initialMethod;
   final String? initialPath;
+  final String? initialParentId;
+  final List<RestEndpoint> collections;
 
   const CreateEndpointDialog({
     super.key,
@@ -14,6 +17,8 @@ class CreateEndpointDialog extends StatefulWidget {
     this.initialName,
     this.initialMethod,
     this.initialPath,
+    this.initialParentId,
+    required this.collections,
   });
 
   @override
@@ -22,40 +27,66 @@ class CreateEndpointDialog extends StatefulWidget {
 
 class _CreateEndpointDialogState extends State<CreateEndpointDialog> {
   late TextEditingController _nameController;
-  late TextEditingController _pathController;
-  late Method _selectedMethod;
+  String? _selectedParentId;
   bool _isValid = false;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName);
-    _pathController = TextEditingController(text: widget.initialPath ?? '');
-    _selectedMethod = widget.initialMethod ?? Method.get;
+    _selectedParentId = widget.initialParentId;
 
     // Verificar validez inicial
     _updateValidity();
 
-    // Agregar listeners para actualizar validez cuando cambia el texto
+    // Agregar listener para actualizar validez cuando cambia el texto
     _nameController.addListener(_updateValidity);
-    _pathController.addListener(_updateValidity);
   }
 
   void _updateValidity() {
     setState(() {
-      _isValid =
-          _nameController.text.trim().isNotEmpty &&
-          _pathController.text.trim().isNotEmpty;
+      _isValid = _nameController.text.trim().isNotEmpty;
     });
   }
 
   @override
   void dispose() {
     _nameController.removeListener(_updateValidity);
-    _pathController.removeListener(_updateValidity);
     _nameController.dispose();
-    _pathController.dispose();
     super.dispose();
+  }
+
+  // Método para generar los ítems del dropdown
+  List<DropdownMenuItem<String?>> _buildDropdownItems() {
+    // Primero añadimos la opción de raíz
+    final items = [DropdownMenuItem<String?>(value: null, child: Text("Raíz"))];
+
+    // Función recursiva para añadir colecciones con indentación
+    void addCollectionItems(List<RestEndpoint> collections, int depth) {
+      for (var collection in collections) {
+        if (collection.isGroup) {
+          items.add(
+            DropdownMenuItem<String?>(
+              value: collection.id,
+              child: Padding(
+                padding: EdgeInsets.only(left: depth * 16.0),
+                child: Text(collection.name),
+              ),
+            ),
+          );
+
+          // Añadir hijos recursivamente
+          if (collection.children.isNotEmpty) {
+            addCollectionItems(collection.children, depth + 1);
+          }
+        }
+      }
+    }
+
+    // Añadir todas las colecciones (carpetas)
+    addCollectionItems(widget.collections, 0);
+
+    return items;
   }
 
   @override
@@ -86,8 +117,8 @@ class _CreateEndpointDialogState extends State<CreateEndpointDialog> {
             ),
             SizedBox(height: 16),
 
-            // Selector de método
-            Text(context.tr('collections.http_method')),
+            // Selector de carpeta
+            Text("Guardar en carpeta:"),
             SizedBox(height: 8),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -99,55 +130,17 @@ class _CreateEndpointDialogState extends State<CreateEndpointDialog> {
                 ),
               ),
               child: DropdownButtonHideUnderline(
-                child: DropdownButton<Method>(
+                child: DropdownButton<String?>(
                   isExpanded: true,
-                  value: _selectedMethod,
-                  onChanged: (Method? value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedMethod = value;
-                      });
-                    }
+                  value: _selectedParentId,
+                  hint: Text("Seleccionar carpeta"),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedParentId = value;
+                    });
                   },
-                  items:
-                      Method.values.map((Method method) {
-                        return DropdownMenuItem<Method>(
-                          value: method,
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: method.color,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  method.stringName,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                  items: _buildDropdownItems(),
                 ),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // URL del endpoint
-            TextField(
-              controller: _pathController,
-              decoration: InputDecoration(
-                labelText: context.tr('collections.endpoint_url'),
-                hintText: 'https://api.example.com/endpoint',
-                border: OutlineInputBorder(),
               ),
             ),
           ],
@@ -164,8 +157,9 @@ class _CreateEndpointDialogState extends State<CreateEndpointDialog> {
                   ? () {
                     widget.onSave(
                       _nameController.text.trim(),
-                      _selectedMethod,
-                      _pathController.text.trim(),
+                      widget.initialMethod ?? Method.get,
+                      widget.initialPath ?? '',
+                      _selectedParentId,
                     );
                     Navigator.pop(context);
                   }

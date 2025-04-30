@@ -207,64 +207,81 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder:
-          (context) => Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  endpoint.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-                SizedBox(height: 20),
-                ListTile(
-                  leading: Icon(
-                    endpoint.isGroup
-                        ? FontAwesomeIcons.lightFolderPlus
-                        : FontAwesomeIcons.lightFilePlus,
+          (context) => SafeArea(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    endpoint.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  title: Text(context.tr('collections.add_child')),
-                  onTap: () {
-                    Navigator.pop(context);
-                    if (endpoint.isGroup) {
-                      _showCreateEndpointDialog(context, parentId: endpoint.id);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: Icon(FontAwesomeIcons.lightPenToSquare),
-                  title: Text(context.tr('collections.edit')),
-                  onTap: () {
-                    Navigator.pop(context);
-                    if (endpoint.isGroup) {
-                      _showEditCollectionDialog(context, endpoint);
-                    } else {
-                      _showEditEndpointDialog(context, endpoint);
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: Icon(FontAwesomeIcons.lightCopy),
-                  title: Text(context.tr('collections.duplicate')),
-                  onTap: () {
-                    Navigator.pop(context);
-                    context.read<CollectionsCubit>().duplicateCollection(
-                      endpoint,
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(FontAwesomeIcons.lightTrash, color: Colors.red),
-                  title: Text(
-                    context.tr('collections.delete'),
-                    style: TextStyle(color: Colors.red),
+                  SizedBox(height: 20),
+                  if (endpoint.isGroup)
+                    ListTile(
+                      leading: Icon(
+                        endpoint.isGroup
+                            ? FontAwesomeIcons.lightFolderPlus
+                            : FontAwesomeIcons.lightFilePlus,
+                      ),
+                      title: Text(context.tr('collections.add_child')),
+                      onTap: () {
+                        Navigator.pop(context);
+                        if (endpoint.isGroup) {
+                          _showCreateEndpointDialog(
+                            context,
+                            parentId: endpoint.id,
+                          );
+                        }
+                      },
+                    ),
+                  ListTile(
+                    leading: Icon(FontAwesomeIcons.lightArrowRightArrowLeft),
+                    title: Text("Mover a..."),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showMoveEndpointDialog(context, endpoint);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showDeleteConfirmation(context, endpoint);
-                  },
-                ),
-              ],
+                  ListTile(
+                    leading: Icon(FontAwesomeIcons.lightPenToSquare),
+                    title: Text(context.tr('collections.edit')),
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (endpoint.isGroup) {
+                        _showEditCollectionDialog(context, endpoint);
+                      } else {
+                        _showEditEndpointDialog(context, endpoint);
+                      }
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(FontAwesomeIcons.lightCopy),
+                    title: Text(context.tr('collections.duplicate')),
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.read<CollectionsCubit>().duplicateCollection(
+                        endpoint,
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      FontAwesomeIcons.lightTrash,
+                      color: Colors.red,
+                    ),
+                    title: Text(
+                      context.tr('collections.delete'),
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showDeleteConfirmation(context, endpoint);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
     );
@@ -326,18 +343,26 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   void _showCreateEndpointDialog(BuildContext context, {String? parentId}) {
+    final collectionsState = context.read<CollectionsCubit>().state;
+
     showDialog(
       context: context,
       builder:
           (context) => CreateEndpointDialog(
-            onSave: (name, method, path) {
+            initialParentId: parentId,
+            collections: collectionsState.collections,
+            onSave: (name, method, path, selectedParentId) {
               final newEndpoint = RestEndpoint(
                 name: name,
                 isGroup: false,
                 method: method,
                 path: path,
               );
-              context.read<CollectionsCubit>().addCollection(newEndpoint);
+              // Usamos el parentId seleccionado en el diálogo
+              context.read<CollectionsCubit>().addCollection(
+                newEndpoint,
+                parentId: selectedParentId,
+              );
             },
           ),
     );
@@ -363,6 +388,12 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   void _showEditEndpointDialog(BuildContext context, RestEndpoint endpoint) {
+    final collectionsState = context.read<CollectionsCubit>().state;
+    String? currentParentId = _findParentId(
+      collectionsState.collections,
+      endpoint.id,
+    );
+
     showDialog(
       context: context,
       builder:
@@ -370,18 +401,58 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
             initialName: endpoint.name,
             initialMethod: endpoint.method,
             initialPath: endpoint.path,
-            onSave: (name, method, path) {
+            initialParentId: currentParentId,
+            collections: collectionsState.collections,
+            onSave: (name, method, path, selectedParentId) {
+              // Primero actualizamos el endpoint con los datos básicos
               final updatedEndpoint = endpoint.copyWith(
                 name: name,
                 method: method,
                 path: path,
               );
-              context.read<CollectionsCubit>().updateCollection(
-                updatedEndpoint,
-              );
+
+              // Si cambió la carpeta, necesitamos moverlo
+              if (currentParentId != selectedParentId) {
+                // Primero actualizamos el endpoint
+                context.read<CollectionsCubit>().updateCollection(
+                  updatedEndpoint,
+                );
+
+                // Luego lo movemos a la nueva carpeta
+                context.read<CollectionsCubit>().moveCollection(
+                  endpoint.id,
+                  selectedParentId,
+                );
+              } else {
+                // Solo actualizamos si no cambió la carpeta
+                context.read<CollectionsCubit>().updateCollection(
+                  updatedEndpoint,
+                );
+              }
             },
           ),
     );
+  }
+
+  // Función auxiliar para encontrar la carpeta padre de un endpoint
+  String? _findParentId(List<RestEndpoint> collections, String endpointId) {
+    for (var collection in collections) {
+      // Verificar si el endpoint está en esta colección
+      if (collection.children.any((child) => child.id == endpointId)) {
+        return collection.id;
+      }
+
+      // Buscar recursivamente en los hijos
+      if (collection.isGroup && collection.children.isNotEmpty) {
+        final foundId = _findParentId(collection.children, endpointId);
+        if (foundId != null) {
+          return foundId;
+        }
+      }
+    }
+
+    // Si no se encuentra en ninguna carpeta, está en la raíz
+    return null;
   }
 
   void _showDeleteConfirmation(BuildContext context, RestEndpoint endpoint) {
@@ -420,4 +491,111 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
           ),
     );
   }
+}
+
+void _showMoveEndpointDialog(BuildContext context, RestEndpoint endpoint) {
+  final collectionsState = context.read<CollectionsCubit>().state;
+  String? selectedFolderId;
+
+  showDialog(
+    context: context,
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          // Función para construir los items del dropdown
+          List<DropdownMenuItem<String?>> buildDropdownItems() {
+            final items = [
+              DropdownMenuItem<String?>(value: null, child: Text("Raíz")),
+            ];
+
+            void addCollectionItems(List<RestEndpoint> collections, int depth) {
+              for (var collection in collections) {
+                if (collection.isGroup && collection.id != endpoint.id) {
+                  // No mostrar la carpeta actual para evitar ciclos
+                  items.add(
+                    DropdownMenuItem<String?>(
+                      value: collection.id,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: depth * 16.0),
+                        child: Text(collection.name),
+                      ),
+                    ),
+                  );
+
+                  if (collection.children.isNotEmpty) {
+                    addCollectionItems(collection.children, depth + 1);
+                  }
+                }
+              }
+            }
+
+            addCollectionItems(collectionsState.collections, 0);
+            return items;
+          }
+
+          return AlertDialog(
+            title: Text("Mover ${endpoint.name}"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Seleccionar carpeta de destino:"),
+                SizedBox(height: 8),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black12
+                            : Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade300,
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String?>(
+                      isExpanded: true,
+                      value: selectedFolderId,
+                      hint: Text("Seleccionar carpeta"),
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedFolderId = value;
+                        });
+                      },
+                      items: buildDropdownItems(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(context.tr('common.cancel')),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Implementar la función de mover en el CollectionsCubit
+                  context.read<CollectionsCubit>().moveCollection(
+                    endpoint.id,
+                    selectedFolderId,
+                  );
+                  Navigator.pop(dialogContext);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text("Mover"),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }
