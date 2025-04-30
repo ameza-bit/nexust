@@ -1,8 +1,8 @@
-// lib/core/routes/app_routes.dart (modificado)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/ui/screens/auth/login_screen.dart';
+import 'package:nexust/ui/screens/auth/splash_screen.dart';
 import 'package:nexust/ui/screens/collections/proyects_list_screen.dart';
 import 'package:nexust/ui/screens/home/home_screen.dart';
 import 'package:nexust/ui/screens/home/tabs_screen.dart';
@@ -18,7 +18,7 @@ class AppRoutes {
     List<RouteBase> routes = [
       GoRoute(
         path: "/",
-        builder: (context, state) => const TabsScreen(),
+        builder: (context, state) => const SplashScreen(),
         routes: [
           GoRoute(
             name: HomeScreen.routeName,
