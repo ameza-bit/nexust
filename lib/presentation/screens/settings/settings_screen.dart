@@ -2,15 +2,43 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/routes/app_routes.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
 import 'package:nexust/presentation/widgets/settings/settings_section.dart';
 import 'package:nexust/presentation/widgets/settings/settings_item.dart';
 import 'package:nexust/presentation/widgets/settings/color_picker_dialog.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   static const String routeName = "settings";
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Activar la redirección al iniciar la pantalla
+    activateSettingsRedirect();
+  }
+  
+  void activateSettingsRedirect() {
+    // Necesitamos ejecutar esto después del primer frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Usamos directamente la clase sin importarla
+      _activateRoute();
+    });
+  }
+  
+  // Método separado para activar la redirección
+  void _activateRoute() {
+    // Importamos explícitamente para evitar problemas de dependencia circular
+    // ignore: implementation_imports
+    AppRoutes.activateSettingsRedirect();
+  }
 
   @override
   Widget build(BuildContext context) {

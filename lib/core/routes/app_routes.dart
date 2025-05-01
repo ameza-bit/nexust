@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
@@ -14,7 +15,25 @@ import 'package:nexust/presentation/screens/settings/settings_screen.dart';
 class AppRoutes {
   // Variable para controlar si ya se mostró el splash
   static bool _hasShownSplash = false;
-
+  
+  // Variable para controlar si debe mostrar la pantalla de configuraciones
+  static bool _shouldShowSettings = false;
+  
+  // Método para verificar si debe mostrar configuraciones
+  static bool get shouldShowSettings => _shouldShowSettings;
+  
+  // Método para activar la redirección a configuraciones
+  static void activateSettingsRedirect() {
+    _shouldShowSettings = true;
+    debugPrint('Settings redirect activated');
+  }
+  
+  // Método para desactivar la redirección a configuraciones
+  static void deactivateSettingsRedirect() {
+    _shouldShowSettings = false;
+    debugPrint('Settings redirect deactivated');
+  }
+  
   static RouterConfig<Object>? getGoRoutes(
     GlobalKey<NavigatorState> navigatorKey,
   ) {
@@ -35,6 +54,13 @@ class AppRoutes {
       GoRoute(
         name: HomeScreen.routeName,
         path: "/${HomeScreen.routeName}",
+        redirect: (context, state) {
+          // Si se debe mostrar la pantalla de configuraciones, redireccionar
+          if (_shouldShowSettings) {
+            return "/${HomeScreen.routeName}/${SettingsScreen.routeName}";
+          }
+          return null;
+        },
         builder: (context, state) => const TabsScreen(),
         routes: [
           GoRoute(
@@ -60,7 +86,20 @@ class AppRoutes {
           GoRoute(
             name: SettingsScreen.routeName,
             path: SettingsScreen.routeName,
-            builder: (context, state) => const SettingsScreen(),
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: const SettingsScreen(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              );
+            },
+            onExit: (context, state) {
+              // Desactivar la redirección cuando salimos manualmente de la pantalla
+              deactivateSettingsRedirect();
+              return true;
+            },
           ),
           GoRoute(
             name: RequestScreen.routeName,

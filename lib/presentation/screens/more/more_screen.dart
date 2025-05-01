@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/routes/app_routes.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
 import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
@@ -78,7 +79,11 @@ class MoreScreen extends StatelessWidget {
                       icon: FontAwesomeIcons.lightGear,
                       title: context.tr('more.settings'),
                       iconColor: theme.primaryColor,
-                      onTap: () => context.pushNamed(SettingsScreen.routeName),
+                      onTap: () {
+                        // Activar redirección persistente a configuraciones
+                        AppRoutes.activateSettingsRedirect();
+                        context.pushNamed(SettingsScreen.routeName);
+                      },
                     ),
                   ],
                 ),
