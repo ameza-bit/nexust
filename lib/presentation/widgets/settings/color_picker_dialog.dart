@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class ColorPickerDialog extends StatelessWidget {
+class ColorPickerDialog extends StatefulWidget {
   const ColorPickerDialog({
     super.key,
     required this.colors,
@@ -12,6 +12,19 @@ class ColorPickerDialog extends StatelessWidget {
   final List<Color> colors;
   final Color selectedColor;
   final Function(Color) onColorSelected;
+  
+  @override
+  State<ColorPickerDialog> createState() => _ColorPickerDialogState();
+}
+
+class _ColorPickerDialogState extends State<ColorPickerDialog> {
+  late Color _currentSelection;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentSelection = widget.selectedColor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +39,16 @@ class ColorPickerDialog extends StatelessWidget {
             crossAxisSpacing: 15,
             mainAxisSpacing: 15,
           ),
-          itemCount: colors.length,
+          itemCount: widget.colors.length,
           itemBuilder: (context, index) {
-            final color = colors[index];
-            final isSelected = selectedColor == color;
+            final color = widget.colors[index];
+            final isSelected = _currentSelection == color;
 
             return GestureDetector(
               onTap: () {
-                onColorSelected(color);
-                Navigator.of(context).pop();
+                setState(() {
+                  _currentSelection = color;
+                });
               },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
@@ -66,6 +80,13 @@ class ColorPickerDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(context.tr('common.cancel')),
+        ),
+        TextButton(
+          onPressed: () {
+            widget.onColorSelected(_currentSelection);
+            Navigator.of(context).pop();
+          },
+          child: Text(context.tr('common.apply')),
         ),
       ],
     );
