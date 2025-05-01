@@ -1,7 +1,7 @@
 # Nexust
 
 <p align="center">
-  <img src="assets/nexust_logo.png" alt="Nexust Logo" width="200"/>
+  <img src="assets/images/icon.png" alt="Nexust Logo" width="200"/>
 </p>
 <p align="center">
   <b>El punto central donde convergen todas tus APIs</b>
@@ -45,10 +45,22 @@ Nexust es un cliente REST avanzado multiplataforma desarrollado con Flutter que 
 
 ## Capturas de Pantalla
 
-<p align="center">
-  <img src="screenshots/dashboard.png" width="250" alt="Dashboard"/>
-  <img src="screenshots/request_editor.png" width="250" alt="Editor de Solicitudes"/>
-  <img src="screenshots/response_viewer.png" width="250" alt="Visualizador de Respuestas"/>
+### Light Mode
+
+<p align="justify">
+  <img src="assets/screenshots/IMG_8471.PNG" width="250" alt="Light Collections"/>
+  <img src="assets/screenshots/IMG_8500.PNG" width="250" alt="Light Request"/>
+  <img src="assets/screenshots/IMG_8495.PNG" width="250" alt="Light Menu"/>
+  <img src="assets/screenshots/IMG_8494.PNG" width="250" alt="Light Settings"/>
+</p>
+
+### Dark Mode
+
+<p align="justify">
+  <img src="assets/screenshots/IMG_8466.PNG" width="250" alt="Dark Collections"/>
+  <img src="assets/screenshots/IMG_8488.PNG" width="250" alt="Dark Request"/>
+  <img src="assets/screenshots/IMG_8492.PNG" width="250" alt="Dark Menu"/>
+  <img src="assets/screenshots/IMG_8493.PNG" width="250" alt="Dark Settings"/>
 </p>
 
 ## Tecnologías
