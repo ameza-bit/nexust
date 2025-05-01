@@ -9,7 +9,9 @@ import 'package:nexust/presentation/widgets/home/navigator_bar.dart';
 
 class TabsScreen extends StatefulWidget {
   static const String routeName = "tabs";
-  const TabsScreen({super.key});
+  const TabsScreen({super.key, this.initialIndex});
+
+  final int? initialIndex;
 
   @override
   State<TabsScreen> createState() => _TabsScreenState();
@@ -22,7 +24,11 @@ class _TabsScreenState extends State<TabsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(
+      length: 4,
+      vsync: this,
+      initialIndex: widget.initialIndex ?? 0,
+    );
   }
 
   @override

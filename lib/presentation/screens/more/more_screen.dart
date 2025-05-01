@@ -82,7 +82,7 @@ class MoreScreen extends StatelessWidget {
                       onTap: () {
                         // Activar redirección persistente a configuraciones
                         AppRoutes.activateSettingsRedirect();
-                        context.pushNamed(SettingsScreen.routeName);
+                        context.goNamed(SettingsScreen.routeName);
                       },
                     ),
                   ],
