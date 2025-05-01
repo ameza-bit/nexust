@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "431032862826",
+    "project_id": "nexust",
+    "storage_bucket": "nexust.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431032862826:android:b2181e897f9d453c5be213",
+        "android_client_info": {
+          "package_name": "com.axolotlsoftware.nexust"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXGyQpAh9YUKQnQVovTWgb43ztYqptH5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
