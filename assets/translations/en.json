@@ -98,6 +98,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "create": "Create",
+    "apply": "Apply",
     "close": "Close"
   }
 }

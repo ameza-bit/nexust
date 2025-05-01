@@ -50,9 +50,14 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> _updateSettings(SettingsEntity newSettings) async {
+    // Emitir solo el cambio de configuración sin recargar toda la UI
     emit(state.copyWith(settings: newSettings));
     try {
-      await _settingsRepository.saveSettings(newSettings);
+      // Guardar configuración de forma asíncrona sin bloquear la UI
+      _settingsRepository.saveSettings(newSettings).catchError((e) {
+        // Solo emitir error si falla la operación
+        emit(state.copyWith(error: e.toString()));
+      });
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }

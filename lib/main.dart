@@ -13,7 +13,7 @@ import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
-import 'package:nexust/ui/themes/main_theme.dart';
+import 'package:nexust/core/themes/main_theme.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
@@ -56,10 +56,19 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) {
+        // Solo reconstruir cuando cambian propiedades que afectan al tema o idioma
+        return previous.settings.isDarkMode != current.settings.isDarkMode ||
+            previous.settings.primaryColor != current.settings.primaryColor ||
+            previous.settings.fontSize != current.settings.fontSize ||
+            previous.settings.language != current.settings.language;
+      },
       builder: (context, state) {
+        final routerConfig = AppRoutes.getGoRoutes(navigatorKey);
+
         return MaterialApp.router(
           title: 'Nexust',
-          routerConfig: AppRoutes.getGoRoutes(navigatorKey),
+          routerConfig: routerConfig,
           theme: MainTheme.lightTheme.copyWith(
             primaryColor: state.settings.primaryColor,
             textTheme: MainTheme.lightTheme.textTheme.apply(

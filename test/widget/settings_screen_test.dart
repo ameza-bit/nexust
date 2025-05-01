@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
-import 'package:nexust/ui/screens/settings/settings_screen.dart';
+import 'package:nexust/presentation/screens/settings/settings_screen.dart';
 import 'package:nexust/domain/entities/settings_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../mocks/mock_settings_repository.mocks.dart';

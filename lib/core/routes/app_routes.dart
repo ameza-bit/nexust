@@ -1,71 +1,104 @@
-// lib/core/routes/app_routes.dart (modificado)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
-import 'package:nexust/ui/screens/auth/login_screen.dart';
-import 'package:nexust/ui/screens/collections/proyects_list_screen.dart';
-import 'package:nexust/ui/screens/home/home_screen.dart';
-import 'package:nexust/ui/screens/home/tabs_screen.dart';
-import 'package:nexust/ui/screens/request/request_history_list_screen.dart';
-import 'package:nexust/ui/screens/request/request_screen.dart';
-import 'package:nexust/ui/screens/settings/enviroments_screen.dart';
-import 'package:nexust/ui/screens/settings/settings_screen.dart';
+import 'package:nexust/presentation/screens/auth/login_screen.dart';
+import 'package:nexust/presentation/screens/auth/splash_screen.dart';
+import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/home/tabs_screen.dart';
+import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
+import 'package:nexust/presentation/screens/request/request_screen.dart';
+import 'package:nexust/presentation/screens/settings/enviroments_screen.dart';
+import 'package:nexust/presentation/screens/settings/settings_screen.dart';
 
 class AppRoutes {
+  // Variable para controlar si ya se mostró el splash
+  static bool _hasShownSplash = false;
+
+  // Variable para controlar si debe mostrar la pantalla de configuraciones
+  static bool _shouldShowSettings = false;
+
+  // Método para activar la redirección a configuraciones
+  static void activateSettingsRedirect() {
+    _shouldShowSettings = true;
+  }
+
+  // Método para desactivar la redirección a configuraciones
+  static void deactivateSettingsRedirect() {
+    _shouldShowSettings = false;
+  }
+
   static RouterConfig<Object>? getGoRoutes(
     GlobalKey<NavigatorState> navigatorKey,
   ) {
     List<RouteBase> routes = [
       GoRoute(
         path: "/",
-        builder: (context, state) => const TabsScreen(),
+        redirect: (context, state) async {
+          // Si ya se mostró el splash, redirigir directamente al home
+          if (_hasShownSplash) {
+            return "/${HomeScreen.routeName}";
+          }
+          // Marcar que ya se mostró el splash
+          _hasShownSplash = true;
+          return null; // No redirigir, mostrar el splash
+        },
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        name: HomeScreen.routeName,
+        path: "/${HomeScreen.routeName}",
+        redirect: (context, state) {
+          if (_shouldShowSettings) {
+            return "/${HomeScreen.routeName}/${SettingsScreen.routeName}?initialIndex=3";
+          }
+          return null;
+        },
+        builder:
+            (context, state) => TabsScreen(
+              initialIndex: int.tryParse(
+                state.uri.queryParameters["initialIndex"] ?? "",
+              ),
+            ),
         routes: [
           GoRoute(
-            name: HomeScreen.routeName,
-            path: HomeScreen.routeName,
-            builder: (context, state) => const TabsScreen(),
-            routes: [
-              GoRoute(
-                name: LoginScreen.routeName,
-                path: LoginScreen.routeName,
-                builder: (context, state) => const LoginScreen(),
-              ),
-              GoRoute(
-                name: RequestHistoryListScreen.routeName,
-                path: RequestHistoryListScreen.routeName,
-                builder: (context, state) => const RequestHistoryListScreen(),
-              ),
-              GoRoute(
-                name: ProyectsListScreen.routeName,
-                path: ProyectsListScreen.routeName,
-                builder: (context, state) => const ProyectsListScreen(),
-              ),
-              GoRoute(
-                name: EnviromentsScreen.routeName,
-                path: EnviromentsScreen.routeName,
-                builder: (context, state) => const EnviromentsScreen(),
-              ),
-              GoRoute(
-                name: SettingsScreen.routeName,
-                path: SettingsScreen.routeName,
-                builder: (context, state) => const SettingsScreen(),
-              ),
-              GoRoute(
-                name: RequestScreen.routeName,
-                path: "${RequestScreen.routeName}/:requestUuid",
-                builder: (context, state) {
-                  final requestId = state.pathParameters['requestUuid'] ?? '';
-                  final endpoint = _getArgument<RestEndpoint>(
-                    state,
-                    'endpoint',
-                  );
-                  return RequestScreen(
-                    endpointId: requestId,
-                    endpoint: endpoint,
-                  );
-                },
-              ),
-            ],
+            name: LoginScreen.routeName,
+            path: LoginScreen.routeName,
+            builder: (context, state) => const LoginScreen(),
+          ),
+          GoRoute(
+            name: RequestHistoryListScreen.routeName,
+            path: RequestHistoryListScreen.routeName,
+            builder: (context, state) => const RequestHistoryListScreen(),
+          ),
+          GoRoute(
+            name: ProyectsListScreen.routeName,
+            path: ProyectsListScreen.routeName,
+            builder: (context, state) => const ProyectsListScreen(),
+          ),
+          GoRoute(
+            name: EnviromentsScreen.routeName,
+            path: EnviromentsScreen.routeName,
+            builder: (context, state) => const EnviromentsScreen(),
+          ),
+          GoRoute(
+            name: SettingsScreen.routeName,
+            path: SettingsScreen.routeName,
+            builder: (context, state) => const SettingsScreen(),
+            onExit: (context, state) {
+              // Desactivar la redirección cuando salimos manualmente de la pantalla
+              deactivateSettingsRedirect();
+              return true;
+            },
+          ),
+          GoRoute(
+            name: RequestScreen.routeName,
+            path: "${RequestScreen.routeName}/:requestUuid",
+            builder: (context, state) {
+              final requestId = state.pathParameters['requestUuid'] ?? '';
+              final endpoint = _getArgument<RestEndpoint>(state, 'endpoint');
+              return RequestScreen(endpointId: requestId, endpoint: endpoint);
+            },
           ),
         ],
       ),
