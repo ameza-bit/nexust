@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
+import 'package:nexust/presentation/screens/auth/user_profile_screen.dart';
 import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/home/tabs_screen.dart';
@@ -46,9 +48,26 @@ class AppRoutes {
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
+        name: LoginScreen.routeName,
+        path: "/${LoginScreen.routeName}",
+        builder: (context, state) => const LoginScreen(),
+        redirect: (context, state) {
+          // Si el usuario ya está autenticado, redirigir al home
+          if (FirebaseAuth.instance.currentUser != null) {
+            return "/${HomeScreen.routeName}";
+          }
+          return null;
+        },
+      ),
+      GoRoute(
         name: HomeScreen.routeName,
         path: "/${HomeScreen.routeName}",
         redirect: (context, state) {
+          // Verificar si el usuario está autenticado
+          if (FirebaseAuth.instance.currentUser == null) {
+            return "/${LoginScreen.routeName}";
+          }
+
           if (_shouldShowSettings) {
             return "/${HomeScreen.routeName}/${SettingsScreen.routeName}?initialIndex=3";
           }
@@ -62,9 +81,9 @@ class AppRoutes {
             ),
         routes: [
           GoRoute(
-            name: LoginScreen.routeName,
-            path: LoginScreen.routeName,
-            builder: (context, state) => const LoginScreen(),
+            name: UserProfileScreen.routeName,
+            path: UserProfileScreen.routeName,
+            builder: (context, state) => const UserProfileScreen(),
           ),
           GoRoute(
             name: RequestHistoryListScreen.routeName,
