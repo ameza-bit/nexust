@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -313,7 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
 
                             // Separador
-                            if (!_isResetPassword)
+                            if (!_isResetPassword && kDebugMode)
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 24.0,
@@ -356,7 +357,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
 
                             // Botones sociales
-                            if (!_isResetPassword)
+                            if (!_isResetPassword && kDebugMode)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: SocialButton(

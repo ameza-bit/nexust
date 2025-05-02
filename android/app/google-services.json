@@ -12,7 +12,20 @@
           "package_name": "com.axolotlsoftware.nexust"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "431032862826-g9l3g02rhake8rpuv99bu4r8aiua0hj2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.axolotlsoftware.nexust",
+            "certificate_hash": "df91c534376172b1879dd33a94a06a4da11cccf7"
+          }
+        },
+        {
+          "client_id": "431032862826-qvcg9i04ej37d7hsee36qgfecpiv7e71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCXGyQpAh9YUKQnQVovTWgb43ztYqptH5Y"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431032862826-qvcg9i04ej37d7hsee36qgfecpiv7e71.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "431032862826-e54vp3dsavhaeokka2l0k5r9mg223cs5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.axolotlsoftware.nexust"
+              }
+            }
+          ]
         }
       }
     }

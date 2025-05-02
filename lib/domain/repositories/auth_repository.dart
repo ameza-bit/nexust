@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
@@ -15,4 +16,6 @@ abstract class AuthRepository {
   Future<UserCredential> signInWithGoogle();
   Future<void> resetPassword(String email);
   Future<void> signOut();
+
+  Future<String> uploadProfileImage(Uint8List imageBytes, String userId);
 }

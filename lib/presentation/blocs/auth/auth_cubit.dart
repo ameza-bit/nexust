@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
@@ -174,5 +175,68 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> close() {
     _authStateSubscription?.cancel();
     return super.close();
+  }
+
+  Future<void> updateDisplayName(String displayName) async {
+    emit(AuthState.loading());
+    try {
+      final user = _authRepository.currentUser;
+      if (user != null) {
+        await user.updateDisplayName(displayName);
+
+        // Firebase no actualiza inmediatamente la instancia de usuario actual después de
+        // updateDisplayName, por lo que necesitamos recargar el usuario manualmente
+        await user.reload();
+
+        // Emitir el estado actualizado con el usuario actualizado
+        emit(AuthState.authenticated(_authRepository.currentUser!));
+      } else {
+        emit(AuthState.error('No hay usuario autenticado'));
+      }
+    } catch (e) {
+      emit(AuthState.error('Error al actualizar el nombre: $e'));
+    }
+  }
+
+  Future<void> updateProfilePhoto(String photoUrl) async {
+    emit(AuthState.loading());
+    try {
+      final user = _authRepository.currentUser;
+      if (user != null) {
+        await user.updatePhotoURL(photoUrl);
+
+        // Firebase no actualiza inmediatamente la instancia de usuario actual después de
+        // updatePhotoURL, por lo que necesitamos recargar el usuario manualmente
+        await user.reload();
+
+        // Emitir el estado actualizado con el usuario actualizado
+        emit(AuthState.authenticated(_authRepository.currentUser!));
+      } else {
+        emit(AuthState.error('No hay usuario autenticado'));
+      }
+    } catch (e) {
+      emit(AuthState.error('Error al actualizar la foto de perfil: $e'));
+    }
+  }
+
+  Future<void> uploadProfileImage(Uint8List imageBytes) async {
+    emit(AuthState.loading());
+    try {
+      final user = _authRepository.currentUser;
+      if (user != null) {
+        // Usar el repositorio para subir la imagen y obtener la URL
+        final photoUrl = await _authRepository.uploadProfileImage(
+          imageBytes,
+          user.uid,
+        );
+
+        // Actualizar la URL de la foto en el perfil del usuario
+        await updateProfilePhoto(photoUrl);
+      } else {
+        emit(AuthState.error('No hay usuario autenticado'));
+      }
+    } catch (e) {
+      emit(AuthState.error('Error al subir la imagen: $e'));
+    }
   }
 }

@@ -60,6 +60,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '431032862826',
     projectId: 'nexust',
     storageBucket: 'nexust.firebasestorage.app',
+    androidClientId: '431032862826-g9l3g02rhake8rpuv99bu4r8aiua0hj2.apps.googleusercontent.com',
+    iosClientId: '431032862826-e54vp3dsavhaeokka2l0k5r9mg223cs5.apps.googleusercontent.com',
     iosBundleId: 'com.axolotlsoftware.nexust',
   );
 

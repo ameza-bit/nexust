@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
+import 'package:nexust/presentation/screens/auth/edit_profile_screen.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/auth/user_profile_screen.dart';
@@ -84,6 +85,13 @@ class AppRoutes {
             name: UserProfileScreen.routeName,
             path: UserProfileScreen.routeName,
             builder: (context, state) => const UserProfileScreen(),
+            routes: [
+              GoRoute(
+                name: EditProfileScreen.routeName,
+                path: EditProfileScreen.routeName,
+                builder: (context, state) => const EditProfileScreen(),
+              ),
+            ],
           ),
           GoRoute(
             name: RequestHistoryListScreen.routeName,

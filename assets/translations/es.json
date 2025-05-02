@@ -154,6 +154,18 @@
       "generic": "Error de autenticación"
     }
   },
+  "edit_profile": {
+    "title": "Editar Perfil",
+    "name": "Nombre",
+    "name_hint": "Ingresa tu nombre",
+    "name_required": "Por favor ingresa tu nombre",
+    "email": "Correo electrónico",
+    "email_not_editable": "El correo electrónico no se puede editar",
+    "save_button": "Guardar cambios",
+    "profile_updated": "Perfil actualizado correctamente",
+    "crop_image": "Recortar imagen",
+    "change_photo": "Cambiar foto"
+  },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",

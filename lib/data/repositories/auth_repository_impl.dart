@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nexust/data/services/auth_service.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
@@ -42,5 +43,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> signOut() async {
     await _authService.signOut();
+  }
+
+  @override
+  Future<String> uploadProfileImage(Uint8List imageBytes, String userId) async {
+    return await _authService.uploadProfileImage(imageBytes, userId);
   }
 }
