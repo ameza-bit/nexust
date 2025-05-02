@@ -23,7 +23,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<true />
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -42,12 +42,16 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
+	<true />
 	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<true />
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>es</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>La aplicación necesita acceso a la galería para seleccionar una foto de perfil.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>La aplicación necesita acceso a la cámara para tomar una foto de perfil.</string>
 </dict>
 </plist>

@@ -1,9 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/routes/app_routes.dart';
+import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
+import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
+import 'package:nexust/presentation/screens/auth/user_profile_screen.dart';
 import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
 import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
 import 'package:nexust/presentation/screens/settings/enviroments_screen.dart';
@@ -37,55 +42,88 @@ class MoreScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Sección de Configuración
-                SettingsSection(
-                  title: '',
-                  children: [
-                    // Opción de Cuenta
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightUser,
-                      title: context.tr('more.account'),
-                      iconColor: theme.primaryColor,
-                      onTap: () => context.pushNamed(LoginScreen.routeName),
-                    ),
-                    // Opción de Historial
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightClockRotateLeft,
-                      title: context.tr('more.historial'),
-                      iconColor: theme.primaryColor,
-                      onTap:
-                          () => context.pushNamed(
-                            RequestHistoryListScreen.routeName,
-                          ),
-                    ),
-                    // Opción de Proyectos
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightFolder,
-                      title: context.tr('more.projects'),
-                      iconColor: theme.primaryColor,
-                      onTap:
-                          () => context.pushNamed(ProyectsListScreen.routeName),
-                    ),
-                    // Opción de Ambientes
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightEarthAmericas,
-                      title: context.tr('more.environments'),
-                      iconColor: theme.primaryColor,
-                      onTap:
-                          () => context.pushNamed(EnviromentsScreen.routeName),
-                    ),
-                    // Opción de Ajustes
-                    SettingsItem(
-                      icon: FontAwesomeIcons.lightGear,
-                      title: context.tr('more.settings'),
-                      iconColor: theme.primaryColor,
-                      onTap: () {
-                        // Activar redirección persistente a configuraciones
-                        AppRoutes.activateSettingsRedirect();
-                        context.goNamed(SettingsScreen.routeName);
-                      },
-                    ),
-                  ],
+                // Sección de Usuario
+                BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    final User? user = state.user;
+                    final bool isAuthenticated = user != null;
+
+                    return SettingsSection(
+                      title: '',
+                      children: [
+                        // Perfil de usuario o iniciar sesión
+                        SettingsItem(
+                          icon:
+                              isAuthenticated
+                                  ? FontAwesomeIcons.lightUser
+                                  : FontAwesomeIcons.lightRightToBracket,
+                          title:
+                              isAuthenticated
+                                  ? user.displayName ??
+                                      user.email ??
+                                      'Mi Perfil'
+                                  : context.tr('auth.login'),
+                          subtitle:
+                              isAuthenticated
+                                  ? context.tr('auth.profile.view_edit_profile')
+                                  : context.tr('auth.profile.login_to_sync'),
+                          iconColor: theme.primaryColor,
+                          onTap: () {
+                            if (isAuthenticated) {
+                              context.pushNamed(UserProfileScreen.routeName);
+                            } else {
+                              context.pushNamed(LoginScreen.routeName);
+                            }
+                          },
+                        ),
+
+                        // Opción de Historial
+                        SettingsItem(
+                          icon: FontAwesomeIcons.lightClockRotateLeft,
+                          title: context.tr('more.historial'),
+                          iconColor: theme.primaryColor,
+                          onTap:
+                              () => context.pushNamed(
+                                RequestHistoryListScreen.routeName,
+                              ),
+                        ),
+
+                        // Opción de Proyectos
+                        SettingsItem(
+                          icon: FontAwesomeIcons.lightFolder,
+                          title: context.tr('more.projects'),
+                          iconColor: theme.primaryColor,
+                          onTap:
+                              () => context.pushNamed(
+                                ProyectsListScreen.routeName,
+                              ),
+                        ),
+
+                        // Opción de Ambientes
+                        SettingsItem(
+                          icon: FontAwesomeIcons.lightEarthAmericas,
+                          title: context.tr('more.environments'),
+                          iconColor: theme.primaryColor,
+                          onTap:
+                              () => context.pushNamed(
+                                EnviromentsScreen.routeName,
+                              ),
+                        ),
+
+                        // Opción de Ajustes
+                        SettingsItem(
+                          icon: FontAwesomeIcons.lightGear,
+                          title: context.tr('more.settings'),
+                          iconColor: theme.primaryColor,
+                          onTap: () {
+                            // Activar redirección persistente a configuraciones
+                            AppRoutes.activateSettingsRedirect();
+                            context.goNamed(SettingsScreen.routeName);
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 24),
