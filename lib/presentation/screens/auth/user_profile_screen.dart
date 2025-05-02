@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
@@ -112,7 +113,7 @@ class UserProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black12 : Colors.black.withOpacity(0.05),
+            color: isDark ? Colors.black12 : Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -123,7 +124,7 @@ class UserProfileScreen extends StatelessWidget {
           // Avatar del usuario
           CircleAvatar(
             radius: 50,
-            backgroundColor: theme.primaryColor.withOpacity(0.1),
+            backgroundColor: theme.primaryColor.withAlpha(26),
             backgroundImage:
                 user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
             child:
@@ -168,8 +169,8 @@ class UserProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     user.emailVerified
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.orange.withOpacity(0.1),
+                        ? Colors.green.withAlpha(26)
+                        : Colors.orange.withAlpha(26),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: user.emailVerified ? Colors.green : Colors.orange,
@@ -349,29 +350,31 @@ class UserProfileScreen extends StatelessWidget {
   void _sendVerificationEmail(BuildContext context, User user) async {
     try {
       await user.sendEmailVerification();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-              'auth.profile.verification_sent',
-              namedArgs: {'email': user.email ?? ''},
-            ),
-          ),
-          backgroundColor: Colors.green,
-        ),
+
+      String message = 'auth.profile.verification_sent'.tr(
+        namedArgs: {'email': user.email ?? ''},
       );
+
+      if (context.mounted) {
+        message = context.tr(
+          'auth.profile.verification_sent',
+          namedArgs: {'email': user.email ?? ''},
+        );
+      }
+
+      Toast.show(message, backgroundColor: Colors.green);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-              'auth.profile.verification_error',
-              namedArgs: {'error': e.toString()},
-            ),
-          ),
-          backgroundColor: Colors.red,
-        ),
+      String message = 'auth.profile.verification_error'.tr(
+        namedArgs: {'error': e.toString()},
       );
+      if (context.mounted) {
+        message = context.tr(
+          'auth.profile.verification_error',
+          namedArgs: {'error': e.toString()},
+        );
+      }
+
+      Toast.show(message, backgroundColor: Colors.red);
     }
   }
 }
