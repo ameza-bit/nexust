@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
+import 'package:nexust/data/enums/auth_status.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/widgets/auth/custom_text_field.dart';
@@ -156,8 +156,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 // Avatar
                                 CircleAvatar(
                                   radius: 60,
-                                  backgroundColor: theme.primaryColor
-                                      .withOpacity(0.1),
+                                  backgroundColor: theme.primaryColor.withAlpha(
+                                    26,
+                                  ),
                                   backgroundImage:
                                       _imageChanged && _imageBytes != null
                                           ? MemoryImage(_imageBytes!)
@@ -179,30 +180,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                                 // Icono de cámara superpuesto
                                 if (kDebugMode)
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: Container(
-                                    width: 36,
-                                    height: 36,
-                                    decoration: BoxDecoration(
-                                      color: theme.primaryColor,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color:
-                                            isDark
-                                                ? Colors.black
-                                                : Colors.white,
-                                        width: 2,
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: theme.primaryColor,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color:
+                                              isDark
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        FontAwesomeIcons.lightCamera,
+                                        size: context.scaleIcon(16),
+                                        color: Colors.white,
                                       ),
                                     ),
-                                    child: Icon(
-                                      FontAwesomeIcons.lightCamera,
-                                      size: context.scaleIcon(16),
-                                      color: Colors.white,
-                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),

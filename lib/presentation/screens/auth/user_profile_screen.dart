@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
+import 'package:nexust/data/enums/auth_status.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/screens/auth/edit_profile_screen.dart';

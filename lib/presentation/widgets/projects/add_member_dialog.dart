@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/data/enums/project_role.dart';
-import 'package:nexust/data/models/project_member.dart';
 
 class AddMemberDialog extends StatefulWidget {
   final Function(String, ProjectRole) onSave;

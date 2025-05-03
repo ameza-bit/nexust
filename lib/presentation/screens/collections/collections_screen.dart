@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
 import 'package:nexust/presentation/blocs/collections/collections_state.dart';
+import 'package:nexust/presentation/blocs/projects/project_cubit.dart';
 import 'package:nexust/presentation/screens/request/request_screen.dart';
 import 'package:nexust/presentation/views/collections/collection_list_view.dart';
 import 'package:nexust/presentation/widgets/collections/create_collection_dialog.dart';
@@ -327,15 +329,25 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
   }
 
   void _showCreateCollectionDialog(BuildContext context) {
+    final projectCubit = context.read<ProjectCubit>();
+
     showDialog(
       context: context,
       builder:
           (context) => CreateCollectionDialog(
             onSave: (name) {
+              // Obtener el proyecto actual
+              final currentProject = projectCubit.state.currentProject;
+              if (currentProject == null) {
+                Toast.show('No hay un proyecto seleccionado');
+                return;
+              }
+
               final newCollection = RestEndpoint(
                 name: name,
                 isGroup: true,
                 children: [],
+                projectId: currentProject.id, // Añadir projectId aquí
               );
               context.read<CollectionsCubit>().addCollection(newCollection);
             },
@@ -345,6 +357,7 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
 
   void _showCreateEndpointDialog(BuildContext context, {String? parentId}) {
     final collectionsState = context.read<CollectionsCubit>().state;
+    final projectCubit = context.read<ProjectCubit>();
 
     showDialog(
       context: context,
@@ -353,11 +366,19 @@ class _CollectionsScreenState extends State<CollectionsScreen> {
             initialParentId: parentId,
             collections: collectionsState.collections,
             onSave: (name, method, path, selectedParentId) {
+              // Obtener el proyecto actual
+              final currentProject = projectCubit.state.currentProject;
+              if (currentProject == null) {
+                Toast.show('No hay un proyecto seleccionado');
+                return;
+              }
+
               final newEndpoint = RestEndpoint(
                 name: name,
                 isGroup: false,
                 method: method,
                 path: path,
+                projectId: currentProject.id, // Añadir projectId aquí
               );
               // Usamos el parentId seleccionado en el diálogo
               context

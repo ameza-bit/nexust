@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
+import 'package:nexust/data/enums/auth_status.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
@@ -164,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               hint: context.tr('auth.email_hint'),
                               prefixIcon: FontAwesomeIcons.lightEnvelope,
                               keyboardType: TextInputType.emailAddress,
+                              autofillHints: [AutofillHints.email],
                               validator: _validateEmail,
                               autofocus: true,
                             ),
@@ -178,6 +180,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     label: context.tr('auth.password'),
                                     hint: context.tr('auth.password_hint'),
                                     prefixIcon: FontAwesomeIcons.lightLock,
+                                    autofillHints: [
+                                      AutofillHints.password,
+                                      AutofillHints.newPassword,
+                                    ],
                                     isPassword: true,
                                     validator: _validatePassword,
                                   ),

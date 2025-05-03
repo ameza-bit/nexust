@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:nexust/data/enums/environment_status.dart';
 import 'package:nexust/data/models/environment.dart';
-
-enum EnvironmentStatus { initial, loading, success, error }
 
 class EnvironmentState extends Equatable {
   final List<Environment> environments;

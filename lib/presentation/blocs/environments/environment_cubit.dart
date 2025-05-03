@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/data/enums/environment_status.dart';
 import 'package:nexust/data/models/environment.dart';
 import 'package:nexust/domain/repositories/environment_repository.dart';
 import 'package:nexust/presentation/blocs/environments/environment_state.dart';
@@ -74,7 +76,7 @@ class EnvironmentCubit extends Cubit<EnvironmentState> {
         environment,
       );
 
-      final environments = List<Environment>.from(state.environments)
+      final environments = List<Environment>.of(state.environments)
         ..add(createdEnvironment);
 
       emit(
@@ -183,9 +185,8 @@ class EnvironmentCubit extends Cubit<EnvironmentState> {
     String name,
     String value,
   ) async {
-    final environment = state.environments.firstWhere(
+    final environment = state.environments.firstWhereOrNull(
       (e) => e.id == environmentId,
-      orElse: () => null as Environment,
     );
 
     if (environment == null) {
@@ -221,9 +222,8 @@ class EnvironmentCubit extends Cubit<EnvironmentState> {
     String newName,
     String value,
   ) async {
-    final environment = state.environments.firstWhere(
+    final environment = state.environments.firstWhereOrNull(
       (e) => e.id == environmentId,
-      orElse: () => null as Environment,
     );
 
     if (environment == null) {
@@ -260,9 +260,8 @@ class EnvironmentCubit extends Cubit<EnvironmentState> {
   }
 
   Future<void> deleteVariable(String environmentId, String name) async {
-    final environment = state.environments.firstWhere(
+    final environment = state.environments.firstWhereOrNull(
       (e) => e.id == environmentId,
-      orElse: () => null as Environment,
     );
 
     if (environment == null) {

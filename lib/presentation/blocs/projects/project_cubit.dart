@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/data/enums/project_role.dart';
+import 'package:nexust/data/enums/project_status.dart';
 import 'package:nexust/data/models/project.dart';
 import 'package:nexust/data/models/project_member.dart';
 import 'package:nexust/domain/repositories/project_member_repository.dart';
@@ -33,11 +35,10 @@ class ProjectCubit extends Cubit<ProjectState> {
             currentProject.id,
           ))) {
         // Buscar proyecto personal del usuario
-        currentProject = projects.firstWhere(
+        currentProject = projects.firstWhereOrNull(
           (p) =>
               p.isPersonal &&
               p.ownerId == FirebaseAuth.instance.currentUser?.uid,
-          orElse: () => null as Project,
         );
 
         // Si no tiene proyecto personal, crearlo
@@ -110,7 +111,7 @@ class ProjectCubit extends Cubit<ProjectState> {
       await _memberRepository.addMember(ownerMember);
 
       // Actualizar la lista de proyectos
-      final projects = List<Project>.from(state.projects)..add(createdProject);
+      final projects = List<Project>.of(state.projects)..add(createdProject);
 
       emit(state.copyWith(projects: projects, status: ProjectStatus.success));
     } catch (e) {

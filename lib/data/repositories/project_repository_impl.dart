@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/models/project.dart';
@@ -36,10 +37,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
   @override
   Future<Project?> getProjectById(String id) async {
     final projects = await getProjects();
-    return projects.firstWhere(
-      (p) => p.id == id,
-      orElse: () => null as Project,
-    );
+    return projects.firstWhereOrNull((p) => p.id == id);
   }
 
   @override
@@ -78,10 +76,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
     final projects = await getProjects();
 
     // Verificar si es un proyecto personal
-    final projectToDelete = projects.firstWhere(
-      (p) => p.id == id,
-      orElse: () => null as Project,
-    );
+    final projectToDelete = projects.firstWhereOrNull((p) => p.id == id);
 
     if (projectToDelete != null && projectToDelete.isPersonal) {
       throw Exception('No se puede eliminar el proyecto personal');
@@ -93,10 +88,9 @@ class ProjectRepositoryImpl implements ProjectRepository {
     // Si el proyecto eliminado era el actual, cambiar al proyecto personal
     final current = await getCurrentProject();
     if (current?.id == id) {
-      final personalProject = projects.firstWhere(
+      final personalProject = projects.firstWhereOrNull(
         (p) =>
             p.isPersonal && p.ownerId == FirebaseAuth.instance.currentUser?.uid,
-        orElse: () => null as Project,
       );
 
       if (personalProject != null) {
@@ -110,9 +104,8 @@ class ProjectRepositoryImpl implements ProjectRepository {
     final projects = await getProjects();
 
     // Verificar si ya existe un proyecto personal para este usuario
-    final existingPersonal = projects.firstWhere(
+    final existingPersonal = projects.firstWhereOrNull(
       (p) => p.isPersonal && p.ownerId == userId,
-      orElse: () => null as Project,
     );
 
     if (existingPersonal != null) {

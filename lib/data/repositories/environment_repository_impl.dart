@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/models/environment.dart';
 import 'package:nexust/domain/repositories/environment_repository.dart';
@@ -36,10 +36,7 @@ class EnvironmentRepositoryImpl implements EnvironmentRepository {
   @override
   Future<Environment?> getEnvironmentById(String id) async {
     final allEnvironments = await _getAllEnvironments();
-    return allEnvironments.firstWhere(
-      (env) => env.id == id,
-      orElse: () => null as Environment,
-    );
+    return allEnvironments.firstWhereOrNull((env) => env.id == id);
   }
 
   @override

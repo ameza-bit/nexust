@@ -108,7 +108,7 @@ class _EditEnvironmentDialogState extends State<EditEnvironmentDialog> {
                           boxShadow: [
                             if (_selectedColor == color)
                               BoxShadow(
-                                color: color.withOpacity(0.5),
+                                color: color.withAlpha(128),
                                 blurRadius: 8,
                                 spreadRadius: 2,
                               ),

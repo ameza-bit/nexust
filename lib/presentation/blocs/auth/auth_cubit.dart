@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/data/enums/auth_status.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
 import 'package:nexust/domain/repositories/project_repository.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';

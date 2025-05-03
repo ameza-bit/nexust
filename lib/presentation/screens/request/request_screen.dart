@@ -11,6 +11,7 @@ import 'package:nexust/data/models/environment.dart';
 import 'package:nexust/data/models/request_history_item.dart';
 import 'package:nexust/data/models/rest_endpoint.dart';
 import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
+import 'package:nexust/presentation/blocs/projects/project_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_state.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -55,17 +56,7 @@ class _RequestScreenState extends State<RequestScreen> {
   ];
 
   // Lista de entornos de ejemplo (en una app real vendría de un repositorio)
-  final List<Environment> _environments = [
-    Environment(
-      name: "Desarrollo",
-      color: Colors.green,
-      variables: {
-        "BASE_URL": "https://dev-api.example.com",
-        "API_KEY": "dev_api_key_123",
-      },
-    ),
-    // ... resto de environments
-  ];
+  final List<Environment> _environments = [];
 
   Environment? _selectedEnvironment;
 
@@ -557,6 +548,7 @@ class _RequestScreenState extends State<RequestScreen> {
   void _showSaveRequestDialog(BuildContext context, RequestState state) {
     final theme = Theme.of(context);
     final TextEditingController nameController = TextEditingController();
+    final projectCubit = context.read<ProjectCubit>();
 
     showDialog(
       context: context,
@@ -643,6 +635,13 @@ class _RequestScreenState extends State<RequestScreen> {
                     return;
                   }
 
+                  // Obtener el proyecto actual
+                  final currentProject = projectCubit.state.currentProject;
+                  if (currentProject == null) {
+                    Toast.show('No hay un proyecto seleccionado');
+                    return;
+                  }
+
                   // Crear un nuevo endpoint o colección
                   final endpoint = RestEndpoint(
                     name: nameController.text.trim(),
@@ -652,6 +651,7 @@ class _RequestScreenState extends State<RequestScreen> {
                     parameters: state.request.queryParams,
                     headers: state.request.headers,
                     body: state.request.body,
+                    projectId: currentProject.id, // Añadir projectId aquí
                   );
 
                   // Guardar el endpoint

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/enums/project_role.dart';
 import 'package:nexust/data/models/project_member.dart';
@@ -75,9 +76,8 @@ class ProjectMemberRepositoryImpl implements ProjectMemberRepository {
   @override
   Future<ProjectRole?> getUserRole(String userId, String projectId) async {
     final members = await _getAllMembers();
-    final member = members.firstWhere(
+    final member = members.firstWhereOrNull(
       (m) => m.userId == userId && m.projectId == projectId,
-      orElse: () => null as ProjectMember,
     );
 
     return member?.role;

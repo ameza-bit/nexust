@@ -10,6 +10,7 @@ class CustomTextField extends StatefulWidget {
   final IconData? suffixIcon;
   final bool isPassword;
   final TextInputType keyboardType;
+  final Iterable<String>? autofillHints;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final bool autofocus;
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
+    this.autofillHints,
     this.validator,
     this.onChanged,
     this.autofocus = false,
@@ -60,6 +62,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           onChanged: widget.onChanged,
           autofocus: widget.autofocus,
           style: TextStyle(fontSize: context.scaleText(16)),
+          autofillHints: widget.autofillHints,
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: TextStyle(

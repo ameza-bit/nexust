@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:nexust/data/enums/project_status.dart';
 import 'package:nexust/data/models/project.dart';
 import 'package:nexust/data/models/project_member.dart';
-
-enum ProjectStatus { initial, loading, success, error }
 
 class ProjectState extends Equatable {
   final List<Project> projects;
