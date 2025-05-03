@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -82,6 +83,9 @@ class AuthService {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
+      await SharedPreferences.getInstance().then((prefs) {
+        prefs.clear();
+      });
     } catch (e) {
       rethrow;
     }

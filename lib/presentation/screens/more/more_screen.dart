@@ -9,9 +9,8 @@ import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/user_profile_screen.dart';
-import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
+import 'package:nexust/presentation/screens/projects/project_list_screen.dart';
 import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
-import 'package:nexust/presentation/screens/settings/enviroments_screen.dart';
 import 'package:nexust/presentation/screens/settings/settings_screen.dart';
 import 'package:nexust/presentation/widgets/settings/settings_item.dart';
 import 'package:nexust/presentation/widgets/settings/settings_section.dart';
@@ -95,18 +94,7 @@ class MoreScreen extends StatelessWidget {
                           iconColor: theme.primaryColor,
                           onTap:
                               () => context.pushNamed(
-                                ProyectsListScreen.routeName,
-                              ),
-                        ),
-
-                        // Opción de Ambientes
-                        SettingsItem(
-                          icon: FontAwesomeIcons.lightEarthAmericas,
-                          title: context.tr('more.environments'),
-                          iconColor: theme.primaryColor,
-                          onTap:
-                              () => context.pushNamed(
-                                EnviromentsScreen.routeName,
+                                ProjectListScreen.routeName,
                               ),
                         ),
 

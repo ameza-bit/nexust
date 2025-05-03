@@ -6,12 +6,11 @@ import 'package:nexust/presentation/screens/auth/edit_profile_screen.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/auth/user_profile_screen.dart';
-import 'package:nexust/presentation/screens/collections/proyects_list_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/home/tabs_screen.dart';
+import 'package:nexust/presentation/screens/projects/project_list_screen.dart';
 import 'package:nexust/presentation/screens/request/request_history_list_screen.dart';
 import 'package:nexust/presentation/screens/request/request_screen.dart';
-import 'package:nexust/presentation/screens/settings/enviroments_screen.dart';
 import 'package:nexust/presentation/screens/settings/settings_screen.dart';
 
 class AppRoutes {
@@ -99,14 +98,9 @@ class AppRoutes {
             builder: (context, state) => const RequestHistoryListScreen(),
           ),
           GoRoute(
-            name: ProyectsListScreen.routeName,
-            path: ProyectsListScreen.routeName,
-            builder: (context, state) => const ProyectsListScreen(),
-          ),
-          GoRoute(
-            name: EnviromentsScreen.routeName,
-            path: EnviromentsScreen.routeName,
-            builder: (context, state) => const EnviromentsScreen(),
+            name: ProjectListScreen.routeName,
+            path: ProjectListScreen.routeName,
+            builder: (context, state) => const ProjectListScreen(),
           ),
           GoRoute(
             name: SettingsScreen.routeName,
