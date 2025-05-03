@@ -17,7 +17,7 @@ class ProjectCubit extends Cubit<ProjectState> {
 
   ProjectCubit(this._projectRepository, this._memberRepository)
     : super(const ProjectState()) {
-    // Monitorear cambios en el estado de autenticación para inicializar cuando sea necesario
+    // Monitorear cambios en el estado de autenticación
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       final wasSignedIn = _isSignedIn;
       _isSignedIn = user != null;
@@ -28,7 +28,7 @@ class ProjectCubit extends Cubit<ProjectState> {
       }
     });
 
-    // También intentar inicializar inmediatamente si el usuario ya está autenticado
+    // Inicializar inmediatamente si el usuario ya está autenticado
     if (FirebaseAuth.instance.currentUser != null) {
       _isSignedIn = true;
       initialize();
@@ -41,46 +41,50 @@ class ProjectCubit extends Cubit<ProjectState> {
     emit(state.copyWith(status: ProjectStatus.loading));
 
     try {
-      // Cargar todos los proyectos
+      // Cargar todos los proyectos primero para tener la lista completa
       final projects = await _projectRepository.getProjects();
 
-      // Obtener el proyecto actual o usar el personal si no hay ninguno
-      Project? currentProject = await _projectRepository.getCurrentProject();
+      // Verificar el usuario actual
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        emit(
+          state.copyWith(
+            status: ProjectStatus.error,
+            errorMessage: 'No hay un usuario autenticado',
+          ),
+        );
+        return;
+      }
 
-      // Si no hay proyecto actual o el usuario no es miembro, buscar el personal
-      if (currentProject == null ||
-          !(await _memberRepository.isUserMemberOfProject(
-            FirebaseAuth.instance.currentUser?.uid ?? '',
-            currentProject.id,
-          ))) {
-        // Buscar proyecto personal del usuario
-        currentProject = projects.firstWhereOrNull(
-          (p) =>
-              p.isPersonal &&
-              p.ownerId == FirebaseAuth.instance.currentUser?.uid,
+      // Buscar proyecto personal o crearlo si no existe
+      Project personalProject;
+
+      // Buscar entre proyectos existentes
+      final existingPersonal = projects.firstWhereOrNull(
+        (p) => p.isPersonal && p.ownerId == user.uid,
+      );
+
+      if (existingPersonal != null) {
+        personalProject = existingPersonal;
+      } else {
+        // Crear proyecto personal
+        personalProject = await _projectRepository.createPersonalProject(
+          user.uid,
+          user.displayName ?? user.email ?? 'Usuario',
         );
 
-        // Si no tiene proyecto personal, crearlo
-        if (currentProject == null) {
-          currentProject = await _projectRepository.createPersonalProject(
-            FirebaseAuth.instance.currentUser?.uid ?? '',
-            FirebaseAuth.instance.currentUser?.displayName ?? 'Usuario',
-          );
+        // Actualizar la lista de proyectos
+        projects.add(personalProject);
+      }
 
-          // Si acaba de ser creado, actualizamos la lista de proyectos
-          final updatedProjects = await _projectRepository.getProjects();
-          // Guardar el proyecto actual
-          await _projectRepository.setCurrentProject(currentProject.id);
-          emit(
-            state.copyWith(
-              projects: updatedProjects,
-              currentProject: currentProject,
-            ),
-          );
-        } else {
-          // Si ya existe, simplemente establecerlo como actual
-          await _projectRepository.setCurrentProject(currentProject.id);
-        }
+      // Obtener el proyecto actual
+      Project? currentProject = await _projectRepository.getCurrentProject();
+
+      // Si no hay proyecto actual o no pertenece al usuario, usar el personal
+      if (currentProject == null ||
+          !projects.any((p) => p.id == currentProject!.id)) {
+        currentProject = personalProject;
+        await _projectRepository.setCurrentProject(personalProject.id);
       }
 
       // Cargar miembros del proyecto actual

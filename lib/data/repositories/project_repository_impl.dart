@@ -19,7 +19,6 @@ class ProjectRepositoryImpl implements ProjectRepository {
   _projectsSubscription;
   List<Project> _cachedProjects = [];
   bool _isInitialized = false;
-  bool _personalProjectChecked = false;
 
   ProjectRepositoryImpl({FirestoreService? firestoreService})
     : _firestoreService = firestoreService ?? FirestoreService() {
@@ -30,17 +29,23 @@ class ProjectRepositoryImpl implements ProjectRepository {
   // Inicializar la suscripción a Firestore
   void _initFirestoreSubscription() {
     _projectsSubscription?.cancel();
-    _projectsSubscription = _firestoreService.streamProjects().listen(
-      (snapshot) async {
-        // Sólo procesar si ya tenemos datos en caché
-        if (_isInitialized) {
-          await _handleFirestoreChanges(snapshot);
-        }
-      },
-      onError: (error) {
-        debugPrint('Error en stream de proyectos: $error');
-      },
-    );
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    _projectsSubscription = _firestoreService
+        .streamUserProjects(user.uid)
+        .listen(
+          (snapshot) async {
+            // Sólo procesar si ya tenemos datos en caché
+            if (_isInitialized) {
+              await _handleFirestoreChanges(snapshot);
+            }
+          },
+          onError: (error) {
+            debugPrint('Error en stream de proyectos: $error');
+          },
+        );
   }
 
   // Procesar cambios de Firestore y actualizar caché local
@@ -80,18 +85,32 @@ class ProjectRepositoryImpl implements ProjectRepository {
         // El proyecto existe en ambos lugares, usar Firestore
         mergedProjects.add(firestoreProject);
       } else {
-        // El proyecto solo existe localmente, agregar al merge
-        // y sincronizar con Firestore
-        mergedProjects.add(localProject);
+        // El proyecto solo existe localmente
+        if (localProject.isPersonal) {
+          // Si es un proyecto personal local, verificar si hay uno en Firestore
+          final personalInFirestore = firestoreProjects.firstWhereOrNull(
+            (p) => p.isPersonal && p.ownerId == localProject.ownerId,
+          );
 
-        // Enviar a Firestore si no es un cambio de eliminación
-        await _saveProjectToFirestore(localProject);
+          if (personalInFirestore != null) {
+            // Ya existe un proyecto personal en Firestore, usar ese
+            continue;
+          }
+
+          // Es un proyecto personal que no está en Firestore, enviarlo
+          mergedProjects.add(localProject);
+          await _saveProjectToFirestore(localProject);
+        } else {
+          // Proyecto normal que solo existe localmente, agregarlo y sincronizar
+          mergedProjects.add(localProject);
+          await _saveProjectToFirestore(localProject);
+        }
       }
     }
 
     // 2. Agregar proyectos que solo existen en Firestore
     for (var firestoreProject in firestoreProjects) {
-      final exists = localProjects.any((p) => p.id == firestoreProject.id);
+      final exists = mergedProjects.any((p) => p.id == firestoreProject.id);
       if (!exists) {
         mergedProjects.add(firestoreProject);
       }
@@ -100,25 +119,12 @@ class ProjectRepositoryImpl implements ProjectRepository {
     // 3. Actualizar caché y guardar localmente
     _cachedProjects = mergedProjects;
     await _saveLocalProjects(mergedProjects);
-
-    // Marcar que ya se verificó la existencia del proyecto personal
-    if (firestoreProjects.any(
-      (p) =>
-          p.isPersonal && p.ownerId == FirebaseAuth.instance.currentUser?.uid,
-    )) {
-      _personalProjectChecked = true;
-    }
   }
 
   // Guardar un proyecto a Firestore
   Future<void> _saveProjectToFirestore(Project project) async {
     try {
-      final collection = _firestoreService.getUserProjectsCollection();
-      await _firestoreService.setDocument(
-        collection,
-        project.id,
-        project.toJson(),
-      );
+      await _firestoreService.saveProject(project.id, project.toJson());
     } catch (e) {
       debugPrint('Error al guardar proyecto en Firestore: $e');
       // No propagamos el error para permitir operación offline
@@ -128,8 +134,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
   // Eliminar un proyecto de Firestore
   Future<void> _deleteProjectFromFirestore(String projectId) async {
     try {
-      final collection = _firestoreService.getUserProjectsCollection();
-      await _firestoreService.deleteDocument(collection, projectId);
+      await _firestoreService.deleteProject(projectId);
     } catch (e) {
       debugPrint('Error al eliminar proyecto en Firestore: $e');
       // No propagamos el error para permitir operación offline
@@ -188,10 +193,13 @@ class ProjectRepositoryImpl implements ProjectRepository {
   // Sincronizar proyectos con Firestore
   Future<void> _syncProjectsWithFirestore() async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
       // Verificar si hay conexión a internet
       if (await _firestoreService.hasInternetConnection()) {
-        final collection = _firestoreService.getUserProjectsCollection();
-        final firestoreDocs = await _firestoreService.getDocuments(collection);
+        // Obtener proyectos del usuario desde Firestore
+        final firestoreDocs = await _firestoreService.getUserProjects(user.uid);
 
         final firestoreProjects =
             firestoreDocs
@@ -208,32 +216,6 @@ class ProjectRepositoryImpl implements ProjectRepository {
     } catch (e) {
       debugPrint('Error al sincronizar con Firestore: $e');
       // No propagamos el error para permitir operación offline
-    }
-  }
-
-  // Buscar un proyecto personal existente en Firestore
-  Future<Project?> _findPersonalProjectInFirestore(String userId) async {
-    try {
-      // Verificar si hay conexión
-      if (!await _firestoreService.hasInternetConnection()) {
-        return null;
-      }
-
-      final collection = _firestoreService.getUserProjectsCollection();
-      final docs =
-          await collection
-              .where('isPersonal', isEqualTo: true)
-              .where('ownerId', isEqualTo: userId)
-              .get();
-
-      if (docs.docs.isNotEmpty) {
-        final doc = docs.docs.first;
-        return Project.fromJson({...doc.data(), 'id': doc.id});
-      }
-      return null;
-    } catch (e) {
-      debugPrint('Error buscando proyecto personal en Firestore: $e');
-      return null;
     }
   }
 
@@ -327,24 +309,19 @@ class ProjectRepositoryImpl implements ProjectRepository {
 
   @override
   Future<Project> createPersonalProject(String userId, String userName) async {
-    // Verificar si ya realizamos la comprobación con Firestore
-    if (!_personalProjectChecked) {
-      // Buscar primero en Firestore si hay un proyecto personal existente
-      final firestorePersonalProject = await _findPersonalProjectInFirestore(
-        userId,
-      );
-      if (firestorePersonalProject != null) {
-        // Si existe en Firestore pero no en local, agregarlo a local
-        final projects = await getProjects();
-        if (!projects.any((p) => p.isPersonal && p.ownerId == userId)) {
-          projects.add(firestorePersonalProject);
-          _cachedProjects = projects;
-          await _saveLocalProjects(projects);
-        }
-
-        _personalProjectChecked = true;
-        return firestorePersonalProject;
+    // Verificar si hay un proyecto personal en Firestore primero
+    final firestorePersonalProject = await _findPersonalProjectInFirestore(
+      userId,
+    );
+    if (firestorePersonalProject != null) {
+      // Ya existe en Firestore, agregar a local si no está
+      final projects = await getProjects();
+      if (!projects.any((p) => p.id == firestorePersonalProject.id)) {
+        projects.add(firestorePersonalProject);
+        _cachedProjects = projects;
+        await _saveLocalProjects(projects);
       }
+      return firestorePersonalProject;
     }
 
     // Si no existe en Firestore, verificar en la caché local
@@ -354,6 +331,8 @@ class ProjectRepositoryImpl implements ProjectRepository {
     );
 
     if (existingPersonal != null) {
+      // Existe localmente, sincronizar con Firestore
+      await _saveProjectToFirestore(existingPersonal);
       return existingPersonal;
     }
 
@@ -366,7 +345,6 @@ class ProjectRepositoryImpl implements ProjectRepository {
     );
 
     await createProject(personalProject);
-    _personalProjectChecked = true;
 
     // Si es el primer proyecto del usuario, establecerlo como actual
     if (projects.isEmpty) {
@@ -374,6 +352,25 @@ class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     return personalProject;
+  }
+
+  // Buscar un proyecto personal en Firestore
+  Future<Project?> _findPersonalProjectInFirestore(String userId) async {
+    try {
+      final personalProject = await _firestoreService.findPersonalProject(
+        userId,
+      );
+      if (personalProject != null) {
+        return Project.fromJson({
+          ...personalProject.data()!,
+          'id': personalProject.id,
+        });
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error buscando proyecto personal: $e');
+      return null;
+    }
   }
 
   @override
