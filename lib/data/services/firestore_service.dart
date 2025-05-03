@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart' show debugPrint;
+import 'package:flutter/foundation.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,7 +13,8 @@ class FirestoreService {
   // Verificar si hay conexión a internet
   Future<bool> hasInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    return connectivityResult.isNotEmpty &&
+        !connectivityResult.contains(ConnectivityResult.none);
   }
 
   // Obtener colección de proyectos del usuario actual
