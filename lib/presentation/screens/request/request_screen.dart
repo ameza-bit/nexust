@@ -143,8 +143,13 @@ class _RequestScreenState extends State<RequestScreen> {
 
   void _applyEnvironmentUrl() {
     if (_selectedEnvironment == null) return;
-    final baseUrl = _selectedEnvironment!.variables["BASE_URL"];
-    if (baseUrl == null) return;
+
+    // Obtener la URL base de las variables del entorno seleccionado
+    final baseUrl = _selectedEnvironment!.variables["API_URL"];
+    if (baseUrl == null) {
+      Toast.show("La variable API_URL no está definida en este entorno");
+      return;
+    }
 
     if (_urlController.text.isEmpty) {
       _urlController.text = baseUrl;

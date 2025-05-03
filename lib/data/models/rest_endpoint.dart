@@ -13,6 +13,7 @@ class RestEndpoint {
   final Object? body;
   final Map<String, dynamic>? response;
   final List<RestEndpoint> children;
+  final String projectId;
   bool isExpanded;
 
   RestEndpoint({
@@ -27,6 +28,7 @@ class RestEndpoint {
     this.response,
     this.children = const [],
     this.isExpanded = false,
+    required this.projectId,
   }) : id = id ?? const Uuid().v4();
 
   // Método para crear una copia con cambios opcionales
@@ -42,6 +44,7 @@ class RestEndpoint {
     Map<String, dynamic>? response,
     List<RestEndpoint>? children,
     bool? isExpanded,
+    String? projectId,
   }) {
     return RestEndpoint(
       id: id ?? this.id,
@@ -55,6 +58,7 @@ class RestEndpoint {
       response: response ?? this.response,
       children: children ?? this.children,
       isExpanded: isExpanded ?? this.isExpanded,
+      projectId: projectId ?? this.projectId,
     );
   }
 
@@ -86,6 +90,7 @@ class RestEndpoint {
       'response': response,
       'children': children.map((child) => child.toJson()).toList(),
       'isExpanded': isExpanded,
+      'projectId': projectId,
     };
   }
 
@@ -111,6 +116,7 @@ class RestEndpoint {
                   .toList()
               : [],
       isExpanded: json['isExpanded'] ?? false,
+      projectId: json['projectId'],
     );
   }
 }

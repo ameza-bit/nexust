@@ -5,16 +5,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/routes/app_routes.dart';
 import 'package:nexust/data/repositories/auth_repository_impl.dart';
 import 'package:nexust/data/repositories/collections_repository_impl.dart';
+import 'package:nexust/data/repositories/environment_repository_impl.dart';
+import 'package:nexust/data/repositories/project_member_repository_impl.dart';
+import 'package:nexust/data/repositories/project_repository_impl.dart';
 import 'package:nexust/data/repositories/request_repository_impl.dart';
 import 'package:nexust/data/repositories/settings_repository_impl.dart';
 import 'package:nexust/data/services/auth_service.dart';
 import 'package:nexust/data/services/http_service.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
+import 'package:nexust/domain/repositories/environment_repository.dart';
+import 'package:nexust/domain/repositories/project_member_repository.dart';
+import 'package:nexust/domain/repositories/project_repository.dart';
 import 'package:nexust/domain/repositories/request_repository.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
 import 'package:nexust/firebase_options.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/collections/collections_cubit.dart';
+import 'package:nexust/presentation/blocs/environments/environment_cubit.dart';
+import 'package:nexust/presentation/blocs/projects/project_cubit.dart';
 import 'package:nexust/presentation/blocs/request/request_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
@@ -36,6 +44,12 @@ Future<void> main() async {
     httpService,
   );
 
+  final ProjectRepository projectRepository = ProjectRepositoryImpl();
+  final ProjectMemberRepository projectMemberRepository =
+      ProjectMemberRepositoryImpl();
+  final EnvironmentRepository environmentRepository =
+      EnvironmentRepositoryImpl();
+
   // Configurar servicio de autenticación
   final authService = AuthService();
   final AuthRepository authRepository = AuthRepositoryImpl(authService);
@@ -52,7 +66,21 @@ Future<void> main() async {
         BlocProvider<RequestCubit>(
           create: (context) => RequestCubit(requestRepository),
         ),
-        BlocProvider<AuthCubit>(create: (context) => AuthCubit(authRepository)),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(authRepository, projectRepository),
+        ),
+        BlocProvider<ProjectCubit>(
+          create:
+              (context) =>
+                  ProjectCubit(projectRepository, projectMemberRepository),
+        ),
+        BlocProvider<EnvironmentCubit>(
+          create:
+              (context) => EnvironmentCubit(
+                environmentRepository,
+                context.read<ProjectCubit>(),
+              ),
+        ),
       ],
       child: EasyLocalization(
         supportedLocales: [Locale('en'), Locale('es')],

@@ -3,13 +3,16 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
+import 'package:nexust/domain/repositories/project_repository.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
+  final ProjectRepository _projectRepository;
   StreamSubscription<User?>? _authStateSubscription;
 
-  AuthCubit(this._authRepository) : super(AuthState.initial()) {
+  AuthCubit(this._authRepository, this._projectRepository)
+    : super(AuthState.initial()) {
     // Comprobar el estado de autenticación inicial
     _checkInitialAuthState();
 
@@ -76,7 +79,17 @@ class AuthCubit extends Cubit<AuthState> {
   ) async {
     emit(AuthState.loading());
     try {
-      await _authRepository.createUserWithEmailAndPassword(email, password);
+      // Crear usuario
+      final userCredential = await _authRepository
+          .createUserWithEmailAndPassword(email, password);
+
+      // Crear proyecto personal para el usuario
+      if (userCredential.user != null) {
+        await _projectRepository.createPersonalProject(
+          userCredential.user!.uid,
+          userCredential.user!.email ?? 'Usuario',
+        );
+      }
       // No es necesario emitir un nuevo estado aquí, ya que el listener lo hará
     } on FirebaseAuthException catch (e) {
       String errorMessage;
