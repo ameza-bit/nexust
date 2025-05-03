@@ -8,13 +8,32 @@ import 'package:nexust/data/models/project_member.dart';
 import 'package:nexust/domain/repositories/project_member_repository.dart';
 import 'package:nexust/domain/repositories/project_repository.dart';
 import 'package:nexust/presentation/blocs/projects/project_state.dart';
+import 'package:flutter/foundation.dart';
 
 class ProjectCubit extends Cubit<ProjectState> {
   final ProjectRepository _projectRepository;
   final ProjectMemberRepository _memberRepository;
+  bool _isSignedIn = false;
 
   ProjectCubit(this._projectRepository, this._memberRepository)
-    : super(const ProjectState());
+    : super(const ProjectState()) {
+    // Monitorear cambios en el estado de autenticación para inicializar cuando sea necesario
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      final wasSignedIn = _isSignedIn;
+      _isSignedIn = user != null;
+
+      // Si el estado cambió de no autenticado a autenticado, inicializar
+      if (!wasSignedIn && _isSignedIn) {
+        initialize();
+      }
+    });
+
+    // También intentar inicializar inmediatamente si el usuario ya está autenticado
+    if (FirebaseAuth.instance.currentUser != null) {
+      _isSignedIn = true;
+      initialize();
+    }
+  }
 
   Future<void> initialize() async {
     if (state.isInitialized) return;
@@ -28,7 +47,7 @@ class ProjectCubit extends Cubit<ProjectState> {
       // Obtener el proyecto actual o usar el personal si no hay ninguno
       Project? currentProject = await _projectRepository.getCurrentProject();
 
-      // Si no hay proyecto actual o el usuario no es miembro, usar el personal
+      // Si no hay proyecto actual o el usuario no es miembro, buscar el personal
       if (currentProject == null ||
           !(await _memberRepository.isUserMemberOfProject(
             FirebaseAuth.instance.currentUser?.uid ?? '',
@@ -47,11 +66,21 @@ class ProjectCubit extends Cubit<ProjectState> {
             FirebaseAuth.instance.currentUser?.uid ?? '',
             FirebaseAuth.instance.currentUser?.displayName ?? 'Usuario',
           );
-          projects.add(currentProject);
-        }
 
-        // Guardar el proyecto actual
-        await _projectRepository.setCurrentProject(currentProject.id);
+          // Si acaba de ser creado, actualizamos la lista de proyectos
+          final updatedProjects = await _projectRepository.getProjects();
+          // Guardar el proyecto actual
+          await _projectRepository.setCurrentProject(currentProject.id);
+          emit(
+            state.copyWith(
+              projects: updatedProjects,
+              currentProject: currentProject,
+            ),
+          );
+        } else {
+          // Si ya existe, simplemente establecerlo como actual
+          await _projectRepository.setCurrentProject(currentProject.id);
+        }
       }
 
       // Cargar miembros del proyecto actual
@@ -69,6 +98,7 @@ class ProjectCubit extends Cubit<ProjectState> {
         ),
       );
     } catch (e) {
+      debugPrint('Error al inicializar ProjectCubit: $e');
       emit(
         state.copyWith(status: ProjectStatus.error, errorMessage: e.toString()),
       );

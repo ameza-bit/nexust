@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart' show debugPrint;
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/data/models/project.dart';
 import 'package:nexust/data/services/firestore_service.dart';
 import 'package:nexust/domain/repositories/project_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class ProjectRepositoryImpl implements ProjectRepository {
   static const String _projectsKey = 'projects';
@@ -19,6 +19,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
   _projectsSubscription;
   List<Project> _cachedProjects = [];
   bool _isInitialized = false;
+  bool _personalProjectChecked = false;
 
   ProjectRepositoryImpl({FirestoreService? firestoreService})
     : _firestoreService = firestoreService ?? FirestoreService() {
@@ -99,6 +100,14 @@ class ProjectRepositoryImpl implements ProjectRepository {
     // 3. Actualizar caché y guardar localmente
     _cachedProjects = mergedProjects;
     await _saveLocalProjects(mergedProjects);
+
+    // Marcar que ya se verificó la existencia del proyecto personal
+    if (firestoreProjects.any(
+      (p) =>
+          p.isPersonal && p.ownerId == FirebaseAuth.instance.currentUser?.uid,
+    )) {
+      _personalProjectChecked = true;
+    }
   }
 
   // Guardar un proyecto a Firestore
@@ -202,6 +211,32 @@ class ProjectRepositoryImpl implements ProjectRepository {
     }
   }
 
+  // Buscar un proyecto personal existente en Firestore
+  Future<Project?> _findPersonalProjectInFirestore(String userId) async {
+    try {
+      // Verificar si hay conexión
+      if (!await _firestoreService.hasInternetConnection()) {
+        return null;
+      }
+
+      final collection = _firestoreService.getUserProjectsCollection();
+      final docs =
+          await collection
+              .where('isPersonal', isEqualTo: true)
+              .where('ownerId', isEqualTo: userId)
+              .get();
+
+      if (docs.docs.isNotEmpty) {
+        final doc = docs.docs.first;
+        return Project.fromJson({...doc.data(), 'id': doc.id});
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error buscando proyecto personal en Firestore: $e');
+      return null;
+    }
+  }
+
   @override
   Future<Project?> getProjectById(String id) async {
     // Primero buscar en caché
@@ -292,9 +327,28 @@ class ProjectRepositoryImpl implements ProjectRepository {
 
   @override
   Future<Project> createPersonalProject(String userId, String userName) async {
-    final projects = await getProjects();
+    // Verificar si ya realizamos la comprobación con Firestore
+    if (!_personalProjectChecked) {
+      // Buscar primero en Firestore si hay un proyecto personal existente
+      final firestorePersonalProject = await _findPersonalProjectInFirestore(
+        userId,
+      );
+      if (firestorePersonalProject != null) {
+        // Si existe en Firestore pero no en local, agregarlo a local
+        final projects = await getProjects();
+        if (!projects.any((p) => p.isPersonal && p.ownerId == userId)) {
+          projects.add(firestorePersonalProject);
+          _cachedProjects = projects;
+          await _saveLocalProjects(projects);
+        }
 
-    // Verificar si ya existe un proyecto personal para este usuario
+        _personalProjectChecked = true;
+        return firestorePersonalProject;
+      }
+    }
+
+    // Si no existe en Firestore, verificar en la caché local
+    final projects = await getProjects();
     final existingPersonal = projects.firstWhereOrNull(
       (p) => p.isPersonal && p.ownerId == userId,
     );
@@ -303,7 +357,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
       return existingPersonal;
     }
 
-    // Crear nuevo proyecto personal
+    // Crear nuevo proyecto personal solo si no existe en ningún lado
     final personalProject = Project(
       name: 'Proyecto Personal',
       description: 'Proyecto personal de $userName',
@@ -312,6 +366,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
     );
 
     await createProject(personalProject);
+    _personalProjectChecked = true;
 
     // Si es el primer proyecto del usuario, establecerlo como actual
     if (projects.isEmpty) {
