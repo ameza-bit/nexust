@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 
 class AppRoutes {
@@ -28,13 +29,20 @@ class AppRoutes {
         redirect: (context, state) async {
           // Si ya se mostró el splash, redirigir directamente al home
           if (_hasShownSplash) {
-            // return "/${HomeScreen.routeName}";
+            return "/${LoginScreen.routeName}";
           }
           // Marcar que ya se mostró el splash
           _hasShownSplash = true;
           return null; // No redirigir, mostrar el splash
         },
         builder: (context, state) => const SplashScreen(),
+        routes: [
+          GoRoute(
+            path: LoginScreen.routeName,
+            name: LoginScreen.routeName,
+            builder: (context, state) => const LoginScreen(),
+          ),
+        ],
       ),
     ];
 
