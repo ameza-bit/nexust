@@ -1,6 +1,17 @@
 {
   "login": {
     "welcome_back": "Bienvenido de vuelta",
-    "login_to_continue": "Inicia sesión para continuar"
+    "login_to_continue": "Inicia sesión para continuar",
+    "email": "Correo electrónico",
+    "email_hint": "ejemplo@correo.com",
+    "password": "Contraseña",
+    "password_hint": "••••••••",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "validation": {
+      "email_required": "Por favor ingresa tu correo electrónico",
+      "email_invalid": "Por favor ingresa un correo electrónico válido",
+      "password_required": "Por favor ingresa tu contraseña",
+      "password_short": "La contraseña debe tener al menos 6 caracteres"
+    }
   }
 }
