@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/themes/app_colors.dart';
-import 'package:nexust/presentation/widgets/general/custom_text_field.dart';
+import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
+import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
 class EmailPassSection extends StatefulWidget {
   const EmailPassSection({super.key});
@@ -92,6 +93,7 @@ class _EmailPassSectionState extends State<EmailPassSection> {
               }
             },
           ),
+          const SizedBox(height: 12),
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
@@ -109,6 +111,15 @@ class _EmailPassSectionState extends State<EmailPassSection> {
           ),
 
           const SizedBox(height: 32),
+
+          PrimaryButton(
+            text: context.tr('login.login_button'),
+            onPressed: () {
+              if (_formKey.currentState?.validate() == true) {
+                // TODO: Implementar funcionalidad
+              }
+            },
+          ),
         ],
       ),
     );

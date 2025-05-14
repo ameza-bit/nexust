@@ -7,6 +7,9 @@
     "password": "Contraseña",
     "password_hint": "••••••••",
     "forgot_password": "¿Olvidaste tu contraseña?",
+    "login_button": "Iniciar sesión",
+    "continue_with": "O continúa con",
+    "google": "Continuar con Google",
     "validation": {
       "email_required": "Por favor ingresa tu correo electrónico",
       "email_invalid": "Por favor ingresa un correo electrónico válido",
