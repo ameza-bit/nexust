@@ -10,6 +10,7 @@ class SecondaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
   final IconData? icon;
+  final Color? iconColor;
   final bool isLoading;
   final bool fullWidth;
   final double? height;
@@ -22,6 +23,7 @@ class SecondaryButton extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.icon,
+    this.iconColor,
     this.isLoading = false,
     this.fullWidth = true,
     this.height = 54.0,
@@ -96,7 +98,7 @@ class SecondaryButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: context.scaleIcon(16)),
+          Icon(icon, size: context.scaleIcon(16), color: iconColor),
           SizedBox(width: 8),
           Text(
             text,
