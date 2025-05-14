@@ -1,1 +1,6 @@
-{}
+{
+  "login": {
+    "welcome_back": "Bienvenido de vuelta",
+    "login_to_continue": "Inicia sesión para continuar"
+  }
+}

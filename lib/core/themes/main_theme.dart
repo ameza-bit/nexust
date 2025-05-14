@@ -19,7 +19,7 @@ class MainTheme {
     cardColor: Colors.white,
     dividerColor: Colors.grey.shade200,
     iconTheme: IconThemeData(color: Colors.grey.shade700),
-    textTheme: _createTextTheme(Colors.black),
+    textTheme: _createTextTheme(Colors.black87),
   );
 
   static ThemeData get darkTheme => ThemeData(
