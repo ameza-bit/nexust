@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/themes/app_colors.dart';
+import 'package:nexust/presentation/screens/more/settings_screen.dart';
 import 'package:nexust/presentation/views/auth/email_pass_section.dart';
 import 'package:nexust/presentation/views/auth/social_media_section.dart';
 import 'package:nexust/presentation/views/auth/welcome_section.dart';
@@ -19,9 +21,7 @@ class LoginScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const FaIcon(FontAwesomeIcons.lightGear),
-            onPressed: () {
-              // TODO: Open settings
-            },
+            onPressed: () => context.pushNamed(SettingsScreen.routeName),
           ),
         ],
       ),
