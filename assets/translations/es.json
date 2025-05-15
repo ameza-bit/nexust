@@ -43,5 +43,14 @@
       "en": "Inglés",
       "es": "Español"
     }
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "apply": "Aplicar",
+    "close": "Cerrar"
   }
 }
