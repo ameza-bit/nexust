@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nexust/core/enums/language.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/presentation/widgets/common/section_card.dart';
@@ -10,7 +11,7 @@ class LanguageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final language = 'Español';
+    final language = Language.spanish;
     final primaryColor = Colors.red.shade700;
 
     return SectionCard(
@@ -20,13 +21,13 @@ class LanguageSection extends StatelessWidget {
           icon: FontAwesomeIcons.lightGlobe,
           title: context.tr('settings.app_language'),
           iconColor: primaryColor,
-          trailing: DropdownButton<String>(
+          trailing: DropdownButton<Language>(
             value: language,
             icon: const Icon(Icons.arrow_drop_down),
             elevation: 16,
             style: TextStyle(color: context.textPrimary, fontSize: 16),
             underline: Container(height: 2, color: primaryColor),
-            onChanged: (String? value) {
+            onChanged: (Language? value) {
               // if (value != null) {
               //   final langCode = value == 'Español' ? 'es' : 'en';
               //   context.read<SettingsCubit>().updateLanguage(
@@ -36,12 +37,12 @@ class LanguageSection extends StatelessWidget {
               // }
             },
             items:
-                ['Español', 'English'].map<DropdownMenuItem<String>>((
-                  String value,
+                Language.values.map<DropdownMenuItem<Language>>((
+                  Language value,
                 ) {
-                  return DropdownMenuItem<String>(
+                  return DropdownMenuItem<Language>(
                     value: value,
-                    child: Text(value),
+                    child: Text("${value.flag} ${value.name}"),
                   );
                 }).toList(),
           ),

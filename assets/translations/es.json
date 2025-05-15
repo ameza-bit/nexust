@@ -1,7 +1,11 @@
 {
   "app": {
     "name": "app_name",
-    "description": "El punto central donde convergen todas tus APIs"
+    "description": "El punto central donde convergen todas tus APIs",
+    "language": {
+      "spanish": "Español",
+      "english": "Inglés"
+    }
   },
   "login": {
     "welcome_back": "Bienvenido de vuelta",
@@ -38,11 +42,7 @@
     "app_language": "Idioma de la Aplicación",
     "security": "Seguridad",
     "biometric_auth": "Autenticación Biométrica",
-    "biometric_auth_desc": "Utiliza huella digital o reconocimiento facial para acceder a la app",
-    "languages": {
-      "en": "Inglés",
-      "es": "Español"
-    }
+    "biometric_auth_desc": "Utiliza huella digital o reconocimiento facial para acceder a la app"
   },
   "common": {
     "save": "Guardar",
