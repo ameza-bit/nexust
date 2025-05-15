@@ -28,7 +28,6 @@ class AppRoutes {
       GoRoute(
         path: "/",
         redirect: (context, state) async {
-          return "/${SettingsScreen.routeName}";
           if (!_hasShownSplash) {
             _hasShownSplash = true;
             return "/";
