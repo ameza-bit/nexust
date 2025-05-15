@@ -17,14 +17,11 @@ class WelcomeSection extends StatelessWidget {
     final logoSize =
         isLargeScreen ? AppSizes.logoSizeTablet : AppSizes.logoSizeMobile;
 
-    final verticalSpacing =
-        isLargeScreen ? context.sectionSpacing : context.sectionSpacing;
-
     return Column(
       children: [
         // Logo o imagen
         Padding(
-          padding: EdgeInsets.symmetric(vertical: verticalSpacing),
+          padding: EdgeInsets.symmetric(vertical: context.sectionSpacing),
           child: Image.asset(
             'assets/images/icon.png',
             height: logoSize,
@@ -45,7 +42,10 @@ class WelcomeSection extends StatelessWidget {
 
         // Subtítulo
         Padding(
-          padding: EdgeInsets.only(top: AppSpacing.xs, bottom: verticalSpacing),
+          padding: EdgeInsets.only(
+            top: AppSpacing.xs,
+            bottom: context.sectionSpacing,
+          ),
           child: Text(
             context.tr('login.login_to_continue'),
             style: TextStyle(

@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:nexust/core/constants/app_constants.dart';
-import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/responsive_extensions.dart';
 import 'package:nexust/presentation/views/auth/email_pass_section.dart';
 import 'package:nexust/presentation/views/auth/social_media_section.dart';
 import 'package:nexust/presentation/views/auth/welcome_section.dart';
+import 'package:nexust/presentation/widgets/common/section_card.dart';
 
 class LoginTabletVersion extends StatelessWidget {
   const LoginTabletVersion({super.key});
@@ -29,18 +28,10 @@ class LoginTabletVersion extends StatelessWidget {
               children: [
                 const WelcomeSection(isLargeScreen: true),
                 const SizedBox(height: AppSpacing.lg),
-                Card(
-                  elevation: AppSizes.cardElevation,
-                  color: context.cardBackground,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppBorderRadius.card),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(AppSpacing.xxl),
-                    child: Column(
-                      children: [EmailPassSection(), SocialMediaSection()],
-                    ),
-                  ),
+                SectionCard(
+                  title: "",
+                  padding: const EdgeInsets.all(AppSpacing.xxl),
+                  children: [EmailPassSection(), SocialMediaSection()],
                 ),
               ],
             ),
