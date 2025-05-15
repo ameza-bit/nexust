@@ -13,7 +13,7 @@ class MainTheme {
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
+      foregroundColor: NeutralTheme.oilBlack,
       elevation: 0,
     ),
     cardColor: Colors.white,
