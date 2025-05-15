@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/constants/app_constants.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
@@ -5,6 +6,7 @@ import 'package:nexust/core/extensions/responsive_extensions.dart';
 import 'package:nexust/presentation/views/auth/email_pass_section.dart';
 import 'package:nexust/presentation/views/auth/social_media_section.dart';
 import 'package:nexust/presentation/views/auth/welcome_section.dart';
+import 'package:nexust/presentation/widgets/common/section_card.dart';
 
 class LoginWebVersion extends StatelessWidget {
   const LoginWebVersion({super.key});
@@ -31,8 +33,8 @@ class LoginWebVersion extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xxxl),
                   // Texto descriptivo de la app
-                  const Text(
-                    'Nexust',
+                  Text(
+                    context.tr('app.name'),
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
@@ -41,7 +43,7 @@ class LoginWebVersion extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'El punto central donde convergen todas tus APIs',
+                    context.tr('app.description'),
                     style: TextStyle(
                       fontSize: AppTextSizes.subtitleLarge,
                       color: Colors.white.withAlpha(230),
@@ -70,8 +72,11 @@ class LoginWebVersion extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       WelcomeSection(isLargeScreen: true),
-                      EmailPassSection(),
-                      SocialMediaSection(),
+                      SectionCard(
+                        title: "",
+                        padding: EdgeInsets.all(AppSpacing.xxl),
+                        children: [EmailPassSection(), SocialMediaSection()],
+                      ),
                     ],
                   ),
                 ),

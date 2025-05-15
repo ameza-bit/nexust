@@ -1,4 +1,8 @@
 {
+  "app": {
+    "name": "app_name",
+    "description": "El punto central donde convergen todas tus APIs"
+  },
   "login": {
     "welcome_back": "Bienvenido de vuelta",
     "login_to_continue": "Inicia sesión para continuar",
