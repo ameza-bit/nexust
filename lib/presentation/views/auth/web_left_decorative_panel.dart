@@ -8,39 +8,42 @@ class WebLeftDecorativePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.selectedColor,
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xxxl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo grande
-            Image.asset(
-              'assets/images/icon.png',
-              height: AppSizes.logoSizeWeb,
-              width: AppSizes.logoSizeWeb,
-            ),
-            const SizedBox(height: AppSpacing.xxxl),
-            // Texto descriptivo de la app
-            Text(
-              context.tr('app.name'),
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+    return Hero(
+      tag: 'web_left_decorative_panel',
+      child: Container(
+        color: context.selectedColor,
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xxxl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo grande
+              Image.asset(
+                'assets/images/icon.png',
+                height: AppSizes.logoSizeWeb,
+                width: AppSizes.logoSizeWeb,
               ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              context.tr('app.description'),
-              style: TextStyle(
-                fontSize: AppTextSizes.subtitleLarge,
-                color: Colors.white.withAlpha(230),
+              const SizedBox(height: AppSpacing.xxxl),
+              // Texto descriptivo de la app
+              Text(
+                context.tr('app.name'),
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                context.tr('app.description'),
+                style: TextStyle(
+                  fontSize: AppTextSizes.subtitleLarge,
+                  color: Colors.white.withAlpha(230),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
