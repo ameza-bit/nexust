@@ -7,12 +7,14 @@ class SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
+  final bool showDivider;
 
   const SectionCard({
     super.key,
     required this.title,
     required this.children,
     this.padding,
+    this.showDivider = true,
   });
 
   @override
@@ -47,7 +49,7 @@ class SectionCard extends StatelessWidget {
                     Column(
                       children: [
                         child,
-                        if (!isLast)
+                        if (!isLast && showDivider)
                           Divider(
                             height: 1,
                             thickness: 1,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show TextInputFormatter;
+import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 
@@ -95,7 +96,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             fillColor: isDark ? Colors.black12 : Colors.grey.shade50,
             prefixIcon: Icon(
               widget.prefixIcon,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: context.textSecondary,
               size: context.scaleIcon(18),
             ),
             suffixIcon:
@@ -120,8 +121,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     : widget.suffixIcon != null
                     ? Icon(
                       widget.suffixIcon,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color: context.textSecondary,
                       size: context.scaleIcon(18),
                     )
                     : null,

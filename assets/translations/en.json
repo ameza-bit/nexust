@@ -19,8 +19,13 @@
     "email_hint": "example@email.com",
     "password": "Password",
     "password_hint": "••••••••",
-    "forgot_password": "Forgot your password?",
     "login_button": "Login",
+    "register_button": "Create account",
+    "reset_button": "Send instructions",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "signup": "Sign up",
+    "signin": "Sign in",
     "continue_with": "Or continue with",
     "google": "Continue with Google",
     "validation": {
@@ -28,42 +33,43 @@
       "email_invalid": "Please enter a valid email",
       "password_required": "Please enter your password",
       "password_short": "Password must be at least 6 characters long"
-    }
-  },
-  "register": {
-    "title": "Create Account",
-    "subtitle": "Sign up to get started",
-    "name": "Name",
-    "name_hint": "Your name",
-    "email": "Email",
-    "email_hint": "example@email.com",
-    "password": "Password",
-    "password_hint": "••••••••",
-    "confirm_password": "Confirm Password",
-    "confirm_password_hint": "••••••••",
-    "register_button": "Register",
-    "already_have_account": "Already have an account?",
-    "login": "Login",
-    "validation": {
-      "name_required": "Please enter your name",
-      "email_required": "Please enter your email",
-      "email_invalid": "Please enter a valid email",
-      "password_required": "Please enter your password",
-      "password_short": "Password must be at least 6 characters long",
-      "password_mismatch": "Passwords do not match"
-    }
-  },
-  "forgot_password": {
-    "title": "Recover Password",
-    "subtitle": "Enter your email and we'll send you instructions to reset your password",
-    "email": "Email",
-    "email_hint": "example@email.com",
-    "send_button": "Send Instructions",
-    "back_to_login": "Back to login",
-    "success_message": "Instructions sent. Check your email.",
-    "validation": {
-      "email_required": "Please enter your email",
-      "email_invalid": "Please enter a valid email"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get started",
+      "name": "Name",
+      "name_hint": "Your name",
+      "email": "Email",
+      "email_hint": "example@email.com",
+      "password": "Password",
+      "password_hint": "••••••••",
+      "confirm_password": "Confirm Password",
+      "confirm_password_hint": "••••••••",
+      "register_button": "Register",
+      "already_have_account": "Already have an account?",
+      "login": "Login",
+      "validation": {
+        "name_required": "Please enter your name",
+        "email_required": "Please enter your email",
+        "email_invalid": "Please enter a valid email",
+        "password_required": "Please enter your password",
+        "password_short": "Password must be at least 6 characters long",
+        "password_mismatch": "Passwords do not match"
+      }
+    },
+    "forgot_password": {
+      "forgot_password": "Forgot your password?",
+      "title": "Recover Password",
+      "subtitle": "Enter your email and we'll send you instructions to reset your password",
+      "email": "Email",
+      "email_hint": "example@email.com",
+      "send_button": "Send Instructions",
+      "back_to_login": "Back to login",
+      "success_message": "Instructions sent. Check your email.",
+      "validation": {
+        "email_required": "Please enter your email",
+        "email_invalid": "Please enter a valid email"
+      }
     }
   },
   "settings": {
