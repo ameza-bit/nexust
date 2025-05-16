@@ -34,6 +34,7 @@ class LanguageSection extends StatelessWidget {
                 onChanged: (Language? value) {
                   if (value != null) {
                     context.read<SettingsCubit>().updateLanguage(value);
+                    context.setLocale(Locale(value.code));
                   }
                 },
                 items:

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 
 extension ThemeExtensions on ThemeData {
   // Obtener el factor de escala configurado por el usuario
@@ -30,9 +32,8 @@ extension BuildContextExtensions on BuildContext {
   double get fontScale {
     // Si estamos en un context con un SettingsCubit, usar ese valor
     try {
-      // final settingsState = read<SettingsCubit>().state;
-      // return settingsState.settings.fontSize;
-      return 1.0;
+      final settingsState = read<SettingsCubit>().state;
+      return settingsState.settings.fontSize;
     } catch (_) {
       // Si no hay SettingsCubit disponible, usar el valor del tema
       return Theme.of(this).textScaleFactor;
