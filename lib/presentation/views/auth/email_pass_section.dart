@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/themes/app_colors.dart';
 import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
 import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
@@ -98,6 +99,22 @@ class _EmailPassSectionState extends State<EmailPassSection> {
                 _submitForm(context);
               }
             },
+          ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () {
+                // TODO: Implementar funcionalidad
+              },
+              child: Text(
+                context.tr('login.forgot_password'),
+                style: TextStyle(
+                  color: AppColors.selectedColor(context),
+                  fontSize: context.scaleText(14),
+                ),
+              ),
+            ),
           ),
 
           const SizedBox(height: 32),
