@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/themes/app_colors.dart';
+import 'package:nexust/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
 import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
@@ -105,7 +107,7 @@ class _EmailPassSectionState extends State<EmailPassSection> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                // TODO: Implementar funcionalidad
+                context.pushNamed(ForgotPasswordScreen.routeName);
               },
               child: Text(
                 context.tr('login.forgot_password'),

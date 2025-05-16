@@ -30,6 +30,42 @@
       "password_short": "La contraseña debe tener al menos 6 caracteres"
     }
   },
+  "register": {
+    "title": "Crear cuenta",
+    "subtitle": "Regístrate para comenzar",
+    "name": "Nombre",
+    "name_hint": "Tu nombre",
+    "email": "Correo electrónico",
+    "email_hint": "ejemplo@correo.com",
+    "password": "Contraseña",
+    "password_hint": "••••••••",
+    "confirm_password": "Confirmar contraseña",
+    "confirm_password_hint": "••••••••",
+    "register_button": "Registrarse",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "login": "Iniciar sesión",
+    "validation": {
+      "name_required": "Por favor ingresa tu nombre",
+      "email_required": "Por favor ingresa tu correo electrónico",
+      "email_invalid": "Por favor ingresa un correo electrónico válido",
+      "password_required": "Por favor ingresa tu contraseña",
+      "password_short": "La contraseña debe tener al menos 6 caracteres",
+      "password_mismatch": "Las contraseñas no coinciden"
+    }
+  },
+  "forgot_password": {
+    "title": "Recuperar contraseña",
+    "subtitle": "Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña",
+    "email": "Correo electrónico",
+    "email_hint": "ejemplo@correo.com",
+    "send_button": "Enviar instrucciones",
+    "back_to_login": "Volver a inicio de sesión",
+    "success_message": "Instrucciones enviadas. Revisa tu correo electrónico.",
+    "validation": {
+      "email_required": "Por favor ingresa tu correo electrónico",
+      "email_invalid": "Por favor ingresa un correo electrónico válido"
+    }
+  },
   "settings": {
     "title": "Configuración",
     "appearance": "Apariencia",

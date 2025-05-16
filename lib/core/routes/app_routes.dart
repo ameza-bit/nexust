@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nexust/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
+import 'package:nexust/presentation/screens/auth/register_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
@@ -38,6 +40,18 @@ class AppRoutes {
             path: LoginScreen.routeName,
             name: LoginScreen.routeName,
             builder: (context, state) => const LoginScreen(),
+            routes: [
+              GoRoute(
+                path: RegisterScreen.routeName,
+                name: RegisterScreen.routeName,
+                builder: (context, state) => const RegisterScreen(),
+              ),
+              GoRoute(
+                path: ForgotPasswordScreen.routeName,
+                name: ForgotPasswordScreen.routeName,
+                builder: (context, state) => const ForgotPasswordScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: HomeScreen.routeName,
