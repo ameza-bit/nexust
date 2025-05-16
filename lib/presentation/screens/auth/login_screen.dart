@@ -13,29 +13,32 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const FaIcon(FontAwesomeIcons.lightGear),
-            onPressed: () => context.pushNamed(SettingsScreen.routeName),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const FaIcon(FontAwesomeIcons.lightGear),
+              onPressed: () => context.pushNamed(SettingsScreen.routeName),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          top: false,
+          child: Builder(
+            builder:
+                (context) =>
+                    context.isWeb
+                        ? const LoginWebVersion()
+                        : context.isTablet
+                        ? const LoginTabletVersion()
+                        : const LoginPhoneVersion(),
           ),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        child: Builder(
-          builder:
-              (context) =>
-                  context.isWeb
-                      ? const LoginWebVersion()
-                      : context.isTablet
-                      ? const LoginTabletVersion()
-                      : const LoginPhoneVersion(),
         ),
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:nexust/core/extensions/theme_extensions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
-import 'package:nexust/core/themes/app_colors.dart';
+import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
 import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
@@ -44,6 +44,22 @@ class _EmailPassSectionState extends State<EmailPassSection> {
       return context.tr('login.validation.password_short');
     }
     return null;
+  }
+
+  void _submitForm(BuildContext context) {
+    if (_formKey.currentState?.validate() ?? false) {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      context.read<AuthCubit>().signInWithEmailAndPassword(email, password);
+      // if (_isLogin) {
+      // } else {
+      //   context.read<AuthCubit>().createUserWithEmailAndPassword(
+      //     email,
+      //     password,
+      //   );
+      // }
+    }
   }
 
   @override
@@ -89,25 +105,9 @@ class _EmailPassSectionState extends State<EmailPassSection> {
             ],
             onEditingComplete: () {
               if (_formKey.currentState?.validate() == true) {
-                // TODO: Implementar funcionalidad
+                _submitForm(context);
               }
             },
-          ),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                // TODO: Implementar funcionalidad
-              },
-              child: Text(
-                context.tr('login.forgot_password'),
-                style: TextStyle(
-                  color: AppColors.selectedColor(context),
-                  fontSize: context.scaleText(14),
-                ),
-              ),
-            ),
           ),
 
           const SizedBox(height: 32),
@@ -116,7 +116,7 @@ class _EmailPassSectionState extends State<EmailPassSection> {
             text: context.tr('login.login_button'),
             onPressed: () {
               if (_formKey.currentState?.validate() == true) {
-                // TODO: Implementar funcionalidad
+                _submitForm(context);
               }
             },
           ),

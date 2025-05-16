@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class AppRoutes {
@@ -27,25 +29,27 @@ class AppRoutes {
     List<RouteBase> routes = [
       GoRoute(
         path: "/",
-        redirect: (context, state) async {
-          if (!_hasShownSplash) {
-            _hasShownSplash = true;
-            return "/";
-          }
-
-          return null;
+        builder: (context, state) {
+          _hasShownSplash = true;
+          return const SplashScreen();
         },
-        builder: (context, state) => const SplashScreen(),
         routes: [
-          GoRoute(
-            path: SettingsScreen.routeName,
-            name: SettingsScreen.routeName,
-            builder: (context, state) => const SettingsScreen(),
-          ),
           GoRoute(
             path: LoginScreen.routeName,
             name: LoginScreen.routeName,
             builder: (context, state) => const LoginScreen(),
+          ),
+          GoRoute(
+            path: HomeScreen.routeName,
+            name: HomeScreen.routeName,
+            builder: (context, state) => const HomeScreen(),
+            routes: [
+              GoRoute(
+                path: SettingsScreen.routeName,
+                name: SettingsScreen.routeName,
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
           ),
         ],
       ),
@@ -61,6 +65,18 @@ class AppRoutes {
               child: Center(child: Text(state.error.toString(), maxLines: 5)),
             ),
           ),
+      redirect: (context, state) {
+        if (_hasShownSplash && state.matchedLocation == "/") {
+          if (FirebaseAuth.instance.currentUser != null) {
+            return "/${HomeScreen.routeName}";
+          }
+          return "/${LoginScreen.routeName}";
+        } else if (!_hasShownSplash && state.matchedLocation != "/") {
+          return "/?redirected=${state.uri.path}";
+        }
+
+        return null;
+      },
     );
   }
 
