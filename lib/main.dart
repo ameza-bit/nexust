@@ -1,19 +1,32 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/routes/app_routes.dart';
 import 'package:nexust/core/themes/main_theme.dart';
+import 'package:nexust/data/repositories/settings_repository_impl.dart';
+import 'package:nexust/domain/repositories/settings_repository.dart';
+import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  SettingsRepository settingsRepository = SettingsRepositoryImpl();
+
   runApp(
-    EasyLocalization(
-      supportedLocales: [Locale('es')],
-      path: 'assets/translations',
-      fallbackLocale: Locale('es'),
-      child: const MainApp(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(settingsRepository),
+        ),
+      ],
+      child: EasyLocalization(
+        supportedLocales: [Locale('es')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('es'),
+        child: const MainApp(),
+      ),
     ),
   );
 }
