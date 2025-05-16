@@ -2,6 +2,11 @@
   "app": {
     "name": "Nexust",
     "description": "El punto central donde convergen todas tus APIs",
+    "theme": {
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
     "language": {
       "spanish": "Español",
       "english": "Inglés"

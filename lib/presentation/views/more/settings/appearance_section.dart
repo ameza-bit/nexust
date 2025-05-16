@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
@@ -53,7 +54,6 @@ class _AppearanceSectionState extends State<AppearanceSection> {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
-        final isDarkMode = state.settings.isDarkMode;
         final primaryColor = state.settings.primaryColor;
 
         final availableColors = [
@@ -74,10 +74,24 @@ class _AppearanceSectionState extends State<AppearanceSection> {
               icon: FontAwesomeIcons.lightMoonStars,
               title: context.tr('settings.dark_mode'),
               iconColor: primaryColor,
-              trailing: Switch(
-                value: isDarkMode,
-                activeColor: primaryColor,
-                onChanged: context.read<SettingsCubit>().updateIsDarkMode,
+              trailing: DropdownButton<ThemeMode>(
+                value: state.settings.themeMode,
+                icon: const Icon(Icons.arrow_drop_down),
+                elevation: 16,
+                style: TextStyle(color: context.textPrimary, fontSize: 16),
+                underline: Container(height: 2, color: primaryColor),
+                onChanged: (ThemeMode? value) {
+                  if (value != null) {
+                    context.read<SettingsCubit>().updateIsDarkMode(value);
+                  }
+                },
+                items:
+                    ThemeMode.values.map<DropdownMenuItem<ThemeMode>>((value) {
+                      return DropdownMenuItem<ThemeMode>(
+                        value: value,
+                        child: Text(context.tr("app.theme.${value.name}")),
+                      );
+                    }).toList(),
               ),
             ),
             SectionItem(

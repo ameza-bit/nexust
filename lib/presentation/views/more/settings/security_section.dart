@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
+import 'package:nexust/presentation/blocs/settings/settings_state.dart';
 import 'package:nexust/presentation/widgets/common/section_card.dart';
 import 'package:nexust/presentation/widgets/common/section_item.dart';
 
@@ -9,28 +12,27 @@ class SecuritySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final biometricEnabled = true;
-    final primaryColor = Colors.red.shade700;
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final primaryColor = state.settings.primaryColor;
 
-    return SectionCard(
-      title: context.tr('settings.security'),
-      children: [
-        SectionItem(
-          icon: FontAwesomeIcons.lightFingerprint,
-          title: context.tr('settings.biometric_auth'),
-          subtitle: context.tr('settings.biometric_auth_desc'),
-          iconColor: primaryColor,
-          trailing: Switch(
-            value: biometricEnabled,
-            activeColor: primaryColor,
-            onChanged: (value) {
-              // context.read<SettingsCubit>().toggleBiometricAuth(
-              //   value,
-              // );
-            },
-          ),
-        ),
-      ],
+        return SectionCard(
+          title: context.tr('settings.security'),
+          children: [
+            SectionItem(
+              icon: FontAwesomeIcons.lightFingerprint,
+              title: context.tr('settings.biometric_auth'),
+              subtitle: context.tr('settings.biometric_auth_desc'),
+              iconColor: primaryColor,
+              trailing: Switch(
+                value: state.settings.biometricEnabled,
+                activeColor: primaryColor,
+                onChanged: context.read<SettingsCubit>().updateBiometricEnabled,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/enums/language.dart';
 import 'package:nexust/data/models/setting.dart';
@@ -23,8 +24,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
   }
 
-  void updateIsDarkMode(bool isDarkMode) {
-    _updateSetting(state.settings.copyWith(isDarkMode: isDarkMode));
+  void updateIsDarkMode(ThemeMode isDarkMode) {
+    _updateSetting(state.settings.copyWith(themeMode: isDarkMode));
   }
 
   void updatePrimaryColor(Color primaryColor) {
