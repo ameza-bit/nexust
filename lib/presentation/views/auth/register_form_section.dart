@@ -6,7 +6,6 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/utils/toast.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
-import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
 import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
@@ -102,7 +101,7 @@ class _RegisterFormSectionState extends State<RegisterFormSection> {
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
           // Navegar a la pantalla principal cuando el registro es exitoso
-          context.goNamed(HomeScreen.routeName);
+          context.go("/");
         } else if (state.status == AuthStatus.error) {
           // Mostrar mensaje de error
           Toast.show(

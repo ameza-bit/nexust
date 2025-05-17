@@ -74,7 +74,9 @@ class AuthRepositoryImpl implements AuthRepository {
         photoUrl: user.photoURL,
       );
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
         throw Exception('login.error.user_not_found'.tr());
       } else {
         throw Exception(
