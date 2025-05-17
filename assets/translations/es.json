@@ -34,6 +34,10 @@
       "password_required": "Por favor ingresa tu contraseña",
       "password_short": "La contraseña debe tener al menos 6 caracteres"
     },
+    "error": {
+      "generic": "Error al iniciar sesión: {error}",
+      "user_not_found": "Credenciales incorrectas. Verifica tu email y contraseña."
+    },
     "register": {
       "title": "Crear cuenta",
       "subtitle": "Regístrate para comenzar",
@@ -55,6 +59,12 @@
         "password_required": "Por favor ingresa tu contraseña",
         "password_short": "La contraseña debe tener al menos 6 caracteres",
         "password_mismatch": "Las contraseñas no coinciden"
+      },
+      "error": {
+        "generic": "Error al registrar: {error}",
+        "default": "Error al registrar usuario",
+        "email_exists": "Este correo ya está registrado con otra cuenta.",
+        "weak_password": "La contraseña es demasiado débil."
       }
     },
     "forgot_password": {

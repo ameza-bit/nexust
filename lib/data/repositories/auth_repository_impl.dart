@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nexust/domain/entities/user_entity.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
@@ -36,14 +37,20 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        throw Exception('La contraseña proporcionada es demasiado débil.');
+        throw Exception('login.register.error.weak_password'.tr());
       } else if (e.code == 'email-already-in-use') {
-        throw Exception('Este correo ya está registrado con otra cuenta.');
+        throw Exception('login.register.error.email_exists'.tr());
       } else {
-        throw Exception('Error al registrar: ${e.message}');
+        throw Exception(
+          'login.register.error.generic'.tr(
+            namedArgs: {'error': e.message ?? 'Error desconocido'},
+          ),
+        );
       }
     } catch (e) {
-      throw Exception('Error al registrar: $e');
+      throw Exception(
+        'login.register.error.generic'.tr(namedArgs: {'error': e.toString()}),
+      );
     }
   }
 
@@ -68,14 +75,18 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        throw Exception(
-          'Credenciales incorrectas. Verifica tu email y contraseña.',
-        );
+        throw Exception('login.error.user_not_found'.tr());
       } else {
-        throw Exception('Error al iniciar sesión: ${e.message}');
+        throw Exception(
+          'login.error.generic'.tr(
+            namedArgs: {'error': e.message ?? 'Error desconocido'},
+          ),
+        );
       }
     } catch (e) {
-      throw Exception('Error al iniciar sesión: $e');
+      throw Exception(
+        'login.error.generic'.tr(namedArgs: {'error': e.toString()}),
+      );
     }
   }
 

@@ -106,7 +106,7 @@ class _RegisterFormSectionState extends State<RegisterFormSection> {
         } else if (state.status == AuthStatus.error) {
           // Mostrar mensaje de error
           Toast.show(
-            state.errorMessage ?? 'Error al registrar usuario',
+            state.errorMessage ?? context.tr('login.register.error.default'),
             backgroundColor: Colors.red,
           );
         }
