@@ -80,8 +80,10 @@ class AppRoutes {
             ),
           ),
       redirect: (context, state) {
+        final FirebaseAuth auth = FirebaseAuth.instance;
+
         if (_hasShownSplash && state.matchedLocation == "/") {
-          if (FirebaseAuth.instance.currentUser != null) {
+          if (auth.currentUser != null) {
             return "/${HomeScreen.routeName}";
           }
           return "/${LoginScreen.routeName}";

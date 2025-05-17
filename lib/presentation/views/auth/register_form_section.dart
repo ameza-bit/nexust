@@ -1,6 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/utils/toast.dart';
+import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
+import 'package:nexust/presentation/blocs/auth/auth_state.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/widgets/common/custom_text_field.dart';
 import 'package:nexust/presentation/widgets/common/primary_button.dart';
 
@@ -65,7 +71,15 @@ class _RegisterFormSectionState extends State<RegisterFormSection> {
 
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: Implementar registro con Firebase
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final name = _nameController.text.trim();
+
+      context.read<AuthCubit>().registerWithEmailAndPassword(
+        email: email,
+        password: password,
+        name: name,
+      );
     }
   }
 
@@ -84,64 +98,86 @@ class _RegisterFormSectionState extends State<RegisterFormSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          CustomTextField(
-            controller: _nameController,
-            focusNode: _nameFocusNode,
-            label: context.tr('login.register.name'),
-            hint: context.tr('login.register.name_hint'),
-            prefixIcon: FontAwesomeIcons.lightUser,
-            keyboardType: TextInputType.name,
-            validator: _validateName,
-            textCapitalization: TextCapitalization.words,
-            autofillHints: const [AutofillHints.name],
-            onEditingComplete: () => _emailFocusNode.requestFocus(),
-          ),
-          const SizedBox(height: 20),
-          CustomTextField(
-            controller: _emailController,
-            focusNode: _emailFocusNode,
-            label: context.tr('login.register.email'),
-            hint: context.tr('login.register.email_hint'),
-            prefixIcon: FontAwesomeIcons.lightEnvelope,
-            keyboardType: TextInputType.emailAddress,
-            validator: _validateEmail,
-            autofillHints: const [AutofillHints.email, AutofillHints.username],
-            onEditingComplete: () => _passwordFocusNode.requestFocus(),
-          ),
-          const SizedBox(height: 20),
-          CustomTextField(
-            controller: _passwordController,
-            focusNode: _passwordFocusNode,
-            label: context.tr('login.register.password'),
-            hint: context.tr('login.register.password_hint'),
-            prefixIcon: FontAwesomeIcons.lightLock,
-            isPassword: true,
-            validator: _validatePassword,
-            autofillHints: const [AutofillHints.newPassword],
-            onEditingComplete: () => _confirmPasswordFocusNode.requestFocus(),
-          ),
-          const SizedBox(height: 20),
-          CustomTextField(
-            controller: _confirmPasswordController,
-            focusNode: _confirmPasswordFocusNode,
-            label: context.tr('login.register.confirm_password'),
-            hint: context.tr('login.register.confirm_password_hint'),
-            prefixIcon: FontAwesomeIcons.lightLock,
-            isPassword: true,
-            validator: _validateConfirmPassword,
-            autofillHints: const [AutofillHints.newPassword],
-            onEditingComplete: _submitForm,
-          ),
-          const SizedBox(height: 32),
-          PrimaryButton(
-            text: context.tr('login.register.register_button'),
-            onPressed: _submitForm,
-          ),
-        ],
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.authenticated) {
+          // Navegar a la pantalla principal cuando el registro es exitoso
+          context.goNamed(HomeScreen.routeName);
+        } else if (state.status == AuthStatus.error) {
+          // Mostrar mensaje de error
+          Toast.show(
+            state.errorMessage ?? 'Error al registrar usuario',
+            backgroundColor: Colors.red,
+          );
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            CustomTextField(
+              controller: _nameController,
+              focusNode: _nameFocusNode,
+              label: context.tr('login.register.name'),
+              hint: context.tr('login.register.name_hint'),
+              prefixIcon: FontAwesomeIcons.lightUser,
+              keyboardType: TextInputType.name,
+              validator: _validateName,
+              textCapitalization: TextCapitalization.words,
+              autofillHints: const [AutofillHints.name],
+              onEditingComplete: () => _emailFocusNode.requestFocus(),
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              controller: _emailController,
+              focusNode: _emailFocusNode,
+              label: context.tr('login.register.email'),
+              hint: context.tr('login.register.email_hint'),
+              prefixIcon: FontAwesomeIcons.lightEnvelope,
+              keyboardType: TextInputType.emailAddress,
+              validator: _validateEmail,
+              autofillHints: const [
+                AutofillHints.email,
+                AutofillHints.username,
+              ],
+              onEditingComplete: () => _passwordFocusNode.requestFocus(),
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              label: context.tr('login.register.password'),
+              hint: context.tr('login.register.password_hint'),
+              prefixIcon: FontAwesomeIcons.lightLock,
+              isPassword: true,
+              validator: _validatePassword,
+              autofillHints: const [AutofillHints.newPassword],
+              onEditingComplete: () => _confirmPasswordFocusNode.requestFocus(),
+            ),
+            const SizedBox(height: 20),
+            CustomTextField(
+              controller: _confirmPasswordController,
+              focusNode: _confirmPasswordFocusNode,
+              label: context.tr('login.register.confirm_password'),
+              hint: context.tr('login.register.confirm_password_hint'),
+              prefixIcon: FontAwesomeIcons.lightLock,
+              isPassword: true,
+              validator: _validateConfirmPassword,
+              autofillHints: const [AutofillHints.newPassword],
+              onEditingComplete: _submitForm,
+            ),
+            const SizedBox(height: 32),
+            BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                return PrimaryButton(
+                  text: context.tr('login.register.register_button'),
+                  onPressed: _submitForm,
+                  isLoading: state.status == AuthStatus.loading,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -6,9 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/enums/language.dart';
 import 'package:nexust/core/routes/app_routes.dart';
 import 'package:nexust/core/themes/main_theme.dart';
+import 'package:nexust/data/repositories/auth_repository_impl.dart';
 import 'package:nexust/data/repositories/settings_repository_impl.dart';
+import 'package:nexust/domain/repositories/auth_repository.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
 import 'package:nexust/firebase_options.dart';
+import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
 
@@ -23,12 +26,16 @@ Future<void> main() async {
   );
 
   SettingsRepository settingsRepository = SettingsRepositoryImpl();
+  AuthRepository authRepository = AuthRepositoryImpl();
 
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider<SettingsCubit>(
           create: (context) => SettingsCubit(settingsRepository),
+        ),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(authRepository: authRepository),
         ),
       ],
       child: EasyLocalization(
