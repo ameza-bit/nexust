@@ -68,7 +68,7 @@ class _ForgotPasswordFormSectionState extends State<ForgotPasswordFormSection> {
         child: Column(
           children: [
             Icon(
-              FontAwesomeIcons.lightCheckCircle,
+              FontAwesomeIcons.lightCircleCheck,
               color: Colors.green,
               size: 64,
             ),
