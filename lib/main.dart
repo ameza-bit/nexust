@@ -65,6 +65,8 @@ class MainApp extends StatelessWidget {
             previous.settings.language != current.settings.language;
       },
       builder: (context, state) {
+        context.read<AuthCubit>().setLanguage(state.settings.language);
+
         return MaterialApp.router(
           title: 'Nexust',
           routerConfig: routerConfig,

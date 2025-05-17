@@ -79,6 +79,10 @@
       "validation": {
         "email_required": "Por favor ingresa tu correo electrónico",
         "email_invalid": "Por favor ingresa un correo electrónico válido"
+      },
+      "error": {
+        "generic": "Error al enviar instrucciones: {error}",
+        "user_not_found": "No se encontró una cuenta con ese correo electrónico."
       }
     }
   },

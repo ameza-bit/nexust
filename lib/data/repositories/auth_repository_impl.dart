@@ -93,6 +93,34 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('login.forgot_password.error.user_not_found'.tr());
+      } else {
+        throw Exception(
+          'login.forgot_password.error.generic'.tr(
+            namedArgs: {'error': e.message ?? 'Error desconocido'},
+          ),
+        );
+      }
+    } catch (e) {
+      throw Exception(
+        'login.forgot_password.error.generic'.tr(
+          namedArgs: {'error': e.toString()},
+        ),
+      );
+    }
+  }
+
+  @override
+  void setLanguage(String languageCode) {
+    _firebaseAuth.setLanguageCode(languageCode);
+  }
+
+  @override
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }

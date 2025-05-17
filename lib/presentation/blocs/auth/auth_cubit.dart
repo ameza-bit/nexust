@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexust/core/enums/language.dart';
 import 'package:nexust/domain/entities/user_entity.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
 import 'package:nexust/domain/usecases/register_user.dart';
@@ -64,7 +65,26 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+
+    try {
+      await _authRepository.sendPasswordResetEmail(email: email);
+      emit(state.copyWith(status: AuthStatus.unauthenticated));
+    } catch (e) {
+      emit(
+        state.copyWith(status: AuthStatus.error, errorMessage: e.toString()),
+      );
+    }
+  }
+
   Future<void> signOut() async {
     await _authRepository.signOut();
+  }
+
+  void reset() => emit(AuthState.initial());
+
+  void setLanguage(Language language) {
+    _authRepository.setLanguage(language.code);
   }
 }

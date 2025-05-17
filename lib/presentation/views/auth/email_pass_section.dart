@@ -133,8 +133,10 @@ class _EmailPassSectionState extends State<EmailPassSection> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed:
-                    () => context.pushNamed(ForgotPasswordScreen.routeName),
+                onPressed: () {
+                  context.read<AuthCubit>().reset();
+                  context.pushNamed(ForgotPasswordScreen.routeName);
+                },
                 child: Text(
                   context.tr('login.forgot_password.forgot_password'),
                   style: TextStyle(
@@ -170,8 +172,10 @@ class _EmailPassSectionState extends State<EmailPassSection> {
                     ),
                   ),
                   TextButton(
-                    onPressed:
-                        () => context.pushNamed(RegisterScreen.routeName),
+                    onPressed: () {
+                      context.read<AuthCubit>().reset();
+                      context.pushNamed(RegisterScreen.routeName);
+                    },
                     child: Text(
                       context.tr('login.signup'),
                       style: TextStyle(

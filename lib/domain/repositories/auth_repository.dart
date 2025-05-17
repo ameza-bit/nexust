@@ -12,6 +12,10 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<void> sendPasswordResetEmail({required String email});
+
+  void setLanguage(String languageCode);
+
   Future<void> signOut();
 
   Stream<UserEntity?> get authStateChanges;
