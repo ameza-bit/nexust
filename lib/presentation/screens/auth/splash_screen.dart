@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nexust/presentation/screens/auth/login_screen.dart';
 
 // SplashScreen con animación de escala y fundido antes de redirigir
 class SplashScreen extends StatefulWidget {
@@ -48,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen>
     // Temporizador de 3s antes de navegar a HomeScreen
     Timer(const Duration(seconds: 3), () {
       _controller.stop(); // Detiene la animación para liberar recursos
-      context.goNamed(LoginScreen.routeName); // Redirige usando go_router
+      context.go("/"); // Redirige usando go_router
     });
   }
 

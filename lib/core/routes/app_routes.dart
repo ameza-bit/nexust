@@ -81,13 +81,14 @@ class AppRoutes {
           ),
       redirect: (context, state) {
         final FirebaseAuth auth = FirebaseAuth.instance;
+        final isSplashRoute = state.matchedLocation == "/";
+        final isAuthenticated = auth.currentUser != null;
 
-        if (_hasShownSplash && state.matchedLocation == "/") {
-          if (auth.currentUser != null) {
-            return "/${HomeScreen.routeName}";
+        if (_hasShownSplash) {
+          if (isSplashRoute) {
+            return isAuthenticated ? "/${HomeScreen.routeName}" : "/${LoginScreen.routeName}";
           }
-          return "/${LoginScreen.routeName}";
-        } else if (!_hasShownSplash && state.matchedLocation != "/") {
+        } else if (!isSplashRoute) {
           return "/?redirected=${state.uri.path}";
         }
 
