@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nexust/domain/entities/user_entity.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
 
@@ -65,6 +66,56 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
 
+      final user = userCredential.user;
+
+      return UserEntity(
+        uid: user!.uid,
+        email: user.email,
+        name: user.displayName,
+        photoUrl: user.photoURL,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        throw Exception('login.error.user_not_found'.tr());
+      } else {
+        throw Exception(
+          'login.error.generic'.tr(
+            namedArgs: {'error': e.message ?? 'Error desconocido'},
+          ),
+        );
+      }
+    } catch (e) {
+      throw Exception(
+        'login.error.generic'.tr(namedArgs: {'error': e.toString()}),
+      );
+    }
+  }
+
+  @override
+  Future<UserEntity> signInWithGoogle() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn(
+            scopes: ['https://www.googleapis.com/auth/userinfo.email'],
+          ).signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       final user = userCredential.user;
 
       return UserEntity(

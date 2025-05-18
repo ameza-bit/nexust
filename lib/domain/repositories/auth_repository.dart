@@ -12,6 +12,8 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<UserEntity> signInWithGoogle();
+
   Future<void> sendPasswordResetEmail({required String email});
 
   void setLanguage(String languageCode);
