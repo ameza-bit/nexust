@@ -1,8 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/core/themes/app_colors.dart';
+import 'package:nexust/core/utils/device_platform.dart';
+import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
+import 'package:nexust/presentation/blocs/auth/auth_state.dart';
 import 'package:nexust/presentation/widgets/common/secundary_button.dart';
 
 class SocialMediaSection extends StatelessWidget {
@@ -10,6 +14,10 @@ class SocialMediaSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!DevicePlatform.isMobile) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       children: [
         // Separador
@@ -34,16 +42,19 @@ class SocialMediaSection extends StatelessWidget {
         ),
 
         // Botones sociales
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: SecondaryButton(
-            text: context.tr('login.google'),
-            icon: FontAwesomeIcons.google,
-            iconColor: Colors.red,
-            onPressed: () {
-              // TODO: Implementar autenticación con Google
-            },
-          ),
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: SecondaryButton(
+                text: context.tr('login.google'),
+                icon: FontAwesomeIcons.google,
+                iconColor: Colors.red,
+                isLoading: state.status == AuthStatus.loading,
+                onPressed: () => context.read<AuthCubit>().signInWithGoogle(),
+              ),
+            );
+          },
         ),
       ],
     );

@@ -35,6 +35,7 @@ class LoginWebVersion extends StatelessWidget {
                       WelcomeSection(isLargeScreen: true),
                       SectionCard(
                         title: "",
+                        showDivider: false,
                         padding: EdgeInsets.all(AppSpacing.xxl),
                         children: [EmailPassSection(), SocialMediaSection()],
                       ),

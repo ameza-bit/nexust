@@ -30,6 +30,7 @@ class LoginTabletVersion extends StatelessWidget {
                 const SizedBox(height: AppSpacing.lg),
                 SectionCard(
                   title: "",
+                  showDivider: false,
                   padding: const EdgeInsets.all(AppSpacing.xxl),
                   children: [EmailPassSection(), SocialMediaSection()],
                 ),

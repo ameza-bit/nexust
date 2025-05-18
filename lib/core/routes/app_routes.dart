@@ -1,25 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nexust/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
+import 'package:nexust/presentation/screens/auth/register_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class AppRoutes {
   // Variable para controlar si ya se mostró el splash
   static bool _hasShownSplash = false;
-
-  // Variable para controlar si debe mostrar la pantalla de configuraciones
-  static bool _shouldShowSettings = false;
-
-  // Método para activar la redirección a configuraciones
-  static void activateSettingsRedirect() {
-    _shouldShowSettings = true;
-  }
-
-  // Método para desactivar la redirección a configuraciones
-  static void deactivateSettingsRedirect() {
-    _shouldShowSettings = false;
-  }
 
   static RouterConfig<Object>? getGoRoutes(
     GlobalKey<NavigatorState> navigatorKey,
@@ -27,25 +18,39 @@ class AppRoutes {
     List<RouteBase> routes = [
       GoRoute(
         path: "/",
-        redirect: (context, state) async {
-          if (!_hasShownSplash) {
-            _hasShownSplash = true;
-            return "/";
-          }
-
-          return null;
+        builder: (context, state) {
+          _hasShownSplash = true;
+          return const SplashScreen();
         },
-        builder: (context, state) => const SplashScreen(),
         routes: [
-          GoRoute(
-            path: SettingsScreen.routeName,
-            name: SettingsScreen.routeName,
-            builder: (context, state) => const SettingsScreen(),
-          ),
           GoRoute(
             path: LoginScreen.routeName,
             name: LoginScreen.routeName,
             builder: (context, state) => const LoginScreen(),
+            routes: [
+              GoRoute(
+                path: RegisterScreen.routeName,
+                name: RegisterScreen.routeName,
+                builder: (context, state) => const RegisterScreen(),
+              ),
+              GoRoute(
+                path: ForgotPasswordScreen.routeName,
+                name: ForgotPasswordScreen.routeName,
+                builder: (context, state) => const ForgotPasswordScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: HomeScreen.routeName,
+            name: HomeScreen.routeName,
+            builder: (context, state) => const HomeScreen(),
+            routes: [
+              GoRoute(
+                path: SettingsScreen.routeName,
+                name: SettingsScreen.routeName,
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
           ),
         ],
       ),
@@ -61,14 +66,21 @@ class AppRoutes {
               child: Center(child: Text(state.error.toString(), maxLines: 5)),
             ),
           ),
-    );
-  }
+      redirect: (context, state) {
+        final FirebaseAuth auth = FirebaseAuth.instance;
+        final isSplashRoute = state.matchedLocation == "/";
+        final isAuthenticated = auth.currentUser != null;
 
-  static T? _getArgument<T>(GoRouterState state, String name) {
-    final extra = state.extra;
-    if (extra is Map && extra.containsKey(name)) {
-      return extra[name] as T;
-    }
-    return null;
+        if (_hasShownSplash) {
+          if (isSplashRoute) {
+            return isAuthenticated ? "/${HomeScreen.routeName}" : "/${LoginScreen.routeName}";
+          }
+        } else if (!isSplashRoute) {
+          return "/?redirected=${state.uri.path}";
+        }
+
+        return null;
+      },
+    );
   }
 }
