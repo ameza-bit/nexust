@@ -12,19 +12,6 @@ class AppRoutes {
   // Variable para controlar si ya se mostró el splash
   static bool _hasShownSplash = false;
 
-  // Variable para controlar si debe mostrar la pantalla de configuraciones
-  static bool _shouldShowSettings = false;
-
-  // Método para activar la redirección a configuraciones
-  static void activateSettingsRedirect() {
-    _shouldShowSettings = true;
-  }
-
-  // Método para desactivar la redirección a configuraciones
-  static void deactivateSettingsRedirect() {
-    _shouldShowSettings = false;
-  }
-
   static RouterConfig<Object>? getGoRoutes(
     GlobalKey<NavigatorState> navigatorKey,
   ) {
@@ -95,13 +82,5 @@ class AppRoutes {
         return null;
       },
     );
-  }
-
-  static T? _getArgument<T>(GoRouterState state, String name) {
-    final extra = state.extra;
-    if (extra is Map && extra.containsKey(name)) {
-      return extra[name] as T;
-    }
-    return null;
   }
 }
