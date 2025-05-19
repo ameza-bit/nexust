@@ -6,6 +6,7 @@ import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/register_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/home/tabs_screen.dart' show TabsScreen;
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class AppRoutes {
@@ -43,7 +44,7 @@ class AppRoutes {
           GoRoute(
             path: HomeScreen.routeName,
             name: HomeScreen.routeName,
-            builder: (context, state) => const HomeScreen(),
+            builder: (context, state) => const TabsScreen(),
             routes: [
               GoRoute(
                 path: SettingsScreen.routeName,

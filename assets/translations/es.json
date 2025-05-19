@@ -105,6 +105,13 @@
     "biometric_auth": "Autenticación Biométrica",
     "biometric_auth_desc": "Utiliza huella digital o reconocimiento facial para acceder a la app"
   },
+  "navigation": {
+    "home": "Inicio",
+    "collections": "Colecciones",
+    "quick_request": "Petición Rápida",
+    "settings": "Configuración",
+    "more": "Más"
+  },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",
