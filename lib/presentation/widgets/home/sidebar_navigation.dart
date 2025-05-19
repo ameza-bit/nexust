@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/presentation/widgets/home/side_bar_item.dart';
 
 class SidebarNavigation extends StatefulWidget {
   const SidebarNavigation({super.key, required this.controller});
@@ -103,77 +104,30 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                _buildNavItem(
-                  0,
-                  FontAwesomeIcons.lightHouseChimney,
-                  context.tr("navigation.home"),
+                SideBarItem(
+                  isExpanded: _isExpanded,
+                  icon: FontAwesomeIcons.lightHouseChimney,
+                  label: context.tr("navigation.home"),
                 ),
-                _buildNavItem(
-                  1,
-                  FontAwesomeIcons.lightRectangleHistory,
-                  context.tr("navigation.collections"),
+                SideBarItem(
+                  isExpanded: _isExpanded,
+                  icon: FontAwesomeIcons.lightRectangleHistory,
+                  label: context.tr("navigation.collections"),
                 ),
-                _buildNavItem(
-                  2,
-                  FontAwesomeIcons.lightEnvelopeOpenText,
-                  context.tr("navigation.quick_request"),
+                SideBarItem(
+                  isExpanded: _isExpanded,
+                  icon: FontAwesomeIcons.lightEnvelopeOpenText,
+                  label: context.tr("navigation.quick_request"),
                 ),
-                _buildNavItem(
-                  3,
-                  FontAwesomeIcons.lightBars,
-                  context.tr("navigation.more"),
+                SideBarItem(
+                  isExpanded: _isExpanded,
+                  icon: FontAwesomeIcons.lightBars,
+                  label: context.tr("navigation.more"),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(int index, IconData icon, String label) {
-    final isSelected = widget.controller.index == index;
-    final theme = Theme.of(context);
-    final iconSize = context.scaleIcon(20.0);
-
-    return InkWell(
-      onTap: () => widget.controller.animateTo(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color:
-              isSelected
-                  ? theme.primaryColor.withAlpha(26)
-                  : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border:
-              isSelected
-                  ? Border.all(color: theme.primaryColor, width: 2)
-                  : null,
-        ),
-        child: Row(
-          mainAxisAlignment:
-              _isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
-          children: [
-            FaIcon(
-              icon,
-              size: iconSize,
-              color: isSelected ? theme.primaryColor : context.textSecondary,
-            ),
-            if (_isExpanded) ...[
-              const SizedBox(width: 16),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: context.scaleText(16),
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected ? theme.primaryColor : context.textPrimary,
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
