@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/responsive_extensions.dart';
+import 'package:nexust/presentation/screens/collections/collection_list_screen.dart';
+import 'package:nexust/presentation/screens/collections/request_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/more_screen.dart';
 import 'package:nexust/presentation/widgets/home/navigator_bar.dart';
@@ -59,8 +61,8 @@ class _TabsScreenState extends State<TabsScreen>
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   HomeScreen(),
-                  HomeScreen(),
-                  HomeScreen(),
+                  CollectionListScreen(),
+                  RequestScreen(),
                   MoreScreen(),
                 ],
               ),

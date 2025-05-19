@@ -5,6 +5,7 @@ import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/models/menu_item.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/home/redirect_screen.dart';
 
 class SideBarItem extends StatelessWidget {
   const SideBarItem({super.key, required this.isExpanded, required this.item});
@@ -29,7 +30,11 @@ class SideBarItem extends StatelessWidget {
     final isSelected = isMainScreen && mainIndex == itemMainIndex;
 
     return InkWell(
-      onTap: () => context.go(item.route),
+      onTap:
+          () => context.goNamed(
+            RedirectScreen.routeName,
+            queryParameters: {'redirect_route': item.route},
+          ),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

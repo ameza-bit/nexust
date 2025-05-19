@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nexust/core/utils/page_transition.dart';
 import 'package:nexust/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/register_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/home/redirect_screen.dart';
 import 'package:nexust/presentation/screens/home/tabs_screen.dart'
     show TabsScreen;
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
@@ -58,6 +60,21 @@ class AppRoutes {
                 builder: (context, state) => const SettingsScreen(),
               ),
             ],
+          ),
+          GoRoute(
+            name: RedirectScreen.routeName,
+            path: RedirectScreen.routeName,
+            pageBuilder:
+                (context, state) =>
+                    PageTransition(
+                      context: context,
+                      state: state,
+                      page: RedirectScreen(
+                        _getParameter(state, "redirect_route"),
+                        int.tryParse(_getParameter(state, "wait_time")) ?? 0,
+                      ),
+                      duration: const Duration(milliseconds: 300),
+                    ).fadeTransition(),
           ),
         ],
       ),
