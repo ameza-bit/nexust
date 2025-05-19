@@ -57,7 +57,7 @@ class NavigatorBar extends StatelessWidget {
           indicatorSize: TabBarIndicatorSize.tab,
           labelPadding: const EdgeInsets.only(top: 8),
           tabs:
-              MenuRoute(context).tabsItems
+              MenuRoute(context).tabItems
                   .map(
                     (item) => Tab(
                       text: item.label,

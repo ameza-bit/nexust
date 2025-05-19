@@ -102,14 +102,23 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
-              children:
-                  MenuRoute(context).tabsItems
-                      .where((item) => item.showInWeb)
-                      .map(
-                        (item) =>
-                            SideBarItem(isExpanded: _isExpanded, item: item),
-                      )
-                      .toList(),
+              children: [
+                ...MenuRoute(context).tabItems
+                    .where((item) => item.showInWeb)
+                    .map(
+                      (item) =>
+                          SideBarItem(isExpanded: _isExpanded, item: item),
+                    ),
+                const SizedBox(height: 8),
+                Divider(color: context.divider),
+                const SizedBox(height: 8),
+                ...MenuRoute(context).menuItems
+                    .where((item) => item.showInWeb)
+                    .map(
+                      (item) =>
+                          SideBarItem(isExpanded: _isExpanded, item: item),
+                    ),
+              ],
             ),
           ),
         ],

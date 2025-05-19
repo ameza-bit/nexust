@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nexust/core/constants/app_constants.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/routes/menu_route.dart';
 import 'package:nexust/domain/entities/user_entity.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/auth/auth_state.dart';
-import 'package:nexust/presentation/screens/more/settings_screen.dart';
 import 'package:nexust/presentation/widgets/common/section_card.dart';
 import 'package:nexust/presentation/widgets/common/section_item.dart';
 
@@ -62,41 +62,13 @@ class MoreScreen extends StatelessWidget {
                       },
                     ),
 
-                    // Opción de Historial
-                    SectionItem(
-                      icon: FontAwesomeIcons.lightClockRotateLeft,
-                      title: context.tr('more.historial'),
-                      iconColor: theme.primaryColor,
-                      // onTap:
-                      //     () => context.pushNamed(
-                      //       RequestHistoryListScreen.routeName,
-                      //     ),
-                    ),
-
-                    // Opción de Proyectos
-                    SectionItem(
-                      icon: FontAwesomeIcons.lightFolder,
-                      title: context.tr('more.projects'),
-                      iconColor: theme.primaryColor,
-                      // onTap:
-                      //     () => context.pushNamed(ProyectsListScreen.routeName),
-                    ),
-
-                    // Opción de Ambientes
-                    SectionItem(
-                      icon: FontAwesomeIcons.lightEarthAmericas,
-                      title: context.tr('more.environments'),
-                      iconColor: theme.primaryColor,
-                      // onTap:
-                      //     () => context.pushNamed(EnviromentsScreen.routeName),
-                    ),
-
-                    // Opción de Ajustes
-                    SectionItem(
-                      icon: FontAwesomeIcons.lightGear,
-                      title: context.tr('more.settings'),
-                      iconColor: theme.primaryColor,
-                      onTap: () => context.pushNamed(SettingsScreen.routeName),
+                    ...MenuRoute(context).menuItems.map(
+                      (item) => SectionItem(
+                        icon: item.icon,
+                        title: item.label,
+                        iconColor: theme.primaryColor,
+                        onTap: () => context.push(item.route),
+                      ),
                     ),
                   ],
                 ),

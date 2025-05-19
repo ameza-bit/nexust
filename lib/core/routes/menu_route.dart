@@ -5,12 +5,13 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/models/menu_item.dart';
 import 'package:nexust/main.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class MenuRoute {
   final BuildContext context;
   const MenuRoute(this.context);
 
-  List<MenuItem> get tabsItems => [
+  List<MenuItem> get tabItems => [
     MenuItem(
       label: context.tr('navigation.home'),
       icon: FontAwesomeIcons.lightHouseChimney,
@@ -46,7 +47,28 @@ class MenuRoute {
     ),
   ];
 
-  List<MenuItem> get menuItems => [];
+  List<MenuItem> get menuItems => [
+    MenuItem(
+      label: context.tr('more.historial'),
+      icon: FontAwesomeIcons.lightClockRotateLeft,
+      route: _getPathRoute(SettingsScreen.routeName),
+    ),
+    MenuItem(
+      label: context.tr('more.projects'),
+      icon: FontAwesomeIcons.lightFolder,
+      route: _getPathRoute(SettingsScreen.routeName),
+    ),
+    MenuItem(
+      label: context.tr('more.environments'),
+      icon: FontAwesomeIcons.lightEarthAmericas,
+      route: _getPathRoute(SettingsScreen.routeName),
+    ),
+    MenuItem(
+      label: context.tr('more.settings'),
+      icon: FontAwesomeIcons.lightGear,
+      route: _getPathRoute(SettingsScreen.routeName),
+    ),
+  ];
 
   static _getPathRoute(
     String pathName, {
