@@ -1,8 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
-import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/routes/menu_route.dart';
 import 'package:nexust/presentation/widgets/home/side_bar_item.dart';
 
 class SidebarNavigation extends StatefulWidget {
@@ -35,7 +34,7 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      width: _isExpanded ? 240 : 80 + context.scaleIcon(5), // Ancho adaptable
+      width: _isExpanded ? 240 : 80 + context.scaleIcon(5),
       height: double.infinity,
       decoration: BoxDecoration(
         color: isDark ? theme.cardColor : Colors.white,
@@ -103,28 +102,14 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
-              children: [
-                SideBarItem(
-                  isExpanded: _isExpanded,
-                  icon: FontAwesomeIcons.lightHouseChimney,
-                  label: context.tr("navigation.home"),
-                ),
-                SideBarItem(
-                  isExpanded: _isExpanded,
-                  icon: FontAwesomeIcons.lightRectangleHistory,
-                  label: context.tr("navigation.collections"),
-                ),
-                SideBarItem(
-                  isExpanded: _isExpanded,
-                  icon: FontAwesomeIcons.lightEnvelopeOpenText,
-                  label: context.tr("navigation.quick_request"),
-                ),
-                SideBarItem(
-                  isExpanded: _isExpanded,
-                  icon: FontAwesomeIcons.lightBars,
-                  label: context.tr("navigation.more"),
-                ),
-              ],
+              children:
+                  MenuRoute(context).tabsItems
+                      .where((item) => item.showInWeb)
+                      .map(
+                        (item) =>
+                            SideBarItem(isExpanded: _isExpanded, item: item),
+                      )
+                      .toList(),
             ),
           ),
         ],

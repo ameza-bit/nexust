@@ -1,7 +1,9 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/core/routes/menu_route.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 
 class NavigatorBar extends StatelessWidget {
   const NavigatorBar({super.key, this.controller});
@@ -54,38 +56,23 @@ class NavigatorBar extends StatelessWidget {
           dividerColor: Colors.transparent,
           indicatorSize: TabBarIndicatorSize.tab,
           labelPadding: const EdgeInsets.only(top: 8),
-          tabs: [
-            Tab(
-              text: context.tr("navigation.home"),
-              icon: FaIcon(FontAwesomeIcons.lightHouseChimney, size: iconSize),
-              iconMargin: EdgeInsets.only(bottom: 4),
-              height: 65,
-            ),
-            Tab(
-              text: context.tr("navigation.collections"),
-              icon: FaIcon(
-                FontAwesomeIcons.lightRectangleHistory,
-                size: iconSize,
-              ),
-              iconMargin: EdgeInsets.only(bottom: 4),
-              height: 65,
-            ),
-            Tab(
-              text: context.tr("navigation.quick_request"),
-              icon: FaIcon(
-                FontAwesomeIcons.lightEnvelopeOpenText,
-                size: iconSize,
-              ),
-              iconMargin: EdgeInsets.only(bottom: 4),
-              height: 65,
-            ),
-            Tab(
-              text: context.tr("navigation.more"),
-              icon: FaIcon(FontAwesomeIcons.lightBars, size: iconSize),
-              iconMargin: EdgeInsets.only(bottom: 4),
-              height: 65,
-            ),
-          ],
+          tabs:
+              MenuRoute(context).tabsItems
+                  .map(
+                    (item) => Tab(
+                      text: item.label,
+                      icon: FaIcon(item.icon, size: iconSize),
+                      iconMargin: EdgeInsets.only(bottom: 4),
+                      height: 65,
+                    ),
+                  )
+                  .toList(),
+          onTap: (value) {
+            context.goNamed(
+              HomeScreen.routeName,
+              queryParameters: {"mainTabIndex": value.toString()},
+            );
+          },
         ),
       ),
     );

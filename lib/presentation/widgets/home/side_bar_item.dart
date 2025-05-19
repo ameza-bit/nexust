@@ -3,20 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
+import 'package:nexust/data/models/menu_item.dart';
+import 'package:nexust/presentation/screens/home/home_screen.dart';
 
 class SideBarItem extends StatelessWidget {
-  const SideBarItem({
-    super.key,
-    required this.isExpanded,
-    required this.icon,
-    required this.label,
-    this.onTap,
-  });
+  const SideBarItem({super.key, required this.isExpanded, required this.item});
 
   final bool isExpanded;
-  final IconData icon;
-  final String label;
-  final void Function()? onTap;
+  final MenuItem item;
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +19,17 @@ class SideBarItem extends StatelessWidget {
 
     final state = GoRouterState.of(context);
     final path = state.uri.path;
-    final mainIndex = state.uri.queryParameters['main_index'] ?? '0';
+    final mainIndex = state.uri.queryParameters['mainTabIndex'] ?? '0';
 
-    // Extraer las partes de la ruta: /home/events -> [home, events]
-    final parts = path.split('/').where((p) => p.isNotEmpty).toList();
-    final mainRoute = parts.isNotEmpty ? parts[0] : '';
-    final subRoute = parts.length > 1 ? parts[1] : '';
+    final uriItemRoute = Uri.parse(item.route);
+    final isMainScreen =
+        path == '/${HomeScreen.routeName}' && path == uriItemRoute.path;
+    final itemMainIndex = uriItemRoute.queryParameters['mainTabIndex'] ?? '0';
 
-    final isSelected =
-        (mainRoute == 'home' && mainIndex == '0' && subRoute == label) ||
-            (mainRoute == 'home' && mainIndex == '1' && subRoute == label);
+    final isSelected = isMainScreen && mainIndex == itemMainIndex;
 
     return InkWell(
-      onTap: onTap,
+      onTap: () => context.go(item.route),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -57,14 +49,14 @@ class SideBarItem extends StatelessWidget {
               isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: [
             FaIcon(
-              icon,
+              item.icon,
               size: iconSize,
               color: isSelected ? theme.primaryColor : context.textSecondary,
             ),
             if (isExpanded) ...[
               const SizedBox(width: 16),
               Text(
-                label,
+                item.label,
                 style: TextStyle(
                   fontSize: context.scaleText(16),
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,

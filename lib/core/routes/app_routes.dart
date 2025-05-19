@@ -6,7 +6,8 @@ import 'package:nexust/presentation/screens/auth/login_screen.dart';
 import 'package:nexust/presentation/screens/auth/register_screen.dart';
 import 'package:nexust/presentation/screens/auth/splash_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
-import 'package:nexust/presentation/screens/home/tabs_screen.dart' show TabsScreen;
+import 'package:nexust/presentation/screens/home/tabs_screen.dart'
+    show TabsScreen;
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class AppRoutes {
@@ -44,7 +45,12 @@ class AppRoutes {
           GoRoute(
             path: HomeScreen.routeName,
             name: HomeScreen.routeName,
-            builder: (context, state) => const TabsScreen(),
+            builder: (context, state) {
+              int? mainTabIndex = int.tryParse(
+                _getParameter(state, "mainTabIndex"),
+              );
+              return TabsScreen(initialIndex: mainTabIndex);
+            },
             routes: [
               GoRoute(
                 path: SettingsScreen.routeName,
@@ -74,7 +80,9 @@ class AppRoutes {
 
         if (_hasShownSplash) {
           if (isSplashRoute) {
-            return isAuthenticated ? "/${HomeScreen.routeName}" : "/${LoginScreen.routeName}";
+            return isAuthenticated
+                ? "/${HomeScreen.routeName}"
+                : "/${LoginScreen.routeName}";
           }
         } else if (!isSplashRoute) {
           return "/?redirected=${state.uri.path}";
@@ -83,5 +91,14 @@ class AppRoutes {
         return null;
       },
     );
+  }
+
+  static String _getParameter(GoRouterState state, String name) {
+    final uri = state.uri.queryParameters;
+    if (uri.containsKey(name)) {
+      return uri[name] ?? "";
+    } else {
+      return "";
+    }
   }
 }
