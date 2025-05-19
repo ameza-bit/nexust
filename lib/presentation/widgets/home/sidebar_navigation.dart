@@ -31,7 +31,6 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iconSize = context.scaleIcon(20.0);
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
@@ -105,52 +104,37 @@ class _SidebarNavigationState extends State<SidebarNavigation> {
               padding: EdgeInsets.zero,
               children: [
                 _buildNavItem(
-                  context,
                   0,
                   FontAwesomeIcons.lightHouseChimney,
                   context.tr("navigation.home"),
-                  iconSize,
                 ),
                 _buildNavItem(
-                  context,
                   1,
                   FontAwesomeIcons.lightRectangleHistory,
                   context.tr("navigation.collections"),
-                  iconSize,
                 ),
                 _buildNavItem(
-                  context,
                   2,
                   FontAwesomeIcons.lightEnvelopeOpenText,
                   context.tr("navigation.quick_request"),
-                  iconSize,
                 ),
                 _buildNavItem(
-                  context,
                   3,
                   FontAwesomeIcons.lightBars,
                   context.tr("navigation.more"),
-                  iconSize,
                 ),
               ],
             ),
           ),
-
-          // Se podría añadir perfil u opciones adicionales aquí
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(
-    BuildContext context,
-    int index,
-    IconData icon,
-    String label,
-    double iconSize,
-  ) {
+  Widget _buildNavItem(int index, IconData icon, String label) {
     final isSelected = widget.controller.index == index;
     final theme = Theme.of(context);
+    final iconSize = context.scaleIcon(20.0);
 
     return InkWell(
       onTap: () => widget.controller.animateTo(index),
