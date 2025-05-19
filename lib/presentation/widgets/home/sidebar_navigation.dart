@@ -4,24 +4,38 @@ import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/theme_extensions.dart';
 import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 
-class SidebarNavigation extends StatelessWidget {
-  const SidebarNavigation({
-    super.key,
-    required this.controller,
-    this.isExpanded = true, // Para soportar versión colapsada si se desea
-  });
+class SidebarNavigation extends StatefulWidget {
+  const SidebarNavigation({super.key, required this.controller});
 
   final TabController controller;
-  final bool isExpanded;
+
+  @override
+  State<SidebarNavigation> createState() => _SidebarNavigationState();
+}
+
+class _SidebarNavigationState extends State<SidebarNavigation> {
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(() => setState(() {}));
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iconSize = context.scaleIcon(22.0);
+    final iconSize = context.scaleIcon(20.0);
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      width: isExpanded ? 240 : 80, // Ancho adaptable
+      width: _isExpanded ? 240 : 80 + context.scaleIcon(5), // Ancho adaptable
       height: double.infinity,
       decoration: BoxDecoration(
         color: isDark ? theme.cardColor : Colors.white,
@@ -46,8 +60,8 @@ class SidebarNavigation extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset('assets/images/icon.png', height: 40),
-                if (isExpanded) SizedBox(width: 16),
-                if (isExpanded)
+                if (_isExpanded) SizedBox(width: 16),
+                if (_isExpanded)
                   Text(
                     'Nexust',
                     style: TextStyle(
@@ -64,6 +78,28 @@ class SidebarNavigation extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Elementos de navegación
+          GestureDetector(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            child: Container(
+              width: double.infinity,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: Icon(
+                _isExpanded ? Icons.chevron_left : Icons.chevron_right,
+                color: Colors.white,
+                size: context.scaleIcon(24),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -113,11 +149,11 @@ class SidebarNavigation extends StatelessWidget {
     String label,
     double iconSize,
   ) {
-    final isSelected = controller.index == index;
+    final isSelected = widget.controller.index == index;
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: () => controller.animateTo(index),
+      onTap: () => widget.controller.animateTo(index),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -133,14 +169,16 @@ class SidebarNavigation extends StatelessWidget {
                   : null,
         ),
         child: Row(
+          mainAxisAlignment:
+              _isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
           children: [
             FaIcon(
               icon,
               size: iconSize,
               color: isSelected ? theme.primaryColor : context.textSecondary,
             ),
-            if (isExpanded) const SizedBox(width: 16),
-            if (isExpanded)
+            if (_isExpanded) ...[
+              const SizedBox(width: 16),
               Text(
                 label,
                 style: TextStyle(
@@ -149,6 +187,7 @@ class SidebarNavigation extends StatelessWidget {
                   color: isSelected ? theme.primaryColor : context.textPrimary,
                 ),
               ),
+            ],
           ],
         ),
       ),

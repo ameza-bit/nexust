@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:nexust/core/extensions/responsive_extensions.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/more_screen.dart';
-import 'package:nexust/presentation/widgets/home/collapsible_sidebar.dart';
 import 'package:nexust/presentation/widgets/home/navigator_bar.dart';
+import 'package:nexust/presentation/widgets/home/sidebar_navigation.dart';
 
 class TabsScreen extends StatefulWidget {
   static const String routeName = "tabs";
@@ -50,7 +50,7 @@ class _TabsScreenState extends State<TabsScreen>
         body: Row(
           children: [
             // Sidebar de navegación (solo en web)
-            if (isWebLayout) CollapsibleSidebar(controller: _tabController),
+            if (isWebLayout) SidebarNavigation(controller: _tabController),
 
             // Contenido principal
             Expanded(
