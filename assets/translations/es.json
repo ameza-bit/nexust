@@ -112,6 +112,21 @@
     "settings": "Configuración",
     "more": "Más"
   },
+  "more": {
+    "account": "Cuenta",
+    "environments": "Entornos",
+    "historial": "Historial",
+    "projects": "Proyectos",
+    "settings": "Configuración",
+    "app_info": "Información de la Aplicación",
+    "about_app": "Acerca de Nexust",
+    "privacy_policy": "Política de Privacidad",
+    "terms_of_service": "Términos de Servicio",
+    "profile": {
+      "view_edit_profile": "Ver y editar perfil",
+      "login_to_sync": "Inicia sesión para sincronizar tus datos"
+    }
+  },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",
