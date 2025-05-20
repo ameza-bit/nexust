@@ -10,6 +10,7 @@ import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/home/redirect_screen.dart';
 import 'package:nexust/presentation/screens/home/tabs_screen.dart'
     show TabsScreen;
+import 'package:nexust/presentation/screens/more/history_screen.dart';
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class AppRoutes {
@@ -54,6 +55,11 @@ class AppRoutes {
               return TabsScreen(initialIndex: mainTabIndex);
             },
             routes: [
+              GoRoute(
+                path: HistoryScreen.routeName,
+                name: HistoryScreen.routeName,
+                builder: (context, state) => const HistoryScreen(),
+              ),
               GoRoute(
                 path: SettingsScreen.routeName,
                 name: SettingsScreen.routeName,

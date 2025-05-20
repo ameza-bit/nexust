@@ -6,8 +6,8 @@ import 'package:nexust/presentation/screens/collections/collection_list_screen.d
 import 'package:nexust/presentation/screens/collections/request_screen.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/more_screen.dart';
+import 'package:nexust/presentation/widgets/common/web_scaffold.dart';
 import 'package:nexust/presentation/widgets/home/navigator_bar.dart';
-import 'package:nexust/presentation/widgets/home/sidebar_navigation.dart';
 
 class TabsScreen extends StatefulWidget {
   static const String routeName = "tabs";
@@ -48,25 +48,15 @@ class _TabsScreenState extends State<TabsScreen>
       onPopInvokedWithResult: (_, __) {
         if (_tabController.index == 0) exit(0);
       },
-      child: Scaffold(
-        body: Row(
+      child: WebScaffold(
+        body: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
-            // Sidebar de navegación (solo en web)
-            if (isWebLayout) SidebarNavigation(controller: _tabController),
-
-            // Contenido principal
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  HomeScreen(),
-                  CollectionListScreen(),
-                  RequestScreen(),
-                  MoreScreen(),
-                ],
-              ),
-            ),
+            HomeScreen(),
+            CollectionListScreen(),
+            RequestScreen(),
+            MoreScreen(),
           ],
         ),
         // Barra de navegación inferior (solo en móvil/tablet)

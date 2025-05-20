@@ -5,6 +5,7 @@ import 'package:nexust/core/font_awesome_flutter/lib/font_awesome_flutter.dart';
 import 'package:nexust/data/models/menu_item.dart';
 import 'package:nexust/main.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
+import 'package:nexust/presentation/screens/more/history_screen.dart';
 import 'package:nexust/presentation/screens/more/settings_screen.dart';
 
 class MenuRoute {
@@ -51,7 +52,7 @@ class MenuRoute {
     MenuItem(
       label: context.tr('more.historial'),
       icon: FontAwesomeIcons.lightClockRotateLeft,
-      route: _getPathRoute(SettingsScreen.routeName),
+      route: _getPathRoute(HistoryScreen.routeName),
     ),
     MenuItem(
       label: context.tr('more.projects'),
