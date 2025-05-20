@@ -17,7 +17,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> _loadSettings() async {
     emit(state.copyWith(isLoading: true));
     try {
-      final settings = await _settingsRepository.getSettings();
+      final settings = _settingsRepository.getSettings();
       emit(state.copyWith(settings: settings, isLoading: false));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));

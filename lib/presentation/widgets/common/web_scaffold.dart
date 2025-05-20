@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nexust/core/constants/app_constants.dart';
 import 'package:nexust/core/extensions/color_extensions.dart';
 import 'package:nexust/core/extensions/responsive_extensions.dart';
-import 'package:nexust/presentation/widgets/home/sidebar_navigation.dart';
+import 'package:nexust/presentation/widgets/home/side_bar/sidebar_navigation.dart';
+import 'package:nexust/presentation/widgets/home/side_bar/web_scaffold_header.dart';
 
 class WebScaffold extends StatelessWidget {
   const WebScaffold({
@@ -29,7 +30,7 @@ class WebScaffold extends StatelessWidget {
     if (!isWebLayout) return scaffoldBody;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Web Scaffold')),
+      appBar: WebScaffoldHeader(),
       body: Row(
         children: [
           SidebarNavigation(),

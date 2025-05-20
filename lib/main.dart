@@ -5,20 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexust/core/enums/language.dart';
 import 'package:nexust/core/routes/app_routes.dart';
+import 'package:nexust/core/services/preferences.dart';
 import 'package:nexust/core/themes/main_theme.dart';
 import 'package:nexust/data/repositories/auth_repository_impl.dart';
 import 'package:nexust/data/repositories/settings_repository_impl.dart';
+import 'package:nexust/data/repositories/side_bar_repository_impl.dart';
 import 'package:nexust/domain/repositories/auth_repository.dart';
 import 'package:nexust/domain/repositories/settings_repository.dart';
+import 'package:nexust/domain/repositories/side_bar_repository.dart';
 import 'package:nexust/firebase_options.dart';
 import 'package:nexust/presentation/blocs/auth/auth_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_cubit.dart';
 import 'package:nexust/presentation/blocs/settings/settings_state.dart';
+import 'package:nexust/presentation/blocs/sidebar/side_bar_cubit.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  await Preferences.init();
 
   await Firebase.initializeApp(
     name: kIsWeb ? null : 'Nexust',
@@ -27,6 +33,7 @@ Future<void> main() async {
 
   SettingsRepository settingsRepository = SettingsRepositoryImpl();
   AuthRepository authRepository = AuthRepositoryImpl();
+  SideBarRepository sideBarRepository = SideBarRepositoryImpl();
 
   runApp(
     MultiBlocProvider(
@@ -36,6 +43,9 @@ Future<void> main() async {
         ),
         BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(authRepository: authRepository),
+        ),
+        BlocProvider<SideBarCubit>(
+          create: (context) => SideBarCubit(sideBarRepository),
         ),
       ],
       child: EasyLocalization(
