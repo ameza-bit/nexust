@@ -5,7 +5,7 @@ import 'package:nexust/presentation/views/auth/web_left_decorative_panel.dart';
 import 'package:nexust/presentation/views/more/settings/settings_phone_version.dart';
 
 class AuthSettingsScreen extends StatelessWidget {
-  static const String routeName = "settings";
+  static const String routeName = "auth_settings";
   const AuthSettingsScreen({super.key});
 
   @override

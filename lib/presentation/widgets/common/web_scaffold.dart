@@ -10,12 +10,14 @@ class WebScaffold extends StatelessWidget {
     required this.body,
     this.appBar,
     this.bottomNavigationBar,
+    this.decoration,
     super.key,
   });
 
   final Widget body;
   final PreferredSizeWidget? appBar;
   final Widget? bottomNavigationBar;
+  final Decoration? decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class WebScaffold extends StatelessWidget {
           Flexible(
             child: Container(
               margin: EdgeInsets.all(context.contentPadding),
-              decoration: BoxDecoration(
+              decoration: decoration ?? BoxDecoration(
                 color: context.cardBackground,
                 borderRadius: BorderRadius.circular(AppBorderRadius.card),
                 boxShadow: [
