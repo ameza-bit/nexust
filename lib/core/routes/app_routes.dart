@@ -11,7 +11,7 @@ import 'package:nexust/presentation/screens/home/redirect_screen.dart';
 import 'package:nexust/presentation/screens/home/tabs_screen.dart'
     show TabsScreen;
 import 'package:nexust/presentation/screens/more/history_screen.dart';
-import 'package:nexust/presentation/screens/more/settings_screen.dart';
+import 'package:nexust/presentation/screens/more/auth_settings_screen.dart';
 
 class AppRoutes {
   // Variable para controlar si ya se mostró el splash
@@ -43,6 +43,11 @@ class AppRoutes {
                 name: ForgotPasswordScreen.routeName,
                 builder: (context, state) => const ForgotPasswordScreen(),
               ),
+              GoRoute(
+                path: AuthSettingsScreen.routeName,
+                name: AuthSettingsScreen.routeName,
+                builder: (context, state) => const AuthSettingsScreen(),
+              ),
             ],
           ),
           GoRoute(
@@ -59,11 +64,6 @@ class AppRoutes {
                 path: HistoryScreen.routeName,
                 name: HistoryScreen.routeName,
                 builder: (context, state) => const HistoryScreen(),
-              ),
-              GoRoute(
-                path: SettingsScreen.routeName,
-                name: SettingsScreen.routeName,
-                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),

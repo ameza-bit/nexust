@@ -55,12 +55,15 @@ class SideBarItem extends StatelessWidget {
           builder: (context, state) {
             return Row(
               mainAxisAlignment:
-                  state.sideBar.isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
+                  state.sideBar.isExpanded
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
               children: [
                 FaIcon(
                   item.icon,
                   size: iconSize,
-                  color: isSelected ? theme.primaryColor : context.textSecondary,
+                  color:
+                      isSelected ? theme.primaryColor : context.textSecondary,
                 ),
                 if (state.sideBar.isExpanded) ...[
                   const SizedBox(width: 16),
@@ -68,14 +71,16 @@ class SideBarItem extends StatelessWidget {
                     item.label,
                     style: TextStyle(
                       fontSize: context.scaleText(16),
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      color: isSelected ? theme.primaryColor : context.textPrimary,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      color:
+                          isSelected ? theme.primaryColor : context.textPrimary,
                     ),
                   ),
                 ],
               ],
             );
-          }
+          },
         ),
       ),
     );

@@ -6,7 +6,7 @@ import 'package:nexust/data/models/menu_item.dart';
 import 'package:nexust/main.dart';
 import 'package:nexust/presentation/screens/home/home_screen.dart';
 import 'package:nexust/presentation/screens/more/history_screen.dart';
-import 'package:nexust/presentation/screens/more/settings_screen.dart';
+import 'package:nexust/presentation/screens/more/auth_settings_screen.dart';
 
 class MenuRoute {
   final BuildContext context;
@@ -57,17 +57,17 @@ class MenuRoute {
     MenuItem(
       label: context.tr('more.projects'),
       icon: FontAwesomeIcons.lightFolder,
-      route: _getPathRoute(SettingsScreen.routeName),
+      route: _getPathRoute(AuthSettingsScreen.routeName),
     ),
     MenuItem(
       label: context.tr('more.environments'),
       icon: FontAwesomeIcons.lightEarthAmericas,
-      route: _getPathRoute(SettingsScreen.routeName),
+      route: _getPathRoute(AuthSettingsScreen.routeName),
     ),
     MenuItem(
       label: context.tr('more.settings'),
       icon: FontAwesomeIcons.lightGear,
-      route: _getPathRoute(SettingsScreen.routeName),
+      route: _getPathRoute(AuthSettingsScreen.routeName),
     ),
   ];
 
